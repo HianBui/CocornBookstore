@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root{
+    /* 🎨 Màu sắc */
+	--blue-color: #2ba8e2;
+	/* Xanh chủ đạo */
+	--red-color: #e22b3a;
+	/* Đỏ phụ */
+	--green-color: #2be26e;
+	/* Tím nhạt */
+	--background-color: rgba(43, 168, 226, 0.227);
+	--background-color-2: rgb(181, 229, 252);
+	/* Nền nhạt */
+	--text-color: #533641;
+	/* Màu chữ */
+	--alert-color: #ffd7d7;
+	/* ✍️ Font chữ */
+	--primary-font: 'Montserrat', cursive;
+    --second-font: 'IBM Plex Mono', cursive;
+    --third-font: 'JetBrains Mono', cursive;
+
+	/* 🔠 Font size scale */
+	--font-xs: 0.75rem;
+	/* 12px */
+	--font-sm: 0.875rem;
+	/* 14px */
+	--font-base: 1rem;
+	/* 16px (mặc định) */
+	--font-lg: 1.125rem;
+	/* 18px */
+	--font-xl: 1.25rem;
+	/* 20px */
+	--font-2xl: 1.5rem;
+	/* 24px */
+	--font-3xl: 1.875rem;
+	/* 30px */
+	--font-4xl: 2.25rem;
+	/* 36px */
+	--font-5xl: 3rem;
+	/* 48px */
+
+	/* 🎬 Hiệu ứng */
+	--transition: all 0.3s ease;
+
+	/* 🌑 Bóng đổ */
+	--box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
+	/* ⬛ Border */
+	--border-color: 2px solid rgba(31, 173, 239, 0.3);
+	--border-nor: 1px solid rgba(0, 0, 0, 0.111);
+    --border-radius: 3px;
+}
+section#form-login{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+form{
+    width: 500px;
+    height: auto;
+    box-shadow: var(--box-shadow);
+    border-radius: 5px;
+    padding: 35px;
+    display: grid;
+    place-items: center;
+    margin: 40px 0;
+}
+form i{
+    color: var(--blue-color);
+}
+h1.title-form{
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: var(--blue-color);
+}
+.error-field {
+    display: none; /* Ẩn mặc định */
+    align-items: start;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    margin: 10px 0;
+
+    border: 1px solid var(--red-color);
+    background-color: #d6455139;
+    word-wrap: break-word;
+    font-family: var(--second-font);
+    font-size: var(--font-sm);
+    color: var(--red-color);
+    border-radius: var(--border-radius);
+    text-align: justify;
+}
+
+.error-field.success {
+    border: 1px solid var(--green-color);
+    background-color: #45d67339;
+}
+
+.error-field.success .text-error,
+.error-field.success i {
+    color: var(--green-color);
+}
+
+.error-field > i {
+    font-size: var(--font-xl);
+    justify-self: center;
+    color: var(--red-color);
+    flex-shrink: 0;
+}
+
+.text-error {
+    justify-self: start;
+    padding: 0 10px;
+}
+
+.input-field{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+}
+form input{
+    width: 100%;
+    margin: 10px 0;
+    height: 40px;
+    border-radius: var(--border-radius);
+    border: var(--border-nor);
+    padding: 0 10px;
+    font-size: var(--font-sm);
+}
+form input:focus{
+    outline: var(--border-color);
+}
+.showpass,
+.terms,
+.remem-forgot
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.showpass input,
+.terms input,
+.remem-forgot .input-remem input{
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+    border: var(--border-nor);
+}
+.remem-forgot {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.remem-forgot a{
+    color: var(--blue-color);
+}
+.showpass input:focus,
+.terms input:focus,
+.remem-forgot .input-remem input:focus{
+    outline: none;
+}
+.terms a{
+    color: var(--blue-color);
+}
+.btn-field{
+    width: 100%;
+    height: 40px;
+    margin: 10px 0;
+}
+.btn-field button{
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: var(--blue-color);
+    color: white;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    display: flex;
+    place-items: center;
+    justify-content: center;
+}
+.btn-field button i{
+    color:  white;
+    font-size: var(--font-xl);
+    margin-right: 10px;
+}
+p{
+    font-size: var(--font-base);
+}
+p a{
+    color: var(--blue-color);
+}

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coconut - Corn</title>
+
+    <!-- ===================== LINK BOOTSTRAP ===================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- ===================== LINK BOOTSTRAP ICON ===================== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- ===================== LINK GOOGLE FONT ===================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <!-- ===================== LINK SLICK SLIDER ===================== -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+
+    <!-- ===================== LINK CSS ===================== -->
+    <link rel="stylesheet" href="./asset/css/style.css">
+    <link rel="stylesheet" href="./asset/css/reponsive.css">
+    <link rel="stylesheet" href="./asset/css/app.css">
+    <link rel="stylesheet" href="./asset/css/form.css">
+    <link rel="stylesheet" href="./asset/css/detail.css">
+
+</head>
+
+<body>
+
+    <!-- ===================== HEADER ===================== -->
+    <header>
+
+        <!-- ===== ACTION BAR (LOGO, SEARCH, CART, LOGIN) ===== -->
+        <div class="action-bar" id="action-bar">
+            <div class="container">
+
+                <!-- LOGO -->
+                <a class="home" href="../index.html">
+                    <img src="./asset/image/Logo.svg" alt="!">
+                </a>
+                <!-- LOGO END -->
+
+                <!-- SEARCH BOX -->
+                <div class="search-box">
+                    <input type="text" name="search" id="search" placeholder="Nhập tên sách hoặc tác giả">
+                    <button type="submit"><i class="bi bi-search"></i></button>
+                </div>
+                <!-- SEARCH BOX END -->
+
+                <!-- CART -->
+                <div class="cart">
+                    <a href="#">
+                        <i class="bi bi-cart"></i>
+                    </a>
+                    <span class="count-product">0</span>
+                </div>
+                <!-- CART END -->
+
+                <!-- LOGIN / REGISTER BUTTON -->
+                <div class="box-button active" id="button-logreg">
+                    <a href="./login.html" class="login-button">
+                        <i class="bi bi-box-arrow-right"></i> Đăng nhập
+                    </a>
+                    <a href="./register.html" class="register-button">
+                        <i class="bi bi-person-plus-fill"></i> Đăng ký
+                    </a>
+                </div>
+                <!-- LOGIN / REGISTER BUTTON END -->
+
+                <!-- DROPDOWN USER MENU -->
+                <div class="dropdown" id="dropdown-user" style="display: none;">
+                    <button class="btn btn-secondary dropdown-toggle user-box" data-bs-auto-close="inside" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person usericonbox"></i>
+                        <div class="user-name">Username</div>
+                        <i class="bi bi-chevron-down usericonbox"></i>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <div class="infor-user">
+                            <div class="user-name-show">Username</div>
+                            <div class="balance">Số dư</div>
+                            <span>0 đ</span>
+                        </div>
+                        <li class="dropdown-divider-li">
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person usericonbox"></i> &nbsp;Thông tin
+                                cá nhân</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-cash-coin"></i> &nbsp;Nạp tiền</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history"></i> &nbsp;Lịch sử nạp
+                                tiền</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-cart3"></i> &nbsp;Giỏ hàng</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-heart-fill"></i> &nbsp;Yêu thích</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box2-fill"></i> &nbsp;Đơn hàng</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-lightning-fill"></i> &nbsp;Đơn dịch vụ</a>
+                        </li>
+                        <li class="dropdown-divider-li">
+                            <hr class="dropdown-divider">
+                        </li>
+                        <div class="log-out"><a class="dropdown-item" href="#" data-logout><i
+                                    class="bi bi-box-arrow-right"></i>&nbsp;Đăng xuất</a></div>
+                    </ul>
+                </div>
+                <!-- DROPDOWN USER MENU END -->
+
+            </div>
+        </div>
+        <!-- ===== ACTION BAR END ===== -->
+        
+        <!-- ===== NAVIGATION ===== -->
+        <div class="navigation" id="nav">
+            <div class="container">
+                <ul>
+                    <li class="active"><a href="./index.html"><i class="bi bi-house-door-fill"></i>&nbsp;Trang chủ</a>
+                    </li>
+                    <li><a href="#category"><i class="bi bi-list"></i>&nbsp;Danh mục</a></li>
+                    <li><a href="#"><i class="bi bi-cash-stack"></i>&nbsp;Nạp tiền</a></li>
+                    <li><a href="#"><i class="bi bi-journal-text"></i>&nbsp;Hướng dẫn</a></li>
+                    <li><a href="#"><i class="bi bi-facebook"></i>&nbsp;Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- ===== NAVIGATION END ===== -->
+        
+    </header>
+    <!-- ===================== HEADER END ===================== -->
+
+    <!-- ====================== MAIN =========================== -->
+    <section>
+        <div class="container">
+            <div class="product-info">
+                <div class="left">
+                    <div class="product-img">
+                        <img class="main-img" src="./asset/image/300x300.svg" alt="">
+                        <div class="box-sub-img">
+                            <img src="./asset/image/300x300.svg" class="sub-img">
+                            <img src="./asset/image/300x300 (1).svg" alt="" class="sub-img">
+                            <img src="./asset/image/300x300 (2).svg" alt="" class="sub-img">
+                            <img src="./asset/image/300x300 (3).svg" alt="" class="sub-img">
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="content">
+                        <h3 class="name-product">Peter Nimble & Những Đôi Mắt Thần</h3>
+                        <div class="box-product-info">
+                            <div class="publisher">Nhà xuất bản: <span>Đại Học Sư Phạm</span></div>
+                            <div class="author">Tác giả: <span>Đông A</span></div>
+                            <div class="publisher-year">Năm sản xuất: <span>2004</span></div>
+                            <div class="category">Danh mục: <span>Văn học</span></div>
+                            <div class="view">Lượt xem: <span>3</span></div>
+                            <div class="remaining-quantity">Số lượng còn lại: <span>3</span></div>
+                            <div class="description">Mô tả: <span>Cuốn sách dành cho tuổi trẻ...</span></div>
+                        </div>
+                        <div class="count">
+                            <label for="sl">Số lượng:</label>
+                            <div class="box-count">
+                                <a href="#" class="minus"><i class="bi bi-dash"></i></a>
+                                <input type="text" class="sl" name="sl" id="sl" value="1" maxvalue="9999" minvalue="1">
+                                <a href="#" class="plus"><i class="bi bi-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="product-detail-price">
+                            999,999đ <span>999,999đ</span>
+                        </div>
+                        <div class="link-btn-product">
+                            <a href="#" class="add-cart">Thêm vào giỏ hàng</a>
+                            <a href="#" class=""><button class="buy-now">Mua ngay</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-div">
+                <div class="tabs">
+                    <button class="tab active" data-tab="info">Thông tin chi tiết</button>
+                    <button class="tab" data-tab="policy">Chính sách bán hàng</button>
+                    <button class="tab" data-tab="review">Đánh giá sản phẩm</button>
+                </div>
+
+                <div class="parent-tab-content">
+                    <div class="tab-content active" id="info">
+                        <h3>Mô tả sản phẩm</h3>
+                        <p>Harry Potter may mắn sống sót đến tuổi 13, sau nhiều cuộc tấn công của Chúa tể hắc ám.</p>
+                        <br>
+                        <p>Nhưng hy vọng có một học kỳ yên ổn với Quidditch của cậu đã tiêu tan thành mây khói khi một kẻ điên cuồng giết người hàng loạt vừa thoát khỏi nhà tù Azkaban, với sự lùng sục của những cai tù là giám ngục.</p>
+                        <br>
+                        <p>Dường như trường Hogwarts là nơi an toàn nhất cho Harry lúc này. Nhưng có phải là sự trùng hợp khi cậu luôn cảm giác có ai đang quan sát mình từ bóng đêm, và những điềm báo của giáo sư Trelawney liệu có chính xác?</p>
+                        <br>
+                        <p>Câu chuyện được kể với trí tưởng tượng bay bổng, sự hài hước bất tận có thể quyến rũ cả người lớn lẫn trẻ em.</p>
+                    </div>
+                    <div class="tab-content" id="policy">
+                        <h3>Chính sách bán sách</h3>
+
+                        <h4>1. Đổi trả</h4>
+                        <p>Khách hàng được <strong>đổi hoặc trả sách trong vòng 7 ngày</strong> nếu sách bị lỗi in, rách hoặc sai nội dung. 
+                        Sách phải còn nguyên tem và chưa qua sử dụng. 
+                        Trường hợp đổi do khách chọn nhầm, chi phí vận chuyển do khách hàng chi trả.</p>
+
+                        <h4>2. Vận chuyển</h4>
+                        <p>Miễn phí giao hàng cho đơn từ <strong>300.000đ</strong> trở lên. 
+                        Thời gian giao hàng: nội thành 1–2 ngày, ngoại tỉnh 3–5 ngày. 
+                        Sách được đóng gói cẩn thận để tránh cong, rách hoặc ướt.</p>
+
+                        <h4>3. Liên hệ hỗ trợ</h4>
+                        <p>Mọi thắc mắc vui lòng liên hệ:<br>
+                        <strong>Email:</strong> support@cocorn.vn<br>
+                        <strong>Hotline:</strong> 0909 123 456<br>
+                        <strong>Thời gian làm việc:</strong> 8h00 – 17h00 (Thứ 2 – Thứ 7)</p>
+                    </div>
+
+                    <div class="tab-content " id="review" >
+                        <h3><span>4</span> đánh giá</h3>
+                        <div class="list-comment">
+                            <div class="item-comment">
+                                <div class="left">
+                                    <img src="./asset/image/50x50.svg" alt="!">
+                                </div>
+                                <div class="right">
+                                    <p class="user-gmail">usermail@gmail.com</p>
+                                    <div class="star">
+                                        <i class="bi bi-star-fill active"></i>
+                                        <i class="bi bi-star-fill active"></i>
+                                        <i class="bi bi-star-fill active"></i>
+                                        <i class="bi bi-star-fill active"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                    <div class="commnent">User comment</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="your-comment">
+                            <div class="your-rate">Đánh giá cuả bạn: 
+                                <span>
+                                    <i class="bi bi-star-fill "></i>
+                                    <i class="bi bi-star-fill "></i>
+                                    <i class="bi bi-star-fill "></i>
+                                    <i class="bi bi-star-fill "></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </span>
+                            </div>
+                            <div class="input-comment-field">
+                                <input type="text" class="commnent">
+                                <button type="submit"><i class="bi bi-send-fill"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <h1 class="title">Sản phẩm cùng danh mục</h1>
+            <div class="list-same-cat">
+                    <!-- Product item -->
+                    <div class="product-item">
+                        <div class="product-image">
+                            <a href="#"><img src="./asset/image/324x300.svg" alt=""></a>
+                            <div class="icons">
+                                <a href="./product.html" class="views">Xem chi tiết</a>
+                                <a href="#" class="add">Mua ngay</a>
+                            </div>
+                        </div>
+                        <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
+                        <div class="product-price">999,999đ</div>
+                    </div>
+                    <!-- Product item -->
+                    <div class="product-item">
+                        <div class="product-image">
+                            <a href="#"><img src="./asset/image/324x300.svg" alt=""></a>
+                            <div class="icons">
+                                <a href="./product.html" class="views">Xem chi tiết</a>
+                                <a href="#" class="add">Mua ngay</a>
+                            </div>
+                        </div>
+                        <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
+                        <div class="product-price">999,999đ</div>
+                    </div>
+                    <!-- Product item -->
+                    <div class="product-item">
+                        <div class="product-image">
+                            <a href="#"><img src="./asset/image/324x300.svg" alt=""></a>
+                            <div class="icons">
+                                <a href="./product.html" class="views">Xem chi tiết</a>
+                                <a href="#" class="add">Mua ngay</a>
+                            </div>
+                        </div>
+                        <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
+                        <div class="product-price">999,999đ</div>
+                    </div>
+                    <!-- Product item -->
+                    <div class="product-item">
+                        <div class="product-image">
+                            <a href="#"><img src="./asset/image/324x300.svg" alt=""></a>
+                            <div class="icons">
+                                <a href="./product.html" class="views">Xem chi tiết</a>
+                                <a href="#" class="add">Mua ngay</a>
+                            </div>
+                        </div>
+                        <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
+                        <div class="product-price">999,999đ</div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- ======================= FOOTER ======================= -->
+    <footer>
+        <div class="container">
+            <div class="content">
+
+                <!-- Phần liên hệ nhanh -->
+                <div class="contact">
+                    <p>Nhận hỗ trợ từ chúng tôi</p>
+                    <div class="your-mail">
+                        <input type="text" placeholder="Nhập email của bạn...">
+                        <button type="submit"><i class="bi bi-arrow-right"></i></button>
+                    </div>
+                </div>
+                <!-- Phần liên hệ nhanh END -->
+
+                <!-- Bố cục chính footer -->
+                <div class="layout-footer">
+
+                    <!-- Logo + Tên thương hiệu -->
+                    <a class="footer-logo" href="#">
+                        <img src="./asset/image/Logo.svg" alt="Logo Dừa và Bắp">
+                        <h3>Dừa và Bắp</h3>
+                    </a>
+                    <!-- Logo END -->
+
+                    <!-- Thông tin liên hệ -->
+                    <ul class="info">
+                        <li>
+                            <p><i class="bi bi-geo-alt-fill"></i>&nbsp;180 Cao Lỗ, phường 4, Quận 8, Hồ Chí Minh</p>
+                        </li>
+                        <li>
+                            <p><i class="bi bi-telephone-fill"></i>&nbsp;0383714805</p>
+                        </li>
+                        <li>
+                            <p><i class="bi bi-google"></i>&nbsp;dh52200671@student.stu.edu.vn</p>
+                        </li>
+                        <li>
+                            <p><i class="bi bi-facebook"></i>&nbsp;Khắc Hiếu (Hian)</p>
+                        </li>
+                    </ul>
+                    <!-- Thông tin liên hệ END -->
+
+                    <!-- Danh sách liên kết -->
+                    <div class="box-list">
+                        <ul class="footer-menu">
+                            <li><a href="#">Trang chủ</a></li>
+                            <li><a href="#">Danh mục</a></li>
+                            <li><a href="#">Hướng dẫn</a></li>
+                            <li><a href="#">Liên hệ</a></li>
+                            <li><a href="#">Nạp tiền</a></li>
+                            <li><a href="#">Đăng ký</a></li>
+                            <li><a href="#">Đăng nhập</a></li>
+                        </ul>
+
+                        <ul class="footer-menu-2">
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Điều khoản dịch vụ</a></li>
+                            <li><a href="#">Chính sách hoàn tiền</a></li>
+                            <li><a href="#">Chính sách thanh toán</a></li>
+
+                            <!-- Hình thức thanh toán -->
+                            <li class="last-li">
+                                <div class="payment">
+                                    <p>Hình thức thanh toán</p>
+                                    <div class="icon-payment">
+                                        <img src="./asset/image/visa.svg" alt="Visa">
+                                        <img src="./asset/image/zalopay-icon.svg" alt="ZaloPay">
+                                        <img src="./asset/image/napas.svg" alt="Napas">
+                                        <img src="./asset/image/Logo MoMo.svg" alt="MoMo">
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Hình thức thanh toán END -->
+                        </ul>
+                    </div>
+                    <!-- Danh sách liên kết END -->
+
+                </div>
+                <!-- Bố cục chính footer END -->
+
+                <br>
+                <div class="line"></div>
+
+                <!-- Bản quyền -->
+                <div class="copyright">
+                    <p>© 2025 Dừa và Bắp. All rights reserved.</p>
+                </div>
+                <!-- Bản quyền END -->
+
+            </div>
+        </div>
+    </footer>
+    <!-- ======================= FOOTER END ======================= -->
+
+
+
+    <!-- ======================= BUTTON SCROLL TO TOP ======================= -->
+    <a href="#" id="scrollToTop"><i class="bi bi-arrow-up-square-fill"></i></a>
+
+
+
+    <!-- ======================= SCRIPT BOOTSTRAP ======================= -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+
+    <!-- ======================= SCRIPT CUSTOM ======================= -->
+    <script src="./asset/js/app.js"></script>
+    <script src="./asset/js/auth.js"></script>
+    <script src="./asset/js/form.js"></script>
+    <script src="./asset/js/product-view.js"></script>
+    <script src="./asset/js/product-detail.js"></script>
+    </body>
+    </html>
