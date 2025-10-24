@@ -162,14 +162,14 @@
         <section id="category">
             <div class="container">
                 <h1 class="title">Danh mục sản phẩm</h1>
-                <div class="categories" data-slick='{"slidesToShow": 6, "slidesToScroll": 4}''>
+                <div class="categories">
                     <!-- Category items -->
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/100x150.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/100x150.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/100x150.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/100x150.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/100x150.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/100x150.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
                     
                 </div>
             </div>
@@ -191,7 +191,7 @@
                         <div class="product-image">
                             <a href="#"><img src="./asset/image/324x300.svg" alt=""></a>
                             <div class="icons">
-                                <a href="./product.html" class="views">Xem chi tiết</a>
+                                <a href="./product.html?id=1" class="views">Xem chi tiết</a>
                                 <a href="#" class="add">Mua ngay</a>
                             </div>
                         </div>
@@ -257,12 +257,12 @@
                 <!-- Hot product -->
                 <div class="hot-product">
                     <div class="hot-product-image">
-                        <a href="#"><img src="./asset/image/250x250.svg" alt=""></a>
+                        <a href="#"><img src="./asset/image/300x300.svg" alt=""></a>
                         <div class="deal-item">
-                            <img src="./asset/image/50x50.svg" alt="">
-                            <img src="./asset/image/50x50.svg" alt="">
-                            <img src="./asset/image/50x50.svg" alt="">
-                            <img src="./asset/image/50x50.svg" alt="">
+                            <img src="./asset/image/300x300.svg" alt="">
+                            <img src="./asset/image/300x300 (1).svg" alt="">
+                            <img src="./asset/image/300x300 (2).svg" alt="">
+                            <img src="./asset/image/300x300 (3).svg" alt="">
                         </div>
                     </div>
                     <div class="deal-content">
@@ -278,12 +278,12 @@
                 <!-- Hot product -->
                 <div class="hot-product">
                     <div class="hot-product-image">
-                        <a href="#"><img src="./asset/image/250x250.svg" alt=""></a>
+                        <a href="#"><img src="./asset/image/300x300.svg" alt=""></a>
                         <div class="deal-item">
-                            <img src="./asset/image/50x50.svg" alt="">
-                            <img src="./asset/image/50x50.svg" alt="">
-                            <img src="./asset/image/50x50.svg" alt="">
-                            <img src="./asset/image/50x50.svg" alt="">
+                            <img src="./asset/image/300x300.svg" alt="">
+                            <img src="./asset/image/300x300 (1).svg" alt="">
+                            <img src="./asset/image/300x300 (2).svg" alt="">
+                            <img src="./asset/image/300x300 (3).svg" alt="">
                         </div>
                     </div>
                     <div class="deal-content">
@@ -305,9 +305,9 @@
     <section id="fyp">
         
     </section>
-    <div class="line"></div>
 
     <!-- ===================== FOOTER ===================== -->
+    <img class="wave" src="./asset/image/wave.svg" alt="">
     <footer>
         <div class="container">
             <div class="content">
@@ -397,8 +397,16 @@
     <script src="./asset/js/app.js"></script>
     <script src="./asset/js/auth.js"></script>
     <script src="./asset/js/form.js"></script>
+    <script src="./asset/js/render-books.js"></script>
     <script>
         $('.slider').slick({
+            loop: true,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 2000,
+        });
+        
+        $('.categories').slick({
             loop: true,
             slidesToScroll: 1,
             autoplay: true,

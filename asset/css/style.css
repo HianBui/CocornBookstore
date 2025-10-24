@@ -143,7 +143,7 @@ p{
     left: 0;
     z-index: 1000;
     box-shadow: var(--box-shadow);
-    background-color: var(--background-color-3);
+    background-color: var(--blue-color);
 }
 .navigation ul{
     display: flex;
@@ -157,13 +157,15 @@ p{
     padding: 10px;
     border-radius: var(--border-radius);
 }
-/* .navigation ul li:hover{
-    background-color: var(--background-color);
-} */
+.navigation.fixed ul li:hover a,
+.navigation.fixed ul li:hover a i
+{
+    color: var(--background-color-3);
+}
 .navigation ul li a,
 .navigation ul li i
 {
-        color: var(--text-color);
+    color: var(--text-color);
     text-decoration: none;
 }
 .navigation.fixed ul li a,
@@ -483,12 +485,15 @@ footer {
 	width: 100vw;
 	height: auto;
 	padding: 30px 0px;
-	background-color: #011620;
+	background-color: var(--blue-color)	;
 	color: white;
 	/* overflow: hidden; */
-	margin-top: 30px;
+	/* margin-top: 30px; */
 }
-
+.wave{
+	width: 100%;
+	margin: 0;
+}
 footer .container {
 	display: flex;
 	justify-content: space-between;
@@ -499,7 +504,7 @@ footer .container {
 footer .content {
 	flex: 1;
 	min-width: 250px;
-	/* margin: 10px; */
+	margin: 0 0 20px 0;
 	display: grid;
 	place-items: center;
 }
@@ -554,7 +559,7 @@ footer .content h3 {
 .contact {
 	width: 100%;
 	height: 100px;
-	background-color: var(--blue-color);
+	background-color: var(--background-color-3);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -594,14 +599,16 @@ p {
 	width: 10%;
 	height: 100%;
 	border: none;
-	background-color: var(--blue-color);
+	background-color: var(--background-color-3);
 	color: white;
 	display: grid;
 	place-items: center;
 	cursor: pointer;
 	border-radius: 3px;
 }
-
+.your-mail button:hover {
+	background-color: var(--blue-color);
+}
 .your-mail button i {
 	font-size: var(--font-lg);
 	color: white;
@@ -625,7 +632,9 @@ p {
 	font-size: var(--font-sm);
 	color: white;
 }
-
+.layout-footer li a:hover {
+	color: var(--background-color-3);
+}
 .layout-footer li p i {
 	color: var(--blue-color);
 }

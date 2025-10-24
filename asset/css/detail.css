@@ -525,21 +525,24 @@ i.active{
 .input-comment-field button:hover i{
 	color: white;
 }
-.list-same-cat{
-	width: 100%;
-	height: auto;
-	background-color: var(--background-color-2);
-	padding: 20px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 20px;
-	border-radius: var(--border-radius);
+.list-same-cat {
+    width: 100%;
+    height: auto;
+    background-color: var(--background-color-2);
+    padding: 20px;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;
+    gap: 20px;
+    border-radius: var(--border-radius);
+    flex-wrap: wrap;
 }
-.product-author{
-	text-align: center;
-	margin: 10px 0;
+
+.product-author {
+    text-align: center;
+    margin: 10px 0;
 }
-.list-same-cat > .product-price{
-	text-align: center !important;
+
+.list-same-cat > .product-price {
+    text-align: center !important;
 }

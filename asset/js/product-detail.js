@@ -160,6 +160,7 @@ function renderBookInfo(book) {
     const productPrice = document.querySelector('.product-detail-price');
     if (productPrice) {
         productPrice.innerHTML = `${formatPrice(book.price)}`;
+        // productPrice.innerHTML = `<span class="oldprice">999,999</span>`;
     }
 
     // Cập nhật input số lượng
@@ -216,10 +217,8 @@ function renderBookImages(images) {
         };
     }
 
-    // Lấy tất cả ảnh trong box-sub-img (bao gồm cả ảnh đầu tiên)
-    const subImagesContainer = document.querySelector('.box-sub-img');
-    const subImages = subImagesContainer ? subImagesContainer.querySelectorAll('img') : [];
-    
+    // Cập nhật ảnh phụ
+    const subImages = document.querySelectorAll('.sub-img');
     const imageList = [
         images.main,
         images.sub1,
@@ -230,15 +229,13 @@ function renderBookImages(images) {
     subImages.forEach((imgElement, index) => {
         if (imageList[index]) {
             imgElement.src = `./asset/image/${imageList[index]}`;
-            imgElement.alt = `Image ${index + 1}`;
+            imgElement.alt = `Sub image ${index + 1}`;
             imgElement.style.cursor = 'pointer';
             imgElement.style.display = 'block';
             
             // Thêm class active cho ảnh đầu tiên
             if (index === 0) {
                 imgElement.classList.add('active');
-            } else {
-                imgElement.classList.remove('active');
             }
             
             // Event click để đổi ảnh chính
