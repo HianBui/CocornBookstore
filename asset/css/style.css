@@ -3,6 +3,17 @@
 :root{
     /* 🎨 Màu sắc */
 	--blue-color: #2ba8e2;
+    --blue-1: #e6f7ff; /* Xanh gần trắng, rất nhạt */
+  --blue-2: #b3e5ff; /* Xanh baby sky */
+  --blue-3: #66ccff; /* Xanh sáng, nổi bật */
+  --blue-4: #0099ff; /* Xanh dương chuẩn */
+  --blue-5: #007acc; /* Màu gốc trung bình */
+  --blue-6: #005fa3; /* Xanh đậm */
+  --blue-7: #004173; /* Xanh navy */
+  --blue-8: #00294a; /* Xanh cực đậm */
+
+	--dark-blue-color: #2483af;
+
 	/* Xanh chủ đạo */
 	--red-color: #e22b3a;
 	/* Đỏ phụ */
@@ -559,7 +570,7 @@ footer .content h3 {
 .contact {
 	width: 100%;
 	height: 100px;
-	background-color: var(--background-color-3);
+	background-color: var(--dark-blue-color);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -599,7 +610,7 @@ p {
 	width: 10%;
 	height: 100%;
 	border: none;
-	background-color: var(--background-color-3);
+	background-color: var(--dark-blue-color);
 	color: white;
 	display: grid;
 	place-items: center;

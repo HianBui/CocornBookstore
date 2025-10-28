@@ -3,6 +3,8 @@
 :root{
     /* 🎨 Màu sắc */
 	--blue-color: #2ba8e2;
+	--dark-blue-color: #2483af;
+
 	/* Xanh chủ đạo */
 	--red-color: #e22b3a;
 	/* Đỏ phụ */
@@ -279,12 +281,12 @@ section{
 	font-weight: 600;
 }
 .link-btn-product a:hover{
-	background-color: var(--background-color-3);
-	color: var(--blue-color);
+	background-color: var(--dark-blue-color);
+	color: white;
 }
 .buy-now:hover{
-	background-color: var(--background-color-3);
-	color: var(--blue-color);
+	background-color: var(--dark-blue-color);
+	color: white;
 }
 /* Review section */
 /* Reviews Section */
@@ -425,12 +427,12 @@ section{
 	border-radius: var(--border-radius);
 }
 .tab:hover{
-	background-color: var(--background-color-3);
-	color: var(--blue-color);
+	background-color: var(--dark-blue-color);
+	color: white;
 }
 .tab.active{
-	background-color: #011620;
-	color: var(--blue-color);
+	background-color: var(--dark-blue-color);
+	color: white;
 }
 .tab-content h3{
 	font-size: var(--font-2xl);
@@ -530,14 +532,16 @@ i.active{
     height: auto;
     background-color: var(--background-color-2);
     padding: 20px;
-    display: flex;
-    justify-content: flex-start; 
-    align-items: center;
-    gap: 20px;
+    display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	/* grid-template-rows: repeat(auto, 1fr); */
+    gap: 30px;
     border-radius: var(--border-radius);
     flex-wrap: wrap;
 }
-
+.list-same-cat .product-item{
+	/* padding: 10px !important; */
+}
 .product-author {
     text-align: center;
     margin: 10px 0;

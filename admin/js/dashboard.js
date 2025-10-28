@@ -30,7 +30,7 @@ async function loadOverviewStats() {
     }
 }
 
-// === Biểu đồ danh mục (tỉ lệ) ===
+// === Biểu đồ danh mục (tỉ lệ) - CÓ THỂ CLICK ĐỂ ẨN/HIỆN ===
 async function loadCategoryRatioChart() {
     try {
         const res = await fetch(`${API_URL}?action=category_ratio`);
@@ -44,7 +44,10 @@ async function loadCategoryRatioChart() {
                 labels: data.map(item => item.category),
                 datasets: [{
                     data: data.map(item => item.count),
-                    backgroundColor: ['#dc3545', '#17a2b8', '#007bff', '#28a745'],
+                    backgroundColor: [
+                        '#e6f7ff', '#b3e5ff', '#66ccff', '#0099ff',
+                        '#007acc', '#005fa3', '#004173', '#00294a'
+                    ],
                     borderColor: '#fff',
                     borderWidth: 3
                 }]
@@ -52,8 +55,35 @@ async function loadCategoryRatioChart() {
             options: {
                 plugins: {
                     legend: {
+                        display: true,
                         position: 'bottom',
-                        labels: { usePointStyle: true, font: { size: 12 } }
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 12,
+                            padding: 15,
+                            color: '#333',
+                            font: { size: 14 },
+                            generateLabels(chart) {
+                                const original = Chart.overrides.doughnut.plugins.legend.labels.generateLabels(chart);
+                                const meta = chart.getDatasetMeta(0);
+                                original.forEach((label, i) => {
+                                    const arc = meta.data[i];
+                                    if (arc && arc.hidden) {
+                                        // Làm mờ legend khi ẩn
+                                        label.fillStyle = 'rgba(200,200,200,0.4)';
+                                    }
+                                });
+                                return original;
+                            }
+                        },
+                        onClick(e, legendItem, legend) {
+                            const chart = legend.chart;
+                            const index = legendItem.index;
+                            const meta = chart.getDatasetMeta(0);
+                            meta.data[index].hidden = !meta.data[index].hidden;
+                            chart.update();
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -64,6 +94,10 @@ async function loadCategoryRatioChart() {
                             }
                         }
                     }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    intersect: true
                 }
             }
         });
@@ -72,7 +106,7 @@ async function loadCategoryRatioChart() {
     }
 }
 
-// === Biểu đồ lượt xem danh mục ===
+// === Biểu đồ lượt xem danh mục - CÓ THỂ CLICK ĐỂ ẨN/HIỆN ===
 async function loadCategoryViewsChart() {
     try {
         const res = await fetch(`${API_URL}?action=category_views`);
@@ -87,13 +121,28 @@ async function loadCategoryViewsChart() {
                 datasets: [{
                     label: 'Lượt xem',
                     data: data.map(item => item.views),
-                    backgroundColor: '#007bff',
+                    backgroundColor: '#2ba8e2',
                     borderRadius: 5
                 }]
             },
             options: {
                 indexAxis: 'y',
                 plugins: {
+                    legend: {
+                        display: true, // ✅ Hiển thị legend
+                        position: 'top',
+                        onClick: function(e, legendItem, legend) {
+                            // ✅ XỬ LÝ CLICK VÀO LEGEND
+                            const index = legendItem.datasetIndex;
+                            const chart = legend.chart;
+                            const meta = chart.getDatasetMeta(index);
+                            
+                            // Toggle ẩn/hiện dataset
+                            meta.hidden = !meta.hidden;
+                            
+                            chart.update();
+                        }
+                    },
                     tooltip: {
                         callbacks: {
                             label(ctx) {
@@ -109,7 +158,7 @@ async function loadCategoryViewsChart() {
     }
 }
 
-// === Biểu đồ doanh thu theo tháng ===
+// === Biểu đồ doanh thu theo tháng - CÓ THỂ CLICK ĐỂ ẨN/HIỆN ===
 async function loadMonthlyRevenueChart() {
     try {
         const res = await fetch(`${API_URL}?action=monthly_revenue`);
@@ -133,6 +182,23 @@ async function loadMonthlyRevenueChart() {
                     y: {
                         beginAtZero: true,
                         ticks: { callback: v => v + 'M' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true, // ✅ Hiển thị legend
+                        position: 'top',
+                        onClick: function(e, legendItem, legend) {
+                            // ✅ XỬ LÝ CLICK VÀO LEGEND
+                            const index = legendItem.datasetIndex;
+                            const chart = legend.chart;
+                            const meta = chart.getDatasetMeta(index);
+                            
+                            // Toggle ẩn/hiện dataset
+                            meta.hidden = !meta.hidden;
+                            
+                            chart.update();
+                        }
                     }
                 }
             }

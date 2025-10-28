@@ -165,7 +165,7 @@ async function renderCategories() {
             const displayText = category.category_name || category.description;
             
             const categoryHTML = `
-                <a class="item" href="./category.html?id=${category.category_id}">
+                <a class="item" href="./all-product.html?id=${category.category_id}">
                     <div class="item-img">
                         <img src="${getImagePath(category.image)}" alt="${category.category_name}">
                     </div>

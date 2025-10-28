@@ -150,7 +150,7 @@
     color: var(--blue-color);
 }
 .item-saleoff .content a:hover{
-    background-color: var(--background-color-3);
+    background-color: var(--dark-blue-color);
     color: white;
 }
 .item-saleoff.so1 {
@@ -259,11 +259,10 @@
 }
 
 .product-feature .left .product-item {
-    display: grid;
-    place-items: center;
-    background-color: #fff;
-    padding: 0 17px;
+    background-color: white;
     border-radius: var(--border-radius);
+    transition: var(--transition);
+    padding: 10px !important;
 }
 
 .product-image {
@@ -319,7 +318,7 @@
 
 .product-title {
     font-size: var(--font-lg);
-    margin: 20px 0 10px;
+    margin: 10px 0 10px;
     text-align: center;
 }
 .product-title:hover {
