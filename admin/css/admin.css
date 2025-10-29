@@ -67,10 +67,13 @@ body{
   top: 0;
   width: 260px;
   height: 100vh;
-  background: #2c3e50;
+  background: var(--blue-color);
   color: white;
   padding: 20px;
   overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar {
+  width: 0px;
 }
 
 .sidebar-header {
@@ -81,14 +84,16 @@ body{
 }
 
 .sidebar-header h2 {
-  font-size: var(--font-3xl);
-  font-weight: 600;
+  font-size: var(--font-2xl);
+  font-weight: bold;
   margin-bottom: 5px;
 }
 
 .sidebar-header .role {
   font-size: var(--font-xs);
-  color: #bdc3c7;
+  color: var(--blue-8);
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 .sidebar-menu {
@@ -111,14 +116,18 @@ body{
 
 .sidebar-menu a:hover,
 .sidebar-menu a.active {
-  background: #34495e;
+  background: #002d4c62;
   color: white;
 }
+/* .sidebar-menu a:hover i,
+.sidebar-menu a.active i {
+  color: var(--blue-color);
+} */
 
 .sidebar-menu a i {
   margin-right: 10px;
   font-size: var(--font-xl);
-  color: var(--blue-color);
+  color: white;
 }
 
 .main-content {
@@ -138,8 +147,9 @@ body{
 }
 
 .top-bar h1 {
-  font-size: 28px;
-  color: #2c3e50;
+  font-size: var(--font-3xl);
+  color: var(--blue-color);
+  font-weight: bold;
   margin: 0;
 }
 
@@ -177,18 +187,7 @@ body{
   display: flex;
   align-items: center;
   gap: 20px;
-}
-.stat-card:nth-child(1) {
-  background-color: var(--blue-4);
-}
-.stat-card:nth-child(2) {
-  background-color: var(--blue-5);
-}
-.stat-card:nth-child(3) {
-  background-color: var(--blue-6);
-}
-.stat-card:nth-child(4) {
-  background-color: var(--blue-7);
+  background-color: White;
 }
 
 .stat-card .icon {
@@ -199,38 +198,27 @@ body{
   align-items: center;
   justify-content: center;
   font-size: 28px;
-}
+  background-color: var(--blue-color);
 
-.stat-card.users .icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
 }
-
-.stat-card.products .icon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+.stat-card .icon i {
+    color: white;
+    font-size: var(--font-3xl);
 }
-
-.stat-card.orders .icon {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
-}
-
-.stat-card.revenue .icon {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  color: white;
+.stat-card{
+  color: var(--blue-color);
 }
 
 .stat-card .info h3 {
   font-size: 32px;
   font-weight: 700;
   margin: 0;
-  color: #2c3e50;
+  color: var(--blue-color);
 }
 
 .stat-card .info p {
   margin: 0;
-  color: #7f8c8d;
+  color: var(--text-color);
   font-size: var(--font-sm);
 }
 
@@ -247,19 +235,24 @@ body{
 }
 
 .logout-btn {
-  background: #e74c3c;
-  color: white;
+  background: white;
+  color: var(--blue-color);
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
-}
-.logout-btn i {
-  color: white;
-  
+  border: var(--border-color);
 }
 .logout-btn:hover {
-  background: #c0392b;
-  transform: translateY(-2px);
+  background: var(--blue-color);
+  color: white;
+  /* transform: translateY(-2px); */
+}
+.logout-btn:hover i {
+  color: white; 
+}
+.logout-btn i {
+  color: var(--blue-color);
+  
 }

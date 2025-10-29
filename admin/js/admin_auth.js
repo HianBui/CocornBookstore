@@ -11,7 +11,20 @@
 // ===========================
 async function checkAdminAccess() {
     try {
-        const response = await fetch('../asset/api/admin_check.php', {
+        // ✅ Tự động xác định đường dẫn dựa trên vị trí file HTML
+        let apiPath;
+        
+        if (window.location.pathname.includes('/view/')) {
+            // Nếu ở trong admin/view/
+            apiPath = '../../asset/api/admin_check.php';
+        } else {
+            // Nếu ở trong admin/
+            apiPath = '../asset/api/admin_check.php';
+        }
+        
+        console.log('🔍 Checking admin access at:', apiPath);
+        
+        const response = await fetch(apiPath, {
             method: 'GET',
             credentials: 'include'
         });
@@ -21,7 +34,7 @@ async function checkAdminAccess() {
         if (!data.success) {
             // Không có quyền truy cập
             alert(data.message);
-            window.location.href = data.redirectUrl || '../login.html';
+            window.location.href = data.redirectUrl || '../../login.html';
         } else {
             // Có quyền truy cập - cập nhật UI
             updateAdminUI(data.user);
@@ -29,7 +42,7 @@ async function checkAdminAccess() {
     } catch (error) {
         console.error('Check admin access error:', error);
         alert('Không thể xác thực phiên đăng nhập. Vui lòng đăng nhập lại!');
-        window.location.href = '../login.html';
+        window.location.href = '../../login.html';
     }
 }
 
@@ -93,9 +106,25 @@ async function adminLogout() {
     });
 
     try {
-        const response = await fetch('../asset/api/logout.php', {
+        // ✅ FIX: Tự động xác định đường dẫn dựa trên vị trí file HTML
+        let logoutApiPath;
+        
+        if (window.location.pathname.includes('/view/')) {
+            // Nếu ở trong admin/view/
+            logoutApiPath = '../../asset/api/logout.php';
+        } else {
+            // Nếu ở trong admin/
+            logoutApiPath = '../asset/api/logout.php';
+        }
+        
+        console.log('🔍 Logout API path:', logoutApiPath);
+        
+        const response = await fetch(logoutApiPath, {
             method: 'POST',
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         const data = await response.json();
@@ -107,15 +136,19 @@ async function adminLogout() {
             sessionStorage.clear();
 
             // Hiển thị thông báo
-            alert('Đăng xuất thành công!');
+            alert('✅ Đăng xuất thành công!');
 
-            // Chuyển hướng về trang login
-            window.location.href = '../login.html';
+            // ✅ FIX: Chuyển hướng về trang login với đường dẫn đúng
+            if (window.location.pathname.includes('/view/')) {
+                window.location.href = '../../login.html';
+            } else {
+                window.location.href = '../login.html';
+            }
         } else {
             throw new Error(data.message || 'Đăng xuất thất bại');
         }
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('❌ Logout error:', error);
         
         // Vẫn xóa localStorage và chuyển hướng
         localStorage.removeItem('authToken');
@@ -123,10 +156,21 @@ async function adminLogout() {
         sessionStorage.clear();
         
         alert('Đã xảy ra lỗi. Đang đăng xuất...');
-        window.location.href = '../login.html';
+        
+        // ✅ FIX: Chuyển hướng đúng
+        if (window.location.pathname.includes('/view/')) {
+            window.location.href = '../../login.html';
+        } else {
+            window.location.href = '../login.html';
+        }
+    } finally {
+        // Khôi phục trạng thái nút (nếu có lỗi và chưa redirect)
+        logoutButtons.forEach((btn, index) => {
+            btn.disabled = false;
+            btn.innerHTML = originalTexts[index];
+        });
     }
 }
-
 // ===========================
 // GẮN SỰ KIỆN ĐĂNG XUẤT CHO TẤT CẢ CÁC NÚT
 // ===========================
