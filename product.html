@@ -55,7 +55,7 @@
 
                 <!-- CART -->
                 <div class="cart">
-                    <a href="#">
+                    <a href="./cart.html">
                         <i class="bi bi-cart"></i>
                     </a>
                     <span class="count-product">0</span>
@@ -171,7 +171,7 @@
                             999,999đ <span class="oldprice">999,999đ</span>
                         </div>
                         <div class="link-btn-product">
-                            <a href="#" class="add-cart">Thêm vào giỏ hàng</a>
+                            <button id="addToCartBtn" class="add-cart">Thêm vào giỏ hàng</button>
                             <a href="#" class=""><button class="buy-now">Mua ngay</button></a>
                         </div>
                     </div>
@@ -426,5 +426,19 @@
     <script src="./asset/js/form.js"></script>
     <script src="./asset/js/product-view.js"></script>
     <script src="./asset/js/product-detail.js"></script>
+    <script src="./asset/js/cart-handler.js"></script>
+    <script src="./asset/js/cart.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get("id");
+
+        document.getElementById("addToCartBtn").addEventListener("click", function() {
+
+            const qty = parseInt(document.getElementById("sl").value) || 1;
+
+            CartHandler.addToCart(bookId, qty);
+
+        });
+    </script>
     </body>
     </html>

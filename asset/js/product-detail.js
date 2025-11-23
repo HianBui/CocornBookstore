@@ -151,16 +151,12 @@ function renderBookInfo(book) {
             <div class="description">Mô tả: <span>${book.description}</span></div>
         `;
     }
-                // <div class="rating-info">
-            //     <div class="stars">${renderStars(book.rating.average)}</div>
-            //     <span>(${book.rating.average}/5 - ${book.rating.total} đánh giá)</span>
-            // </div>
+
 
     // Cập nhật giá
     const productPrice = document.querySelector('.product-detail-price');
     if (productPrice) {
         productPrice.innerHTML = `${formatPrice(book.price)}`;
-        // productPrice.innerHTML = `<span class="oldprice">999,999</span>`;
     }
 
     // Cập nhật input số lượng

@@ -146,8 +146,10 @@
     /* border: var(--border-color); */
     padding: 10px;
     margin: 30px 0;
-    background-color: white;
+        background-color: white;
     color: var(--blue-color);
+
+    border: 1px solid var(--blue-color);
 }
 .item-saleoff .content a:hover{
     background-color: var(--dark-blue-color);
@@ -306,7 +308,8 @@
 
 .product-image .icons .views:hover,
 .product-image .icons .add:hover {
-    background-color: var(--background-color-3);
+    background-color: var(--background-color-2);
+    color: var(--blue-color);
 }
 
 .views {
@@ -383,8 +386,8 @@
     border-radius: var(--border-radius);
 }
 .viewmore-product a:hover{
-    background-color: var(--blue-color);
-    color: white;
+    background-color: var(--background-color);
+    color: var(--blue-color);
 }
 
 /* HOT DEAL */
@@ -471,11 +474,14 @@
     place-items: center;
     padding: 5px;
 }
-.deal-auth .deal-view:hover,
-.add button:hover{
-    background-color: var(--background-color-3);
-    color: white;
+.deal-auth .deal-view:hover{
+    background-color: var(--background-color);
+    color: var(--blue-color);
     /* border: none; */
+}
+.add button:hover{
+    background-color: var(--background-color);
+    color: white;
 }
 .deal-auth .add{
     width: 100%;

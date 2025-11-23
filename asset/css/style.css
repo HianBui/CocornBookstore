@@ -91,7 +91,7 @@ input{
     border-radius: none;
 }
 input[type="checkbox"] {
-    accent-color: var(--blue-color); /* 🎨 đổi màu chính của checkbox */
+    accent-color: var(--blue-6);
 }
 a{
     text-decoration: none;
@@ -136,6 +136,47 @@ h1.title::before{
 p{
 	letter-spacing: 1px;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-color: var(--blue-color);
+    font-family: var(--primary-font);
+    background-color: white;
+    border-radius: var(--border-radius) !important;
+    overflow: hidden;
+ }
+table th, 
+table td {
+    padding: 10px;
+    text-align: center;
+    border-color: var(--blue-color);
+}
+
+table th {
+    background-color: var(--blue-color);
+    color: white;
+    text-transform: uppercase;
+}
+
+
+table td{
+    border: 1px solid var(--blue-color);
+}
+table img {
+    width: auto;
+    height: 100px;
+    border-radius: 5px;
+}
+.norTable{
+	border: none;
+}
+.norTable tr,
+.norTable th,
+.norTable td{
+	border: none;
+}
+
 /* HEADER */
 
 /* Navigation */
