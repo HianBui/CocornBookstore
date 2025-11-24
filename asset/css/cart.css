@@ -264,6 +264,8 @@
         display: flex;
         align-items: center;
         gap: 5px;
+        width: max-content;
+        justify-self: end;
     }
 
     .action a:hover {

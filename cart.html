@@ -11,36 +11,45 @@
     <!-- LINK BOOTSTRAP ICON -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <!-- CSS của SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <!-- LINK CSS -->
     <link rel="stylesheet" href="./asset/css/style.css">
     <link rel="stylesheet" href="./asset/css/cart.css">
 </head>
 <body>
 
-    <!-- HEADER -->
+        <!-- ===================== HEADER ===================== -->
     <header>
+
+        <!-- ===== ACTION BAR (LOGO, SEARCH, CART, LOGIN) ===== -->
         <div class="action-bar" id="action-bar">
             <div class="container">
+
                 <!-- LOGO -->
                 <a class="home" href="index.html">
-                    <img src="./asset/image/Logo.svg" alt="Coconut Corn">
+                    <img src="./asset/image/Logo.svg" alt="!">
                 </a>
+                <!-- LOGO END -->
 
                 <!-- SEARCH BOX -->
                 <div class="search-box">
                     <input type="text" name="search" id="search" placeholder="Nhập tên sách hoặc tác giả">
                     <button type="submit"><i class="bi bi-search"></i></button>
                 </div>
+                <!-- SEARCH BOX END -->
 
                 <!-- CART -->
                 <div class="cart">
-                    <a href="cart.html">
+                    <a href="./cart.html">
                         <i class="bi bi-cart"></i>
                     </a>
                     <span class="count-product">0</span>
                 </div>
+                <!-- CART END -->
 
-                <!-- LOGIN / REGISTER -->
+                <!-- LOGIN / REGISTER BUTTON -->
                 <div class="box-button active" id="button-logreg">
                     <a href="./login.html" class="login-button">
                         <i class="bi bi-box-arrow-right"></i> Đăng nhập
@@ -49,11 +58,11 @@
                         <i class="bi bi-person-plus-fill"></i> Đăng ký
                     </a>
                 </div>
+                <!-- LOGIN / REGISTER BUTTON END -->
 
-                <!-- USER DROPDOWN -->
+                <!-- DROPDOWN USER MENU -->
                 <div class="dropdown" id="dropdown-user" style="display: none;">
-                    <button class="btn btn-secondary dropdown-toggle user-box" type="button" 
-                            data-bs-toggle="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle user-box" data-bs-auto-close="inside" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person usericonbox"></i>
                         <div class="user-name">Username</div>
                         <i class="bi bi-chevron-down usericonbox"></i>
@@ -62,33 +71,43 @@
                     <ul class="dropdown-menu">
                         <div class="infor-user">
                             <div class="user-name-show">Username</div>
+                            <div class="balance">Số dư</div>
+                            <span>0 đ</span>
                         </div>
                         <li class="dropdown-divider-li"><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="cart.html">
-                            <i class="bi bi-cart3"></i> Giỏ hàng
-                        </a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person usericonbox"></i> &nbsp;Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-cash-coin"></i> &nbsp;Nạp tiền</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history"></i> &nbsp;Lịch sử nạp tiền</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-cart3"></i> &nbsp;Giỏ hàng</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-heart-fill"></i> &nbsp;Yêu thích</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box2-fill"></i> &nbsp;Đơn hàng</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-lightning-fill"></i> &nbsp;Đơn dịch vụ</a></li>
                         <li class="dropdown-divider-li"><hr class="dropdown-divider"></li>
-                        <div class="log-out">
-                            <a class="dropdown-item" href="#" data-logout>
-                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
-                            </a>
-                        </div>
+                        <div class="log-out"><a class="dropdown-item" href="#" data-logout><i class="bi bi-box-arrow-right"></i>&nbsp;Đăng xuất</a></div>
                     </ul>
                 </div>
+                <!-- DROPDOWN USER MENU END -->
+
             </div>
         </div>
+        <!-- ===== ACTION BAR END ===== -->
 
-        <!-- NAVIGATION -->
+        <!-- ===== NAVIGATION ===== -->
         <div class="navigation" id="nav">
             <div class="container">
                 <ul>
-                    <li><a href="./index.html"><i class="bi bi-house-door-fill"></i> Trang chủ</a></li>
-                    <li><a href="#category"><i class="bi bi-list"></i> Danh mục</a></li>
-                    <li><a href="#"><i class="bi bi-facebook"></i> Liên hệ</a></li>
+                    <li class="active"><a href="./index.html"><i class="bi bi-house-door-fill"></i>&nbsp;Trang chủ</a></li>
+                    <li><a href="#category"><i class="bi bi-list"></i>&nbsp;Danh mục</a></li>
+                    <li><a href="#"><i class="bi bi-cash-stack"></i>&nbsp;Nạp tiền</a></li>
+                    <li><a href="#"><i class="bi bi-journal-text"></i>&nbsp;Hướng dẫn</a></li>
+                    <li><a href="#"><i class="bi bi-facebook"></i>&nbsp;Liên hệ</a></li>
                 </ul>
             </div>
         </div>
+        <!-- ===== NAVIGATION END ===== -->
+
     </header>
+    <!-- ===================== HEADER END ===================== -->
 
     <!-- PAGE TITLE -->
     <div class="page-title">
@@ -125,7 +144,7 @@
                     </tbody>
                 </table>
                 
-                <div class="action" style="display: none;">
+                <div class="action">
                     <a href="javascript:void(0)" id="clearCartBtn">
                         Xóa tất cả
                     </a>
@@ -160,7 +179,7 @@
                     <i class="bi bi-credit-card"></i> Thanh toán
                 </button>
 
-                <a href="index.html" class="continue-shopping">
+                <a href="all-product.html" class="continue-shopping">
                     <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
                 </a>
             </div>
@@ -208,6 +227,8 @@
     <script src="./asset/js/auth.js"></script>
     <script src="./asset/js/cart-handler.js"></script>
 
+    <!-- JavaScript của SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Checkout function
         function checkout() {
@@ -217,12 +238,22 @@
             );
 
             if (checkedItems.length === 0) {
-                alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán!');
+                // Info
+                Swal.fire({
+                icon: 'info',
+                title: 'Thông tin',
+                text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!'
+                });
                 return;
             }
 
             // TODO: Chuyển đến trang thanh toán
-            alert('Chức năng thanh toán đang được phát triển!');
+            // Info
+            Swal.fire({
+            icon: 'info',
+            title: 'Thông tin',
+            text: 'Chức năng đang được phát triển'
+            });
         }
     </script>
 </body>

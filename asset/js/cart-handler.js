@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * FILE: cart-handler.js
- * MÔ TẢ: Xử lý giỏ hàng phía frontend
+ * MÔ TÁ: Xử lý giỏ hàng phía frontend (Hoàn chỉnh với SweetAlert2)
  * ĐẶT TẠI: asset/js/cart-handler.js
  * ============================================================
  */
@@ -13,8 +13,14 @@ const CartHandler = {
      * Khởi tạo giỏ hàng
      */
     init() {
+        // ✅ Luôn load số lượng giỏ hàng khi trang load
         this.loadCartCount();
-        this.loadCartItems();
+        
+        // ✅ Chỉ load cart items nếu đang ở trang cart
+        if (window.location.pathname.includes('cart.html')) {
+            this.loadCartItems();
+        }
+        
         this.setupEventListeners();
     },
 
@@ -71,8 +77,9 @@ const CartHandler = {
             const data = await response.json();
 
             if (data.success) {
-                this.showNotification('success', data.message);
-                this.loadCartCount();
+                // ✅ Toast notification thành công
+                this.showToast('success', data.message);
+                this.loadCartCount(); // ✅ Cập nhật số lượng ngay lập tức
                 
                 // Reload trang giỏ hàng nếu đang ở đó
                 if (window.location.pathname.includes('cart.html')) {
@@ -124,7 +131,7 @@ const CartHandler = {
                 </td>
                 <td>
                     <div class="product-info-cell">
-                        <img src="./asset/image/books/${item.main_img}" alt="${item.title}">
+                        <img src="./asset/image/${item.main_img}" alt="${item.title}">
                         <div>
                             <div class="product-name">${item.title}</div>
                             <small class="text-muted">${item.author}</small>
@@ -151,7 +158,10 @@ const CartHandler = {
         `).join('');
 
         // Hiển thị nút xóa tất cả
-        document.querySelector('.action').style.display = 'block';
+        const actionDiv = document.querySelector('.action');
+        if (actionDiv) {
+            actionDiv.style.display = 'block';
+        }
     },
 
     /**
@@ -174,10 +184,15 @@ const CartHandler = {
         const discount = 0;
         const total = subtotal + shipping - discount;
 
-        document.getElementById('subtotal').textContent = this.formatCurrency(subtotal);
-        document.getElementById('shipping').textContent = this.formatCurrency(shipping);
-        document.getElementById('discount').textContent = '-' + this.formatCurrency(discount);
-        document.getElementById('total').textContent = this.formatCurrency(total);
+        const subtotalEl = document.getElementById('subtotal');
+        const shippingEl = document.getElementById('shipping');
+        const discountEl = document.getElementById('discount');
+        const totalEl = document.getElementById('total');
+
+        if (subtotalEl) subtotalEl.textContent = this.formatCurrency(subtotal);
+        if (shippingEl) shippingEl.textContent = this.formatCurrency(shipping);
+        if (discountEl) discountEl.textContent = '-' + this.formatCurrency(discount);
+        if (totalEl) totalEl.textContent = this.formatCurrency(total);
     },
 
     /**
@@ -187,9 +202,13 @@ const CartHandler = {
         const shipping = data.total > 0 ? 30000 : 0;
         const total = data.total + shipping;
 
-        document.getElementById('subtotal').textContent = this.formatCurrency(data.total);
-        document.getElementById('shipping').textContent = this.formatCurrency(shipping);
-        document.getElementById('total').textContent = this.formatCurrency(total);
+        const subtotalEl = document.getElementById('subtotal');
+        const shippingEl = document.getElementById('shipping');
+        const totalEl = document.getElementById('total');
+
+        if (subtotalEl) subtotalEl.textContent = this.formatCurrency(data.total);
+        if (shippingEl) shippingEl.textContent = this.formatCurrency(shipping);
+        if (totalEl) totalEl.textContent = this.formatCurrency(total);
     },
 
     /**
@@ -198,7 +217,7 @@ const CartHandler = {
     async increaseQty(cartId, currentQty) {
         const newQty = currentQty + 1;
         if (newQty > 9999) {
-            this.showNotification('error', 'Số lượng tối đa là 9999');
+            this.showNotification('warning', 'Số lượng tối đa là 9999');
             return;
         }
         await this.updateQuantity(cartId, newQty);
@@ -234,6 +253,8 @@ const CartHandler = {
             if (data.success) {
                 this.loadCartItems();
                 this.loadCartCount();
+                // ✅ Toast nhỏ khi cập nhật thành công
+                this.showToast('success', 'Đã cập nhật số lượng');
             } else {
                 this.showNotification('error', data.message);
             }
@@ -244,10 +265,23 @@ const CartHandler = {
     },
 
     /**
-     * Xóa sản phẩm
+     * Xóa sản phẩm (✅ SweetAlert2 Confirm)
      */
     async removeItem(cartId) {
-        if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+        // ✅ Sử dụng SweetAlert2 cho confirm
+        const result = await Swal.fire({
+            title: 'Xác nhận xóa',
+            text: 'Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy',
+            reverseButtons: true
+        });
+
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(`${this.API_URL}?action=delete`, {
@@ -261,7 +295,7 @@ const CartHandler = {
             const data = await response.json();
 
             if (data.success) {
-                this.showNotification('success', data.message);
+                this.showToast('success', data.message);
                 this.loadCartItems();
                 this.loadCartCount();
             } else {
@@ -274,10 +308,23 @@ const CartHandler = {
     },
 
     /**
-     * Xóa toàn bộ giỏ hàng
+     * Xóa toàn bộ giỏ hàng (✅ SweetAlert2 Confirm)
      */
     async clearCart() {
-        if (!confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) return;
+        // ✅ Sử dụng SweetAlert2 cho confirm
+        const result = await Swal.fire({
+            title: 'Xác nhận xóa tất cả',
+            text: 'Bạn có chắc muốn xóa toàn bộ giỏ hàng? Hành động này không thể hoàn tác!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xóa tất cả',
+            cancelButtonText: 'Hủy',
+            reverseButtons: true
+        });
+
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(`${this.API_URL}?action=clear`, {
@@ -300,7 +347,7 @@ const CartHandler = {
     },
 
     /**
-     * Lấy số lượng sản phẩm trong giỏ
+     * Lấy số lượng sản phẩm trong giỏ (✅ CẬP NHẬT)
      */
     async loadCartCount() {
         try {
@@ -308,13 +355,22 @@ const CartHandler = {
             const data = await response.json();
 
             if (data.success) {
-                const countElement = document.querySelector('.count-product');
-                if (countElement) {
-                    countElement.textContent = data.data.count;
-                }
+                // ✅ Cập nhật TẤT CẢ các element có class .count-product
+                const countElements = document.querySelectorAll('.count-product');
+                countElements.forEach(element => {
+                    element.textContent = data.data.count;
+                    
+                    // ✅ Ẩn/hiện badge khi = 0
+                    if (data.data.count > 0) {
+                        element.style.display = 'grid';
+                    } else {
+                        element.style.display = 'none';
+                    }
+                });
             }
         } catch (error) {
             console.error('Load cart count error:', error);
+            // Không hiển thị lỗi cho user, chỉ log
         }
     },
 
@@ -329,7 +385,7 @@ const CartHandler = {
             <div class="empty-cart">
                 <img src="./asset/image/emptyCart.png" alt="Giỏ hàng trống">
                 <p>Bạn chưa có sản phẩm nào trong giỏ hàng</p>
-                <a href="index.html" class="checkout-btn" 
+                <a href="all-product.html" class="checkout-btn" 
                    style="display: inline-block; width: auto; padding: 12px 30px; 
                           margin-top: 20px; text-decoration: none;">
                     Tiếp tục mua sắm
@@ -338,35 +394,86 @@ const CartHandler = {
         `;
 
         // Reset summary
-        document.getElementById('subtotal').textContent = '0 đ';
-        document.getElementById('shipping').textContent = '0 đ';
-        document.getElementById('total').textContent = '0 đ';
+        const subtotalEl = document.getElementById('subtotal');
+        const shippingEl = document.getElementById('shipping');
+        const totalEl = document.getElementById('total');
+
+        if (subtotalEl) subtotalEl.textContent = '0 đ';
+        if (shippingEl) shippingEl.textContent = '0 đ';
+        if (totalEl) totalEl.textContent = '0 đ';
+
+        // Ẩn nút xóa tất cả
+        const actionDiv = document.querySelector('.action');
+        if (actionDiv) {
+            actionDiv.style.display = 'none';
+        }
     },
 
     /**
      * Format tiền VND
      */
     formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN') + ' đ';
+        // Chuyển sang số nguyên và format
+        const intAmount = Math.floor(amount);
+        return intAmount.toLocaleString('vi-VN') + ' đ';
     },
 
     /**
-     * Hiển thị thông báo
+     * ✅ Hiển thị thông báo SweetAlert2 (Alert thông thường)
      */
     showNotification(type, message) {
-        // Bạn có thể dùng thư viện như SweetAlert2 hoặc tự tạo
-        if (type === 'success') {
-            alert('✓ ' + message);
-        } else {
-            alert('✗ ' + message);
-        }
+        const icons = {
+            'success': 'success',
+            'error': 'error',
+            'warning': 'warning',
+            'info': 'info'
+        };
+
+        const titles = {
+            'success': 'Thành công!',
+            'error': 'Lỗi!',
+            'warning': 'Cảnh báo!',
+            'info': 'Thông báo'
+        };
+
+        Swal.fire({
+            icon: icons[type] || 'info',
+            title: titles[type] || 'Thông báo',
+            text: message,
+            confirmButtonText: 'OK',
+            confirmButtonColor: type === 'success' ? '#28a745' : 
+                               type === 'error' ? '#dc3545' : 
+                               type === 'warning' ? '#ffc107' : '#0d6efd',
+            timer: type === 'success' ? 2000 : undefined,
+            timerProgressBar: type === 'success' ? true : false
+        });
+    },
+
+    /**
+     * ✅ Toast notification (Thông báo nhỏ góc màn hình)
+     */
+    showToast(type, message) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        Toast.fire({
+            icon: type,
+            title: message
+        });
     }
 };
 
-// Khởi tạo khi DOM load xong
 document.addEventListener('DOMContentLoaded', () => {
     CartHandler.init();
 });
 
-// Export để dùng global
 window.CartHandler = CartHandler;
