@@ -1,0 +1,124 @@
+<style>
+    .detail-modal {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .main-preview {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        max-height: 350px;
+    }
+
+    .thumb-list img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 8px;
+        border: 2px solid #eee;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+
+    .thumb-list img:hover {
+        transform: scale(1.05);
+        border-color: #2ba8e2;
+    }
+
+    .info-table th {
+        width: 130px;
+        color: #555;
+    }
+</style>
+
+<div class="modal fade" id="productDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content detail-modal">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-info-circle"></i> Chi tiết sản phẩm</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-lg-4 text-center">
+                        <img id="detailMainImg" class="main-preview mb-3"/>
+                        <div id="thumbList" class="thumb-list"></div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <h3 id="detailTitle" class="fw-bold mb-3"></h3>
+
+                        <table class="table table-striped info-table">
+                            <tbody>
+                                <tr><th>ID</th><td id="detailId"></td></tr>
+                                <tr><th>Tác giả</th><td id="detailAuthor"></td></tr>
+                                <tr><th>Nhà XB</th><td id="detailPublisher"></td></tr>
+                                <tr><th>Năm XB</th><td id="detailYear"></td></tr>
+                                <tr><th>Giá</th><td id="detailPrice"></td></tr>
+                                <tr><th>Số lượng</th><td id="detailQuantity"></td></tr>
+                                <tr><th>Lượt xem</th><td id="detailViews"></td></tr>
+                                <tr><th>Danh mục</th><td id="detailCategory"></td></tr>
+                                <tr><th>Trạng thái</th><td id="detailStatus"></td></tr>
+                                <tr><th>Ngày tạo</th><td id="detailCreated"></td></tr>
+                            </tbody>
+                        </table>
+
+                        <h5 class="fw-bold mt-3">Mô tả:</h5>
+                        <p id="detailDescription" class="text-muted" style="text-align: justify;"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-warning" id="btnEditProduct">
+                    <i class="bi bi-pencil"></i> Chỉnh sửa
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <script>
+        async function viewProductDetail(id) {
+            const res = await fetch(`${API_URL}?action=detail&id=${id}`);
+            const data = await res.json();
+            const p = data.data;
+
+            document.getElementById("detailMainImg").src = getImagePath(p.main_img);
+            document.getElementById("detailTitle").innerText = p.title;
+            document.getElementById("detailId").innerText = p.book_id;
+            document.getElementById("detailAuthor").innerText = p.author;
+            document.getElementById("detailPublisher").innerText = p.publisher;
+            document.getElementById("detailYear").innerText = p.published_year;
+            document.getElementById("detailPrice").innerHTML = formatCurrency(p.price);
+            document.getElementById("detailQuantity").innerText = p.quantity;
+            document.getElementById("detailViews").innerText = p.view_count;
+            document.getElementById("detailCategory").innerText = p.category_name;
+            document.getElementById("detailStatus").innerText = getStatusText(p.status);
+            document.getElementById("detailCreated").innerText = formatDate(p.created_at);
+            document.getElementById("detailDescription").innerText = p.description;
+
+            // thumbnails
+            const thumbList = document.getElementById("thumbList");
+            thumbList.innerHTML = "";
+            [p.main_img, p.sub_img1, p.sub_img2, p.sub_img3].forEach(img => {
+                if (img) {
+                    thumbList.innerHTML += `<img src="${getImagePath(img)}" onclick="document.getElementById('detailMainImg').src=this.src">`;
+                }
+            });
+
+            // Gán nút Edit
+            document.getElementById("btnEditProduct").onclick = () => {
+                editProduct(p.book_id);
+                bootstrap.Modal.getInstance(document.getElementById("productDetailModal")).hide();
+            };
+
+            new bootstrap.Modal(document.getElementById("productDetailModal")).show();
+        }
+    </script>

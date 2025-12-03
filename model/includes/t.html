@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            border: 2px solid #000;
+        }
+    div[data-aos] {
+        background-color: #ff0; 
+        padding: 20px;
+        border: 2px solid #000;
+    }
+    </style>
+
+</head>
+<body>
+    
+    <section>1</section>
+    <section>2</section>
+    <section>
+        <div class="test" data-aos="animate__bounceInDown">Hello World!!!</div>
+    </section>
+    <section>4</section>
+    <section>5</section>
+<script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
+
+<script>
+    ScrollReveal().reveal('.test', {
+        duration: 500,
+        origin: 'left',
+        distance: '100px',
+        easing: 'ease-in-out',
+        reset: true
+    });
+</script>
+</body>
+</html>

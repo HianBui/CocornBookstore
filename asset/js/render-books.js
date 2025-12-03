@@ -3,24 +3,21 @@
  * FILE: render-books.js
  * MÔ TẢ: Render dữ liệu từ database vào HTML có sẵn
  * ĐẶT TẠI: asset/js/render-books.js
+ * CẬP NHẬT: Fix ScrollReveal cho phần tử động
  * ============================================================
  */
 
 const API_BASE = './asset/api';
-const IMAGE_BASE = './asset/image/'; // ✅ Đường dẫn thư mục ảnh
+const IMAGE_BASE = './asset/image/';
 
 // ==========================================
 // HÀM TẠO ĐƯỜNG DẪN ẢNH ĐẦY ĐỦ
 // ==========================================
 function getImagePath(imageName) {
-    if (!imageName) return IMAGE_BASE + '324x300.svg'; // Ảnh mặc định
-    
-    // Nếu đã có đường dẫn đầy đủ (bắt đầu bằng ./ hoặc http)
+    if (!imageName) return IMAGE_BASE + '324x300.svg';
     if (imageName.startsWith('./') || imageName.startsWith('http')) {
         return imageName;
     }
-    
-    // Thêm đường dẫn asset/image/ vào trước tên file
     return IMAGE_BASE + imageName;
 }
 
@@ -29,7 +26,6 @@ function getImagePath(imageName) {
 // ==========================================
 async function renderFeaturedProducts() {
     try {
-        // Gọi API lấy 4 sản phẩm nổi bật
         const response = await fetch(`${API_BASE}/get_books.php?section=featured&limit=4`);
         const data = await response.json();
         
@@ -38,14 +34,11 @@ async function renderFeaturedProducts() {
             return;
         }
 
-        // Lấy container chứa các product-item
         const container = document.querySelector('#feature-product .left');
         if (!container) return;
 
-        // Xóa nội dung cũ
         container.innerHTML = '';
 
-        // Render từng sản phẩm
         data.books.forEach(book => {
             const productHTML = `
                 <div class="product-item">
@@ -67,6 +60,13 @@ async function renderFeaturedProducts() {
 
         console.log('✅ Đã render', data.books.length, 'sản phẩm nổi bật');
 
+        // ✅ Gọi lại ScrollReveal sau khi render
+        setTimeout(() => {
+            if (typeof window.initScrollReveal === 'function') {
+                window.initScrollReveal();
+            }
+        }, 100);
+
     } catch (error) {
         console.error('❌ Lỗi render sản phẩm nổi bật:', error);
     }
@@ -77,7 +77,6 @@ async function renderFeaturedProducts() {
 // ==========================================
 async function renderHotDeals() {
     try {
-        // Gọi API lấy 2 hot deal
         const response = await fetch(`${API_BASE}/get_books.php?section=hotdeal&limit=2`);
         const data = await response.json();
         
@@ -86,21 +85,17 @@ async function renderHotDeals() {
             return;
         }
 
-        // Lấy container chứa hot-dealing
         const container = document.querySelector('#hotdeal .hot-dealing');
         if (!container) return;
 
-        // Xóa nội dung cũ
         container.innerHTML = '';
 
-        // Render từng hot deal
         data.books.forEach(book => {
-            // Tạo mảng 4 ảnh: main_img + sub_img1 + sub_img2 + sub_img3
             const dealImages = [
-                getImagePath(book.main_img), // Ảnh chính
-                getImagePath(book.sub_images[0] || null), // sub_img1
-                getImagePath(book.sub_images[1] || null), // sub_img2
-                getImagePath(book.sub_images[2] || null)  // sub_img3
+                getImagePath(book.main_img),
+                getImagePath(book.sub_images[0] || null),
+                getImagePath(book.sub_images[1] || null),
+                getImagePath(book.sub_images[2] || null)
             ];
 
             const subImagesHTML = dealImages.map(img => 
@@ -133,6 +128,13 @@ async function renderHotDeals() {
 
         console.log('✅ Đã render', data.books.length, 'hot deal');
 
+        // ✅ Gọi lại ScrollReveal sau khi render
+        setTimeout(() => {
+            if (typeof window.initScrollReveal === 'function') {
+                window.initScrollReveal();
+            }
+        }, 100);
+
     } catch (error) {
         console.error('❌ Lỗi render hot deal:', error);
     }
@@ -143,7 +145,6 @@ async function renderHotDeals() {
 // ==========================================
 async function renderCategories() {
     try {
-        // Gọi API lấy danh mục
         const response = await fetch(`${API_BASE}/get_categories.php?limit=8`);
         const data = await response.json();
         
@@ -152,20 +153,16 @@ async function renderCategories() {
             return;
         }
 
-        // Lấy container chứa categories
         const container = document.querySelector('#category .categories');
         if (!container) return;
 
-        // Xóa nội dung cũ
         container.innerHTML = '';
 
-        // Render từng category
         data.categories.forEach(category => {
-            // Ưu tiên hiển thị description, nếu không có thì dùng category_name
             const displayText = category.category_name || category.description;
             
             const categoryHTML = `
-                <a class="item" href="./all-product.html?id=${category.category_id}">
+                <a class="item catI" href="./all-product.html?id=${category.category_id}">
                     <div class="item-img">
                         <img src="${getImagePath(category.image)}" alt="${category.category_name}">
                     </div>
@@ -177,12 +174,20 @@ async function renderCategories() {
 
         console.log('✅ Đã render', data.categories.length, 'danh mục');
 
-        // Khởi tạo slider sau khi render xong (chờ 100ms để DOM update)
+        // ✅ Gọi lại ScrollReveal SAU KHI render xong
+        setTimeout(() => {
+            if (typeof window.initScrollReveal === 'function') {
+                window.initScrollReveal();
+                console.log('🎬 ScrollReveal đã được khởi tạo lại cho categories');
+            }
+        }, 100);
+
+        // Khởi tạo slider nếu có
         setTimeout(() => {
             if (typeof window.initCategorySlider === 'function') {
                 window.initCategorySlider();
             }
-        }, 100);
+        }, 150);
 
     } catch (error) {
         console.error('❌ Lỗi render danh mục:', error);
@@ -195,8 +200,9 @@ async function renderCategories() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📚 Bắt đầu render sách từ database...');
     
-    // Render các section
-    renderCategories();
-    renderFeaturedProducts();
-    renderHotDeals();
+    // Render tuần tự để tránh conflict
+    renderCategories()
+        .then(() => renderFeaturedProducts())
+        .then(() => renderHotDeals())
+        .catch(error => console.error('❌ Lỗi render:', error));
 });

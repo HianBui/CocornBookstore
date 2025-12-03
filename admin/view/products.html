@@ -1,16 +1,17 @@
 <!-- 
  * ============================================================
- * FILE: admin/view/users.html
- * MÔ TẢ: hiển thị trang quản lý người dùng cho admin
+ * FILE: admin/view/products.html
+ * MÔ TẢ: Trang quản lý sản phẩm cho admin
  * ============================================================ 
 -->
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coconut Corn</title>
+    <title>Quản lý sản phẩm - Coconut Corn</title>
     
-     <!-- Bootstrap -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
@@ -20,9 +21,6 @@
     <link rel="stylesheet" href="../css/table.css">
     <link rel="stylesheet" href="../../asset/css/style.css">
     
-    <style>
-       
-    </style>
 </head>
 <body>
     <!-- Sidebar -->
@@ -35,8 +33,8 @@
         
         <ul class="sidebar-menu">
             <li><a href="../dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-            <li><a href="./users.html"  class="active"><i class="bi bi-people"></i> Quản lý người dùng</a></li>
-            <li><a href="./products.html"><i class="bi bi-box-seam"></i> Quản lý sản phẩm</a></li>
+            <li><a href="./users.html"><i class="bi bi-people"></i> Quản lý người dùng</a></li>
+            <li><a href="products.html" class="active"><i class="bi bi-box-seam"></i> Quản lý sản phẩm</a></li>
             <li><a href="orders.html"><i class="bi bi-cart-check"></i> Đơn hàng</a></li>
             <li><a href="categories.html"><i class="bi bi-grid"></i> Danh mục</a></li>
             <li><a href="reports.html"><i class="bi bi-graph-up"></i> Báo cáo</a></li>
@@ -45,9 +43,10 @@
         </ul>
     </aside>
 
-   <div class="main-content">
+    <!-- Main Content -->
+    <div class="main-content">
         <div class="top-bar">
-            <h1>Dashboard</h1>
+            <h1>Quản lý sản phẩm</h1>
             <div class="user-info">
                 <div class="avatar">A</div>
                 <div>
@@ -59,73 +58,91 @@
                 </button>
             </div>
         </div>
+
+        <!-- Action Bar -->
         <div class="action-grid">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Tìm kiếm...">
-                <button type="submit"><i class="bi bi-search"></i></button>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+                <button type="button" onclick="handleSearch()"><i class="bi bi-search"></i></button>
             </div>
-            <button class="addBtn"><i class="bi bi-plus"></i>Thêm</button>
+            <button class="addBtn" onclick="showProductForm()">
+                <i class="bi bi-plus"></i>Thêm sản phẩm
+            </button>
         </div>
+
         <!-- Bộ lọc -->
         <div class="filter-section" style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <div style="display: flex; gap: 15px; align-items: center;">
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <div>
-                    <label style="margin-right: 8px; font-weight: 600;">Vai trò:</label>
-                    <select id="roleFilter" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ddd;">
+                    <label style="margin-right: 8px; font-weight: 600;">Danh mục:</label>
+                    <select id="categoryFilter" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="all">Tất cả</option>
-                        <option value="admin">Admin</option>
-                        <option value="user">Người dùng</option>
+                        <!-- Sẽ được load động từ API -->
                     </select>
                 </div>
                 <div>
                     <label style="margin-right: 8px; font-weight: 600;">Trạng thái:</label>
                     <select id="statusFilter" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="all">Tất cả</option>
-                        <option value="active">Hoạt động</option>
-                        <option value="inactive">Tạm khóa</option>
-                        <option value="banned">Bị cấm</option>
+                        <option value="available">Còn hàng</option>
+                        <option value="out_of_stock">Hết hàng</option>
+                        <option value="discontinued">Ngừng bán</option>
                     </select>
                 </div>
-                <button id="filterBtn" style="padding: 8px 20px; background: #2ba8e2; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                <div>
+                    <label style="margin-right: 8px; font-weight: 600;">Sắp xếp:</label>
+                    <select id="sortFilter" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="newest">Mới nhất</option>
+                        <option value="oldest">Cũ nhất</option>
+                        <option value="price_asc">Giá tăng dần</option>
+                        <option value="price_desc">Giá giảm dần</option>
+                        <option value="view_desc">Lượt xem nhiều</option>
+                    </select>
+                </div>
+                <button id="filterBtn" onclick="handleFilter()" style="padding: 8px 20px; background: #2ba8e2; color: white; border: none; border-radius: 5px; cursor: pointer;">
                     <i class="bi bi-funnel"></i> Lọc
                 </button>
-                <button id="resetFilterBtn" style="padding: 8px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                <button id="resetFilterBtn" onclick="handleResetFilter()" style="padding: 8px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
                     <i class="bi bi-x-circle"></i> Đặt lại
                 </button>
             </div>
         </div>
-        <!-- Main Content -->
+
+        <!-- Bảng sản phẩm -->
         <table class="account-table" border="1">
             <thead>
                 <tr>
-                    <th>Tên</th>
-                    <th>Hình ảnh</th>
-                    <th>Tên đăng nhập</th>
-                    <th>Vai trò</th>
-                    <th>SDT</th>
+                    <th>ID</th>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Tác giả</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Lượt xem</th>
+                    <th>Danh mục</th>
+                    <th>Trạng thái</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
-            <tbody id="accountTableBody">
+            <tbody id="productTableBody">
                 <tr>
-                    <td>Bùi Khắc Hiếu</td>
-                    <td><img src="../../asset/image/200x250.svg" alt=""></td>
-                    <td>HianDozo</td>
-                    <td>Admin</td>
-                    <td>0383714805</td>
-                    <td>
-                        <a href="">Sửa</a>
-                        <a href="">Xóa</a>
+                    <td colspan="10" style="text-align: center; padding: 30px;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div>Đang tải dữ liệu...</div>
                     </td>
                 </tr>
             </tbody>
         </table>
-   </div>
- <!-- Scripts -->
+
+        <!-- Phân trang -->
+        <div id="pagination" style="margin-top: 20px;"></div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="../js/admin_auth.js"></script>
-    <!-- <script src="../js/dashboard.js"></script> -->
-    <script src="../js/users.js"></script>
+    <script src="../js/products.js"></script>
 </body>
 </html>

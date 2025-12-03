@@ -163,12 +163,12 @@
                 <h1 class="title">Danh mục sản phẩm</h1>
                 <div class="categories">
                     <!-- Category items -->
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
-                    <a class="item" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item catI" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item catI" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item catI" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item catI" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item catI" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
+                    <a class="item catI" href="#"><div class="item-img"><img src="./asset/image/75x100.svg" alt=""></div><p class="des">Miêu tả</p></a>
                     
                 </div>
             </div>
@@ -390,7 +390,8 @@
 <!-- ======================= SWEETALERT2 ======================= -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<!--  ============================== SCROLL REVEAL ==============================  -->
+<script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
 
     <!-- Slick Slider -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -413,6 +414,26 @@
             autoplay: true,
             autoplaySpeed: 2000,
         });
+        ScrollReveal().reveal('.catgories', {
+        duration: 500,
+        distance: '100px',
+        easing: 'ease-in-out',
+        reset: true
+    });
+    ScrollReveal().reveal('.so1', {
+        duration: 600,
+        origin: 'left',
+        distance: '100px',
+        easing: 'ease-in-out',
+        reset: true
+    });
+    ScrollReveal().reveal('.so2', {
+        duration: 600,
+        origin: 'right',
+        distance: '100px',
+        easing: 'ease-in-out',
+        reset: true
+    });
     </script>
     <!-- JavaScript -->
     <!-- ===================== SCRIPT END ===================== -->

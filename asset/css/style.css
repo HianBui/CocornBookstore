@@ -754,3 +754,11 @@ p {
     opacity: 1;
 }
 /* SCROL TO TOP END */
+/* AOS */
+[data-aos] {
+  visibility: hidden;
+}
+[data-aos].animate__animated {
+  visibility: visible;
+}
+/* AOS END */

@@ -102,3 +102,40 @@ button.btn i{
 #resetfilterBtn i{
 	color: white;
 }
+
+/* ===== END CHART LEGEND STYLE ===== */
+/* Products */
+.product-img-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.status-available { background: #d4edda; color: #155724; }
+.status-out_of_stock { background: #fff3cd; color: #856404; }
+.status-discontinued { background: #f8d7da; color: #721c24; }
+
+.form-label { font-weight: 600; margin-bottom: 5px; }
+.image-upload-preview {
+    width: 100%;
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    margin-top: 10px;
+    border-radius: 8px;
+    display: none;
+}
+.sub-image-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin: 5px;
+    border-radius: 5px;
+    display: none;
+}
