@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán - Coconut Corn</title>
+
+    <!-- LINK BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- LINK BOOTSTRAP ICON -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- CSS của SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- LINK CSS -->
+    <link rel="stylesheet" href="./asset/css/style.css">
+    <link rel="stylesheet" href="./asset/css/checkout.css">
+
+</head>
+<body>
+
+    <!-- ===================== HEADER ===================== -->
+    <header>
+        <!-- ===== ACTION BAR ===== -->
+        <div class="action-bar" id="action-bar">
+            <div class="container">
+                <a class="home" href="index.html">
+                    <img src="./asset/image/Logo.svg" alt="!">
+                </a>
+
+                <div class="search-box">
+                    <input type="text" name="search" id="search" placeholder="Nhập tên sách hoặc tác giả">
+                    <button type="submit"><i class="bi bi-search"></i></button>
+                </div>
+
+                <div class="cart">
+                    <a href="./cart.html">
+                        <i class="bi bi-cart"></i>
+                    </a>
+                    <span class="count-product">0</span>
+                </div>
+
+                <div class="box-button active" id="button-logreg">
+                    <a href="./login.html" class="login-button">
+                        <i class="bi bi-box-arrow-right"></i> Đăng nhập
+                    </a>
+                    <a href="./register.html" class="register-button">
+                        <i class="bi bi-person-plus-fill"></i> Đăng ký
+                    </a>
+                </div>
+
+                <div class="dropdown" id="dropdown-user" style="display: none;">
+                    <button class="btn btn-secondary dropdown-toggle user-box" data-bs-auto-close="inside" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person usericonbox"></i>
+                        <div class="user-name">Username</div>
+                        <i class="bi bi-chevron-down usericonbox"></i>
+                    </button>
+                    
+                    <ul class="dropdown-menu">
+                        <div class="infor-user">
+                            <div class="user-name-show">Username</div>
+                            <div class="balance">Số dư</div>
+                            <span>0 đ</span>
+                        </div>
+                        <li class="dropdown-divider-li"><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person usericonbox"></i> &nbsp;Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-cash-coin"></i> &nbsp;Nạp tiền</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history"></i> &nbsp;Lịch sử nạp tiền</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-cart3"></i> &nbsp;Giỏ hàng</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-heart-fill"></i> &nbsp;Yêu thích</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box2-fill"></i> &nbsp;Đơn hàng</a></li>
+                        <li class="dropdown-divider-li"><hr class="dropdown-divider"></li>
+                        <div class="log-out"><a class="dropdown-item" href="#" data-logout><i class="bi bi-box-arrow-right"></i>&nbsp;Đăng xuất</a></div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== NAVIGATION ===== -->
+        <div class="navigation" id="nav">
+            <div class="container">
+                <ul>
+                    <li><a href="./index.html"><i class="bi bi-house-door-fill"></i>&nbsp;Trang chủ</a></li>
+                    <li><a href="#category"><i class="bi bi-list"></i>&nbsp;Danh mục</a></li>
+                    <li><a href="#"><i class="bi bi-cash-stack"></i>&nbsp;Nạp tiền</a></li>
+                    <li><a href="#"><i class="bi bi-journal-text"></i>&nbsp;Hướng dẫn</a></li>
+                    <li><a href="#"><i class="bi bi-facebook"></i>&nbsp;Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+        <h1 class="title">Thanh toán đơn hàng</h1>
+    </div>
+
+    <!-- CHECKOUT CONTENT -->
+    <div class="container main-checkout">
+        <div class="checkout-layout">
+            <!-- CHECKOUT FORM -->
+            <div class="checkout-form">
+                <!-- Thông tin giao hàng -->
+                <div class="section-title">
+                    <i class="bi bi-truck"></i>
+                    Thông tin giao hàng
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Họ và tên <span class="required">*</span></label>
+                        <input type="text" id="fullName" placeholder="Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại <span class="required">*</span></label>
+                        <input type="tel" id="phone" placeholder="0123456789" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" id="email" placeholder="example@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ giao hàng <span class="required">*</span></label>
+                    <input type="text" id="address" placeholder="Số nhà, tên đường" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tỉnh/Thành phố <span class="required">*</span></label>
+                        <select id="city" required>
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                            <option value="hcm">TP. Hồ Chí Minh</option>
+                            <option value="hanoi">Hà Nội</option>
+                            <option value="danang">Đà Nẵng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quận/Huyện <span class="required">*</span></label>
+                        <select id="district" required>
+                            <option value="">Chọn Quận/Huyện</option>
+                            <option value="q1">Quận 1</option>
+                            <option value="q3">Quận 3</option>
+                            <option value="q10">Quận 10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ghi chú đơn hàng</label>
+                    <textarea id="notes" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn..."></textarea>
+                </div>
+
+                <!-- Phương thức thanh toán -->
+                <div class="section-title" style="margin-top: 30px;">
+                    <i class="bi bi-credit-card"></i>
+                    Phương thức thanh toán
+                </div>
+
+                <div class="payment-methods">
+                    <div class="payment-option active" onclick="selectPayment(this, 'cod')">
+                        <input type="radio" name="payment" value="cod" checked>
+                        <i class="bi bi-cash-coin payment-icon"></i>
+                        <div class="payment-info">
+                            <div class="payment-name">Thanh toán khi nhận hàng (COD)</div>
+                            <div class="payment-desc">Thanh toán bằng tiền mặt khi nhận hàng</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment(this, 'bank')">
+                        <input type="radio" name="payment" value="bank">
+                        <i class="bi bi-bank payment-icon"></i>
+                        <div class="payment-info">
+                            <div class="payment-name">Chuyển khoản ngân hàng</div>
+                            <div class="payment-desc">Chuyển khoản qua ATM/Internet Banking</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment(this, 'momo')">
+                        <input type="radio" name="payment" value="momo">
+                        <i class="bi bi-wallet2 payment-icon"></i>
+                        <div class="payment-info">
+                            <div class="payment-name">Ví điện tử MoMo</div>
+                            <div class="payment-desc">Thanh toán qua ví MoMo</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment(this, 'vnpay')">
+                        <input type="radio" name="payment" value="vnpay">
+                        <i class="bi bi-credit-card-2-front payment-icon"></i>
+                        <div class="payment-info">
+                            <div class="payment-name">Cổng thanh toán VNPAY</div>
+                            <div class="payment-desc">Thanh toán qua thẻ ATM/Visa/Master</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDER SUMMARY -->
+            <div class="checkout-summary">
+                <h5>Thông tin đơn hàng</h5>
+                
+                <div id="orderProducts">
+                    <!-- Sample product items -->
+                    <div class="product-item">
+                        <img src="asset/image/100x150.svg" alt="Product">
+                        <div class="product-details">
+                            <div class="product-name">Tên sản phẩm mẫu</div>
+                            <div class="product-quantity">Số lượng: 2</div>
+                            <div class="product-price">150.000 đ</div>
+                        </div>
+                    </div>
+                    <div class="product-item">
+                        <img src="asset/image/100x150.svg" alt="Product">
+                        <div class="product-details">
+                            <div class="product-name">Tên sản phẩm mẫu</div>
+                            <div class="product-quantity">Số lượng: 2</div>
+                            <div class="product-price">150.000 đ</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-row">
+                    <span>Tạm tính:</span>
+                    <span id="subtotal">150.000 đ</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Phí vận chuyển:</span>
+                    <span id="shipping">30.000 đ</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Giảm giá:</span>
+                    <span id="discount" style="color: var(--red-color);">-0 đ</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Tổng cộng:</span>
+                    <span id="total">180.000 đ</span>
+                </div>
+
+                <button class="place-order-btn" onclick="placeOrder()">
+                    <i class="bi bi-check-circle"></i> Đặt hàng
+                </button>
+
+                <a href="cart.html" class="back-to-cart">
+                    <i class="bi bi-arrow-left"></i> Quay lại giỏ hàng
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <img class="wave" src="./asset/image/wave.svg" alt="">
+    <footer>
+        <div class="container">
+            <div class="content">
+                <div class="contact">
+                    <p>Nhận hỗ trợ từ chúng tôi</p>
+                    <div class="your-mail">
+                        <input type="text" placeholder="Nhập email của bạn...">
+                        <button type="submit"><i class="bi bi-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="layout-footer">
+                    <a class="footer-logo" href="#">
+                        <img src="./asset/image/Logo.svg" alt="!">
+                        <h3>Dừa và Bắp</h3>
+                    </a>
+
+                    <ul class="info">
+                        <li><p><i class="bi bi-geo-alt-fill"></i> 180 Cao Lỗ, phường 4, Quận 8</p></li>
+                        <li><p><i class="bi bi-telephone-fill"></i> 0383714805</p></li>
+                        <li><p><i class="bi bi-google"></i> contact@cocorn.vn</p></li>
+                    </ul>
+                </div>
+
+                <div class="copyright">
+                    <p>© 2025 Coconut Corn. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCROLL TO TOP -->
+    <a href="#" id="scrollToTop"><i class="bi bi-arrow-up-square-fill"></i></a>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./asset/js/load-province.js"></script>
+
+
+    <script>
+        // Select payment method
+        function selectPayment(element, method) {
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            element.querySelector('input[type="radio"]').checked = true;
+        }
+
+        // Place order function
+        function placeOrder() {
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+
+            if (!fullName || !phone || !email || !address || !city || !district) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng điền đầy đủ thông tin giao hàng!'
+                });
+                return;
+            }
+
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(phone)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Số điện thoại không hợp lệ',
+                    text: 'Vui lòng nhập đúng định dạng số điện thoại (10 chữ số)!'
+                });
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Email không hợp lệ',
+                    text: 'Vui lòng nhập đúng định dạng email!'
+                });
+                return;
+            }
+
+            const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Đặt hàng thành công!',
+                text: 'Cảm ơn bạn đã mua hàng. Chúng tôi sẽ liên hệ với bạn sớm nhất!',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Redirect to order confirmation or home page
+                // window.location.href = 'index.html';
+            });
+        }
+
+        // Load cart items from localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            // This is where you'd load the actual cart items
+            // For demo purposes, we're using placeholder data
+            console.log('Checkout page loaded');
+        });
+    </script>
+</body>
+</html>
