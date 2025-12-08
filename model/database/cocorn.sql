@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 24, 2025 at 07:37 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Máy chủ: 127.0.0.1:3306
+-- Thời gian đã tạo: Th12 08, 2025 lúc 04:27 PM
+-- Phiên bản máy phục vụ: 9.1.0
+-- Phiên bản PHP: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,45 +18,51 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `cocorn`
+-- Cơ sở dữ liệu: `cocorn`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admins_logs`
+-- Cấu trúc bảng cho bảng `admins_logs`
 --
 
-CREATE TABLE `admins_logs` (
-  `log_id` int(11) NOT NULL COMMENT 'ID log',
-  `admin_id` int(11) DEFAULT NULL COMMENT 'ID quản trị viên thực hiện',
-  `action` varchar(255) DEFAULT NULL COMMENT 'Nội dung hành động (VD: Thêm sách, Xóa người dùng)',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Thời điểm thực hiện'
+DROP TABLE IF EXISTS `admins_logs`;
+CREATE TABLE IF NOT EXISTS `admins_logs` (
+  `log_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID log',
+  `admin_id` int DEFAULT NULL COMMENT 'ID quản trị viên thực hiện',
+  `action` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Nội dung hành động (VD: Thêm sách, Xóa người dùng)',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm thực hiện',
+  PRIMARY KEY (`log_id`),
+  KEY `admin_id` (`admin_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Nhật ký hành động của quản trị viên';
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `books`
+-- Cấu trúc bảng cho bảng `books`
 --
 
-CREATE TABLE `books` (
-  `book_id` int(11) NOT NULL COMMENT 'ID sách',
-  `title` varchar(255) NOT NULL COMMENT 'Tên sách',
-  `author` varchar(150) DEFAULT NULL COMMENT 'Tác giả',
-  `publisher` varchar(150) DEFAULT NULL COMMENT 'Nhà xuất bản',
-  `published_year` year(4) DEFAULT NULL COMMENT 'Năm xuất bản',
-  `price` decimal(10,2) DEFAULT 0.00 COMMENT 'Giá bán (VNĐ)',
-  `quantity` int(11) DEFAULT 0 COMMENT 'Số lượng tồn kho',
-  `view_count` int(11) DEFAULT 0 COMMENT 'Tổng số lượt xem (tăng tự động qua trigger)',
-  `description` text DEFAULT NULL COMMENT 'Mô tả nội dung sách',
-  `status` enum('available','out_of_stock','discontinued') DEFAULT 'available' COMMENT 'Trạng thái: available = còn hàng, out_of_stock = hết hàng, discontinued = ngừng bán',
-  `category_id` int(11) DEFAULT NULL COMMENT 'ID danh mục sách',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Ngày thêm sách vào hệ thống'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng lưu thông tin sách';
+DROP TABLE IF EXISTS `books`;
+CREATE TABLE IF NOT EXISTS `books` (
+  `book_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID sách',
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tên sách',
+  `author` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Tác giả',
+  `publisher` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Nhà xuất bản',
+  `published_year` year DEFAULT NULL COMMENT 'Năm xuất bản',
+  `price` decimal(10,2) DEFAULT '0.00' COMMENT 'Giá bán (VNĐ)',
+  `quantity` int DEFAULT '0' COMMENT 'Số lượng tồn kho',
+  `view_count` int DEFAULT '0' COMMENT 'Tổng số lượt xem (tăng tự động qua trigger)',
+  `description` text COLLATE utf8mb4_general_ci COMMENT 'Mô tả nội dung sách',
+  `status` enum('available','out_of_stock','discontinued') COLLATE utf8mb4_general_ci DEFAULT 'available' COMMENT 'Trạng thái: available = còn hàng, out_of_stock = hết hàng, discontinued = ngừng bán',
+  `category_id` int DEFAULT NULL COMMENT 'ID danh mục sách',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày thêm sách vào hệ thống',
+  PRIMARY KEY (`book_id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng lưu thông tin sách';
 
 --
--- Dumping data for table `books`
+-- Đang đổ dữ liệu cho bảng `books`
 --
 
 INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`, `price`, `quantity`, `view_count`, `description`, `status`, `category_id`, `created_at`) VALUES
@@ -111,22 +117,25 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `book_images`
+-- Cấu trúc bảng cho bảng `book_images`
 --
 
-CREATE TABLE `book_images` (
-  `image_id` int(11) NOT NULL COMMENT 'ID ảnh',
-  `book_id` int(11) NOT NULL COMMENT 'ID sách (mỗi sách chỉ có 1 record)',
-  `main_img` varchar(255) NOT NULL COMMENT 'Ảnh chính (bắt buộc)',
-  `sub_img1` varchar(255) DEFAULT NULL COMMENT 'Ảnh phụ 1',
-  `sub_img2` varchar(255) DEFAULT NULL COMMENT 'Ảnh phụ 2',
-  `sub_img3` varchar(255) DEFAULT NULL COMMENT 'Ảnh phụ 3',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng lưu ảnh sách (1 chính + 3 phụ)';
+DROP TABLE IF EXISTS `book_images`;
+CREATE TABLE IF NOT EXISTS `book_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID ảnh',
+  `book_id` int NOT NULL COMMENT 'ID sách (mỗi sách chỉ có 1 record)',
+  `main_img` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Ảnh chính (bắt buộc)',
+  `sub_img1` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Ảnh phụ 1',
+  `sub_img2` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Ảnh phụ 2',
+  `sub_img3` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Ảnh phụ 3',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`image_id`),
+  UNIQUE KEY `book_id` (`book_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng lưu ảnh sách (1 chính + 3 phụ)';
 
 --
--- Dumping data for table `book_images`
+-- Đang đổ dữ liệu cho bảng `book_images`
 --
 
 INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_img2`, `sub_img3`, `created_at`, `updated_at`) VALUES
@@ -181,20 +190,24 @@ INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_i
 -- --------------------------------------------------------
 
 --
--- Table structure for table `book_views`
+-- Cấu trúc bảng cho bảng `book_views`
 --
 
-CREATE TABLE `book_views` (
-  `view_id` int(11) NOT NULL COMMENT 'ID lượt xem',
-  `book_id` int(11) NOT NULL COMMENT 'ID sách',
-  `user_id` int(11) DEFAULT NULL COMMENT 'ID người xem (NULL nếu khách vãng lai)',
-  `ip_address` varchar(45) DEFAULT NULL COMMENT 'Địa chỉ IP người xem',
-  `user_agent` text DEFAULT NULL COMMENT 'Thông tin trình duyệt',
-  `view_date` datetime DEFAULT current_timestamp() COMMENT 'Thời gian xem'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng theo dõi lượt xem sách';
+DROP TABLE IF EXISTS `book_views`;
+CREATE TABLE IF NOT EXISTS `book_views` (
+  `view_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID lượt xem',
+  `book_id` int NOT NULL COMMENT 'ID sách',
+  `user_id` int DEFAULT NULL COMMENT 'ID người xem (NULL nếu khách vãng lai)',
+  `ip_address` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Địa chỉ IP người xem',
+  `user_agent` text COLLATE utf8mb4_general_ci COMMENT 'Thông tin trình duyệt',
+  `view_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian xem',
+  PRIMARY KEY (`view_id`),
+  KEY `idx_book_date` (`book_id`,`view_date`),
+  KEY `idx_user_date` (`user_id`,`view_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=259 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng theo dõi lượt xem sách';
 
 --
--- Dumping data for table `book_views`
+-- Đang đổ dữ liệu cho bảng `book_views`
 --
 
 INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_agent`, `view_date`) VALUES
@@ -458,8 +471,9 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (258, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0', '2025-11-24 13:36:52');
 
 --
--- Triggers `book_views`
+-- Bẫy `book_views`
 --
+DROP TRIGGER IF EXISTS `after_book_view_insert`;
 DELIMITER $$
 CREATE TRIGGER `after_book_view_insert` AFTER INSERT ON `book_views` FOR EACH ROW BEGIN
     UPDATE books 
@@ -472,19 +486,23 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `carts`
+-- Cấu trúc bảng cho bảng `carts`
 --
 
-CREATE TABLE `carts` (
-  `cart_id` int(11) NOT NULL COMMENT 'ID giỏ hàng',
-  `user_id` int(11) DEFAULT NULL COMMENT 'ID người dùng',
-  `book_id` int(11) DEFAULT NULL COMMENT 'ID sách',
-  `quantity` int(11) DEFAULT 1 COMMENT 'Số lượng sách trong giỏ',
-  `added_at` datetime DEFAULT current_timestamp() COMMENT 'Thời gian thêm vào giỏ'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng giỏ hàng';
+DROP TABLE IF EXISTS `carts`;
+CREATE TABLE IF NOT EXISTS `carts` (
+  `cart_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID giỏ hàng',
+  `user_id` int DEFAULT NULL COMMENT 'ID người dùng',
+  `book_id` int DEFAULT NULL COMMENT 'ID sách',
+  `quantity` int DEFAULT '1' COMMENT 'Số lượng sách trong giỏ',
+  `added_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian thêm vào giỏ',
+  PRIMARY KEY (`cart_id`),
+  KEY `user_id` (`user_id`),
+  KEY `book_id` (`book_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng giỏ hàng';
 
 --
--- Dumping data for table `carts`
+-- Đang đổ dữ liệu cho bảng `carts`
 --
 
 INSERT INTO `carts` (`cart_id`, `user_id`, `book_id`, `quantity`, `added_at`) VALUES
@@ -495,53 +513,60 @@ INSERT INTO `carts` (`cart_id`, `user_id`, `book_id`, `quantity`, `added_at`) VA
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- Cấu trúc bảng cho bảng `categories`
 --
 
-CREATE TABLE `categories` (
-  `category_id` int(11) NOT NULL COMMENT 'ID danh mục',
-  `category_name` varchar(100) NOT NULL COMMENT 'Tên danh mục (VD: Văn học, Khoa học, Kinh tế)',
-  `description` text DEFAULT NULL COMMENT 'Mô tả chi tiết về danh mục',
-  `image` varchar(255) DEFAULT '75x100.svg' COMMENT 'Ảnh đại diện danh mục'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng danh mục sách';
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `category_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID danh mục',
+  `category_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tên danh mục (VD: Văn học, Khoa học, Kinh tế)',
+  `description` text COLLATE utf8mb4_general_ci COMMENT 'Mô tả chi tiết về danh mục',
+  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '75x100.svg' COMMENT 'Ảnh đại diện danh mục',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày thêm danh mục vào hệ thống',
+  `update_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày sửa danh mục ',
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng danh mục sách';
 
 --
--- Dumping data for table `categories`
+-- Đang đổ dữ liệu cho bảng `categories`
 --
 
-INSERT INTO `categories` (`category_id`, `category_name`, `description`, `image`) VALUES
-(1, 'Văn học', 'Sách văn học trong và ngoài nước', '75x100.svg'),
-(2, 'Khoa học', 'Sách khoa học, công nghệ', '75x100.svg'),
-(3, 'Kinh tế', 'Sách về kinh doanh và tài chính', '75x100.svg'),
-(4, 'Kỹ năng sống', 'Sách phát triển bản thân', '75x100.svg'),
-(5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', '75x100.svg'),
-(6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', '75x100.svg'),
-(7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', '75x100.svg'),
-(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', '75x100.svg');
+INSERT INTO `categories` (`category_id`, `category_name`, `description`, `image`, `created_at`, `update_at`) VALUES
+(1, 'Văn học', 'Sách văn học trong và ngoài nước', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(2, 'Khoa học', 'Sách khoa học, công nghệ', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(3, 'Kinh tế', 'Sách về kinh doanh và tài chính', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(4, 'Kỹ năng sống', 'Sách phát triển bản thân', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', '75x100.svg', '2025-12-08 22:47:40', NULL),
+(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', '75x100.svg', '2025-12-08 22:47:40', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coupons`
+-- Cấu trúc bảng cho bảng `coupons`
 --
 
-CREATE TABLE `coupons` (
-  `coupon_id` int(11) NOT NULL COMMENT 'ID coupon',
-  `coupon_code` varchar(50) NOT NULL COMMENT 'Mã giảm giá (duy nhất, VD: WELCOME10)',
-  `discount_type` enum('percent','fixed') DEFAULT 'percent' COMMENT 'Loại giảm giá: percent = %, fixed = số tiền cố định',
+DROP TABLE IF EXISTS `coupons`;
+CREATE TABLE IF NOT EXISTS `coupons` (
+  `coupon_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID coupon',
+  `coupon_code` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Mã giảm giá (duy nhất, VD: WELCOME10)',
+  `discount_type` enum('percent','fixed') COLLATE utf8mb4_general_ci DEFAULT 'percent' COMMENT 'Loại giảm giá: percent = %, fixed = số tiền cố định',
   `discount_value` decimal(10,2) NOT NULL COMMENT 'Giá trị giảm (% hoặc VNĐ)',
-  `min_order_amount` decimal(10,2) DEFAULT 0.00 COMMENT 'Giá trị đơn hàng tối thiểu để áp dụng',
+  `min_order_amount` decimal(10,2) DEFAULT '0.00' COMMENT 'Giá trị đơn hàng tối thiểu để áp dụng',
   `max_discount_amount` decimal(10,2) DEFAULT NULL COMMENT 'Số tiền giảm tối đa (cho loại percent)',
-  `usage_limit` int(11) DEFAULT NULL COMMENT 'Số lần sử dụng tối đa (NULL = không giới hạn)',
-  `used_count` int(11) DEFAULT 0 COMMENT 'Số lần đã sử dụng',
-  `start_date` datetime DEFAULT current_timestamp() COMMENT 'Ngày bắt đầu hiệu lực',
+  `usage_limit` int DEFAULT NULL COMMENT 'Số lần sử dụng tối đa (NULL = không giới hạn)',
+  `used_count` int DEFAULT '0' COMMENT 'Số lần đã sử dụng',
+  `start_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày bắt đầu hiệu lực',
   `end_date` datetime DEFAULT NULL COMMENT 'Ngày hết hạn (NULL = vô thời hạn)',
-  `status` enum('active','inactive','expired') DEFAULT 'active' COMMENT 'Trạng thái: active = đang hoạt động, inactive = tạm dừng, expired = hết hạn',
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng mã giảm giá';
+  `status` enum('active','inactive','expired') COLLATE utf8mb4_general_ci DEFAULT 'active' COMMENT 'Trạng thái: active = đang hoạt động, inactive = tạm dừng, expired = hết hạn',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`coupon_id`),
+  UNIQUE KEY `coupon_code` (`coupon_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng mã giảm giá';
 
 --
--- Dumping data for table `coupons`
+-- Đang đổ dữ liệu cho bảng `coupons`
 --
 
 INSERT INTO `coupons` (`coupon_id`, `coupon_code`, `discount_type`, `discount_value`, `min_order_amount`, `max_discount_amount`, `usage_limit`, `used_count`, `start_date`, `end_date`, `status`, `created_at`) VALUES
@@ -552,46 +577,53 @@ INSERT INTO `coupons` (`coupon_id`, `coupon_code`, `discount_type`, `discount_va
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications`
+-- Cấu trúc bảng cho bảng `notifications`
 --
 
-CREATE TABLE `notifications` (
-  `notification_id` int(11) NOT NULL COMMENT 'ID thông báo',
-  `user_id` int(11) NOT NULL COMMENT 'ID người nhận thông báo',
-  `title` varchar(255) NOT NULL COMMENT 'Tiêu đề thông báo',
-  `message` text NOT NULL COMMENT 'Nội dung thông báo',
-  `type` enum('order','promotion','system','review') DEFAULT 'system' COMMENT 'Loại: order = đơn hàng, promotion = khuyến mãi, system = hệ thống, review = đánh giá',
-  `is_read` tinyint(1) DEFAULT 0 COMMENT '1 = đã đọc, 0 = chưa đọc',
-  `related_id` int(11) DEFAULT NULL COMMENT 'ID liên quan (order_id, book_id, v.v.)',
-  `created_at` datetime DEFAULT current_timestamp()
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `notification_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID thông báo',
+  `user_id` int NOT NULL COMMENT 'ID người nhận thông báo',
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tiêu đề thông báo',
+  `message` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Nội dung thông báo',
+  `type` enum('order','promotion','system','review') COLLATE utf8mb4_general_ci DEFAULT 'system' COMMENT 'Loại: order = đơn hàng, promotion = khuyến mãi, system = hệ thống, review = đánh giá',
+  `is_read` tinyint(1) DEFAULT '0' COMMENT '1 = đã đọc, 0 = chưa đọc',
+  `related_id` int DEFAULT NULL COMMENT 'ID liên quan (order_id, book_id, v.v.)',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notification_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng thông báo';
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Cấu trúc bảng cho bảng `orders`
 --
 
-CREATE TABLE `orders` (
-  `order_id` int(11) NOT NULL COMMENT 'ID đơn hàng',
-  `user_id` int(11) DEFAULT NULL COMMENT 'ID người đặt hàng',
-  `total_amount` decimal(10,2) DEFAULT 0.00 COMMENT 'Tổng tiền trước giảm giá',
-  `discount_amount` decimal(10,2) DEFAULT 0.00 COMMENT 'Số tiền giảm giá (từ coupon)',
-  `final_amount` decimal(10,2) DEFAULT 0.00 COMMENT 'Số tiền cuối cùng phải trả',
-  `status` enum('pending','shipping','completed','cancelled') DEFAULT 'pending' COMMENT 'Trạng thái: pending = chờ xử lý, shipping = đang giao, completed = hoàn thành, cancelled = đã hủy',
-  `receiver_name` varchar(100) NOT NULL COMMENT 'Tên người nhận hàng',
-  `receiver_phone` varchar(15) NOT NULL COMMENT 'Số điện thoại người nhận',
-  `shipping_address` text NOT NULL COMMENT 'Địa chỉ giao hàng',
-  `note` text DEFAULT NULL COMMENT 'Ghi chú đơn hàng',
-  `payment_method` enum('cod','bank','momo') DEFAULT 'cod' COMMENT 'Phương thức: cod = tiền mặt, bank = chuyển khoản, momo = ví MoMo',
-  `coupon_id` int(11) DEFAULT NULL COMMENT 'ID mã giảm giá đã sử dụng',
-  `order_date` datetime DEFAULT current_timestamp() COMMENT 'Ngày đặt hàng',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng đơn hàng';
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE IF NOT EXISTS `orders` (
+  `order_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID đơn hàng',
+  `user_id` int DEFAULT NULL COMMENT 'ID người đặt hàng',
+  `total_amount` decimal(10,2) DEFAULT '0.00' COMMENT 'Tổng tiền trước giảm giá',
+  `discount_amount` decimal(10,2) DEFAULT '0.00' COMMENT 'Số tiền giảm giá (từ coupon)',
+  `final_amount` decimal(10,2) DEFAULT '0.00' COMMENT 'Số tiền cuối cùng phải trả',
+  `status` enum('pending','shipping','completed','cancelled') COLLATE utf8mb4_general_ci DEFAULT 'pending' COMMENT 'Trạng thái: pending = chờ xử lý, shipping = đang giao, completed = hoàn thành, cancelled = đã hủy',
+  `receiver_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tên người nhận hàng',
+  `receiver_phone` varchar(15) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Số điện thoại người nhận',
+  `shipping_address` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Địa chỉ giao hàng',
+  `note` text COLLATE utf8mb4_general_ci COMMENT 'Ghi chú đơn hàng',
+  `payment_method` enum('cod','bank','momo') COLLATE utf8mb4_general_ci DEFAULT 'cod' COMMENT 'Phương thức: cod = tiền mặt, bank = chuyển khoản, momo = ví MoMo',
+  `coupon_id` int DEFAULT NULL COMMENT 'ID mã giảm giá đã sử dụng',
+  `order_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày đặt hàng',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`order_id`),
+  KEY `user_id` (`user_id`),
+  KEY `coupon_id` (`coupon_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng đơn hàng';
 
 --
--- Dumping data for table `orders`
+-- Đang đổ dữ liệu cho bảng `orders`
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `discount_amount`, `final_amount`, `status`, `receiver_name`, `receiver_phone`, `shipping_address`, `note`, `payment_method`, `coupon_id`, `order_date`, `created_at`, `updated_at`) VALUES
@@ -606,325 +638,159 @@ INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `discount_amount`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_details`
+-- Cấu trúc bảng cho bảng `order_details`
 --
 
-CREATE TABLE `order_details` (
-  `detail_id` int(11) NOT NULL COMMENT 'ID chi tiết đơn hàng',
-  `order_id` int(11) DEFAULT NULL COMMENT 'ID đơn hàng',
-  `book_id` int(11) DEFAULT NULL COMMENT 'ID sách',
-  `quantity` int(11) DEFAULT 1 COMMENT 'Số lượng sách mua',
-  `price` decimal(10,2) DEFAULT 0.00 COMMENT 'Giá tại thời điểm mua (lưu lại để tránh thay đổi giá sau)'
+DROP TABLE IF EXISTS `order_details`;
+CREATE TABLE IF NOT EXISTS `order_details` (
+  `detail_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID chi tiết đơn hàng',
+  `order_id` int DEFAULT NULL COMMENT 'ID đơn hàng',
+  `book_id` int DEFAULT NULL COMMENT 'ID sách',
+  `quantity` int DEFAULT '1' COMMENT 'Số lượng sách mua',
+  `price` decimal(10,2) DEFAULT '0.00' COMMENT 'Giá tại thời điểm mua (lưu lại để tránh thay đổi giá sau)',
+  PRIMARY KEY (`detail_id`),
+  KEY `order_id` (`order_id`),
+  KEY `book_id` (`book_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng chi tiết đơn hàng';
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reviews`
+-- Cấu trúc bảng cho bảng `reviews`
 --
 
-CREATE TABLE `reviews` (
-  `review_id` int(11) NOT NULL COMMENT 'ID đánh giá',
-  `book_id` int(11) DEFAULT NULL COMMENT 'ID sách',
-  `user_id` int(11) DEFAULT NULL COMMENT 'ID người dùng',
-  `rating` tinyint(3) UNSIGNED DEFAULT NULL COMMENT 'Điểm đánh giá (1-5 sao)',
-  `comment` text DEFAULT NULL COMMENT 'Nội dung bình luận',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Ngày đăng đánh giá'
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `review_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID đánh giá',
+  `book_id` int DEFAULT NULL COMMENT 'ID sách',
+  `user_id` int DEFAULT NULL COMMENT 'ID người dùng',
+  `rating` tinyint UNSIGNED DEFAULT NULL COMMENT 'Điểm đánh giá (1-5 sao)',
+  `comment` text COLLATE utf8mb4_general_ci COMMENT 'Nội dung bình luận',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày đăng đánh giá',
+  PRIMARY KEY (`review_id`),
+  KEY `book_id` (`book_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Cấu trúc bảng cho bảng `users`
 --
 
-CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL COMMENT 'ID người dùng (tự động tăng)',
-  `username` varchar(50) NOT NULL COMMENT 'Tên đăng nhập (duy nhất, không trùng)',
-  `email` varchar(100) NOT NULL COMMENT 'Email đăng ký (duy nhất)',
-  `password` varchar(255) NOT NULL COMMENT 'Mật khẩu đã mã hóa (SHA-256 hoặc bcrypt)',
-  `display_name` varchar(100) NOT NULL COMMENT 'Tên hiển thị của người dùng',
-  `avatar` varchar(255) DEFAULT NULL COMMENT 'Đường dẫn ảnh đại diện',
-  `phone` varchar(15) DEFAULT NULL COMMENT 'Số điện thoại (10-11 số)',
-  `address` text DEFAULT NULL COMMENT 'Địa chỉ nhà riêng',
-  `role` enum('user','admin') DEFAULT 'user' COMMENT 'Vai trò: user = khách hàng, admin = quản trị viên',
-  `status` enum('active','inactive','banned') DEFAULT 'active' COMMENT 'Trạng thái tài khoản: active = hoạt động, inactive = tạm khóa, banned = cấm vĩnh viễn',
-  `is_agree` tinyint(1) DEFAULT 0 COMMENT 'Đồng ý điều khoản: 1 = đã đồng ý, 0 = chưa đồng ý',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Thời gian tạo tài khoản',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Thời gian cập nhật thông tin lần cuối'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng lưu thông tin người dùng và quản trị viên';
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID người dùng (tự động tăng)',
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tên đăng nhập (duy nhất, không trùng)',
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Email đăng ký (duy nhất)',
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Mật khẩu đã mã hóa (SHA-256 hoặc bcrypt)',
+  `display_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tên hiển thị của người dùng',
+  `avatar` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Đường dẫn ảnh đại diện',
+  `phone` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Số điện thoại (10-11 số)',
+  `address` text COLLATE utf8mb4_general_ci COMMENT 'Địa chỉ nhà riêng',
+  `role` enum('user','admin') COLLATE utf8mb4_general_ci DEFAULT 'user' COMMENT 'Vai trò: user = khách hàng, admin = quản trị viên',
+  `status` enum('active','inactive','banned') COLLATE utf8mb4_general_ci DEFAULT 'active' COMMENT 'Trạng thái tài khoản: active = hoạt động, inactive = tạm khóa, banned = cấm vĩnh viễn',
+  `is_agree` tinyint(1) DEFAULT '0' COMMENT 'Đồng ý điều khoản: 1 = đã đồng ý, 0 = chưa đồng ý',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo tài khoản',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật thông tin lần cuối',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng lưu thông tin người dùng và quản trị viên';
 
 --
--- Dumping data for table `users`
+-- Đang đổ dữ liệu cho bảng `users`
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `display_name`, `avatar`, `phone`, `address`, `role`, `status`, `is_agree`, `created_at`, `updated_at`) VALUES
 (1, 'HianDozo', 'buikhachieu2574@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Bùi Khắc Hiếu', '300x300.svg', '0383714805', 'Tạ Quang Bửu, phường 4, quận 8, Thành Phố Hồ Chí Minh', 'admin', 'active', 1, '2025-10-25 01:53:02', '2025-10-30 01:57:14'),
 (6, 'MyHuyen', 'myhuyen@gmail.com', '738e7b5d14247c12a7c3fb661991c943a1ffc8a4a6343dd1de9ec95b33862b85', 'Mỹ Huyền', NULL, '', '', 'user', 'active', 0, '2025-10-30 04:26:52', '2025-10-30 04:31:52'),
 (7, 'admin123', 'admin@gmail.com', '3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', 'Admin', NULL, '', '', 'admin', 'active', 0, '2025-10-30 04:31:16', '2025-10-30 04:31:46'),
-(8, 'KhacHieu', 'buihieu@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Khắc Hiếu', NULL, NULL, NULL, 'user', 'active', 1, '2025-11-23 18:15:56', '2025-11-23 18:15:56');
+(8, 'KhacHieu', 'buihieu@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Khắc Hiếu', NULL, NULL, NULL, 'user', 'active', 1, '2025-11-23 18:15:56', '2025-11-23 18:15:56'),
+(9, 'hieu123', 'vuchau6800@gmail.com', '46b8a8b1f655e8f92e5a24599e043324046b4c9ed2eb3cb9a55a12b335fe02b8', 'hieu123456', NULL, NULL, NULL, 'admin', 'active', 1, '2025-12-08 20:18:39', '2025-12-08 20:33:41');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wishlists`
+-- Cấu trúc bảng cho bảng `wishlists`
 --
 
-CREATE TABLE `wishlists` (
-  `wishlist_id` int(11) NOT NULL COMMENT 'ID wishlist',
-  `user_id` int(11) NOT NULL COMMENT 'ID người dùng',
-  `book_id` int(11) NOT NULL COMMENT 'ID sách',
-  `added_at` datetime DEFAULT current_timestamp() COMMENT 'Thời gian thêm vào danh sách yêu thích'
+DROP TABLE IF EXISTS `wishlists`;
+CREATE TABLE IF NOT EXISTS `wishlists` (
+  `wishlist_id` int NOT NULL AUTO_INCREMENT COMMENT 'ID wishlist',
+  `user_id` int NOT NULL COMMENT 'ID người dùng',
+  `book_id` int NOT NULL COMMENT 'ID sách',
+  `added_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian thêm vào danh sách yêu thích',
+  PRIMARY KEY (`wishlist_id`),
+  UNIQUE KEY `unique_user_book` (`user_id`,`book_id`),
+  KEY `book_id` (`book_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Bảng danh sách yêu thích';
 
 --
--- Indexes for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Indexes for table `admins_logs`
---
-ALTER TABLE `admins_logs`
-  ADD PRIMARY KEY (`log_id`),
-  ADD KEY `admin_id` (`admin_id`);
-
---
--- Indexes for table `books`
---
-ALTER TABLE `books`
-  ADD PRIMARY KEY (`book_id`),
-  ADD KEY `category_id` (`category_id`);
-
---
--- Indexes for table `book_images`
---
-ALTER TABLE `book_images`
-  ADD PRIMARY KEY (`image_id`),
-  ADD UNIQUE KEY `book_id` (`book_id`);
-
---
--- Indexes for table `book_views`
---
-ALTER TABLE `book_views`
-  ADD PRIMARY KEY (`view_id`),
-  ADD KEY `idx_book_date` (`book_id`,`view_date`),
-  ADD KEY `idx_user_date` (`user_id`,`view_date`);
-
---
--- Indexes for table `carts`
---
-ALTER TABLE `carts`
-  ADD PRIMARY KEY (`cart_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`category_id`);
-
---
--- Indexes for table `coupons`
---
-ALTER TABLE `coupons`
-  ADD PRIMARY KEY (`coupon_id`),
-  ADD UNIQUE KEY `coupon_code` (`coupon_code`);
-
---
--- Indexes for table `notifications`
---
-ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`notification_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `coupon_id` (`coupon_id`);
-
---
--- Indexes for table `order_details`
---
-ALTER TABLE `order_details`
-  ADD PRIMARY KEY (`detail_id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- Indexes for table `reviews`
---
-ALTER TABLE `reviews`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `book_id` (`book_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `wishlists`
---
-ALTER TABLE `wishlists`
-  ADD PRIMARY KEY (`wishlist_id`),
-  ADD UNIQUE KEY `unique_user_book` (`user_id`,`book_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `admins_logs`
---
-ALTER TABLE `admins_logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID log';
-
---
--- AUTO_INCREMENT for table `books`
---
-ALTER TABLE `books`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID sách', AUTO_INCREMENT=48;
-
---
--- AUTO_INCREMENT for table `book_images`
---
-ALTER TABLE `book_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID ảnh', AUTO_INCREMENT=48;
-
---
--- AUTO_INCREMENT for table `book_views`
---
-ALTER TABLE `book_views`
-  MODIFY `view_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID lượt xem', AUTO_INCREMENT=259;
-
---
--- AUTO_INCREMENT for table `carts`
---
-ALTER TABLE `carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID giỏ hàng', AUTO_INCREMENT=23;
-
---
--- AUTO_INCREMENT for table `categories`
---
-ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID danh mục', AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `coupons`
---
-ALTER TABLE `coupons`
-  MODIFY `coupon_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID coupon', AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `notifications`
---
-ALTER TABLE `notifications`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID thông báo';
-
---
--- AUTO_INCREMENT for table `orders`
---
-ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID đơn hàng', AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `order_details`
---
-ALTER TABLE `order_details`
-  MODIFY `detail_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID chi tiết đơn hàng';
-
---
--- AUTO_INCREMENT for table `reviews`
---
-ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID đánh giá';
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID người dùng (tự động tăng)', AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `wishlists`
---
-ALTER TABLE `wishlists`
-  MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID wishlist';
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `admins_logs`
+-- Các ràng buộc cho bảng `admins_logs`
 --
 ALTER TABLE `admins_logs`
   ADD CONSTRAINT `admins_logs_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `books`
+-- Các ràng buộc cho bảng `books`
 --
 ALTER TABLE `books`
   ADD CONSTRAINT `books_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `book_images`
+-- Các ràng buộc cho bảng `book_images`
 --
 ALTER TABLE `book_images`
   ADD CONSTRAINT `book_images_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `book_views`
+-- Các ràng buộc cho bảng `book_views`
 --
 ALTER TABLE `book_views`
   ADD CONSTRAINT `book_views_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `book_views_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `carts`
+-- Các ràng buộc cho bảng `carts`
 --
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `notifications`
+-- Các ràng buộc cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Các ràng buộc cho bảng `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`coupon_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `order_details`
+-- Các ràng buộc cho bảng `order_details`
 --
 ALTER TABLE `order_details`
   ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reviews`
+-- Các ràng buộc cho bảng `reviews`
 --
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `wishlists`
+-- Các ràng buộc cho bảng `wishlists`
 --
 ALTER TABLE `wishlists`
   ADD CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
