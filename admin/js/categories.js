@@ -1,38 +1,26 @@
 /**
- * FILE: admin/js/categories.js
- * MÔ TẢ: Quản lý danh mục - load, thêm, sửa, xóa, tìm kiếm, phân trang
+ * FILE: admin/js/categories-improved.js
+ * Quản lý danh mục với layout cải tiến
  */
 
-const API_URL = '../../admin/api/categories.php'; // URL API danh mục
-const IMAGE_BASE = '../../asset/image/'; // thư mục chứa hình ảnh danh mục
+const API_URL = '../../admin/api/categories.php';
+const IMAGE_BASE = '../../asset/image/';
 
-let currentPage = 1;           // trang hiện tại
-let currentLimit = 10;         // số danh mục mỗi trang
-let currentFilters = {         // các bộ lọc hiện tại
-    search: '',
-    sort: 'newest'
-};
-
-let isLoading = false;         // tránh gọi API 2 lần cùng lúc
+let currentPage = 1;
+let currentLimit = 10;
+let currentFilters = { search: '', sort: 'newest' };
+let isLoading = false;
 let searchDebounceTimer = null;
-const SEARCH_DEBOUNCE_MS = 300; // thời gian debounce tìm kiếm
+const SEARCH_DEBOUNCE_MS = 300;
 
-/* ======================= HELPER FUNCTION ======================= */
+/* ======================= HELPER FUNCTIONS ======================= */
 
-/**
- * Lấy đường dẫn ảnh đầy đủ.
- * - Nếu trống → trả ảnh mặc định
- * - Nếu đã là URL → giữ nguyên
- */
 function getImagePath(img) {
     if (!img) return IMAGE_BASE + 'category-default.png';
     if (img.startsWith('http') || img.startsWith('./')) return img;
     return IMAGE_BASE + img;
 }
 
-/**
- * Escape ký tự đặc biệt để tránh XSS
- */
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const map = {
@@ -42,27 +30,32 @@ function escapeHtml(text) {
     return String(text).replace(/[&<>"']/g, m => map[m]);
 }
 
-/**
- * Format ngày từ database sang format dễ đọc
- */
 function formatDate(dateStr) {
-    if (!dateStr) return 'Chưa có';
+    if (!dateStr) return '<span class="text-muted">Chưa có</span>';
     const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return 'Chưa có';
-    return d.toLocaleString('vi-VN', {
-        year:'numeric', month:'2-digit', day:'2-digit',
-        hour:'2-digit', minute:'2-digit'
-    });
+    if (isNaN(d.getTime())) return '<span class="text-muted">Chưa có</span>';
+    
+    const time = d.toLocaleString('vi-VN', { hour:'2-digit', minute:'2-digit' });
+    const date = d.toLocaleString('vi-VN', { year:'numeric', month:'2-digit', day:'2-digit' });
+    
+    return `
+        <div class="date-cell">
+            <span class="time">${time}</span>
+            <span class="date">${date}</span>
+        </div>
+    `;
 }
 
-function showSuccess(msg) { alert('✅ ' + msg); }
-function showError(msg) { alert('❌ ' + msg); }
+function showSuccess(msg) { 
+    alert('✅ ' + msg); 
+}
 
-/* ======================= LOAD CATEGORY LIST ======================= */
+function showError(msg) { 
+    alert('❌ ' + msg); 
+}
 
-/**
- * Load danh mục từ API (có phân trang + tìm kiếm + sort)
- */
+/* ======================= LOAD CATEGORIES ======================= */
+
 async function loadCategories(page = 1) {
     if (isLoading) return;
     isLoading = true;
@@ -109,21 +102,18 @@ async function loadCategories(page = 1) {
 
 /* ======================= RENDER TABLE ======================= */
 
-/**
- * Render dữ liệu danh mục vào <tbody>
- */
 function renderCategoriesTable(categories) {
     const tbody = document.getElementById("categoryTableBody");
     if (!tbody) return;
 
-    const TOTAL_COLS = 7;
+    const TOTAL_COLS = 8; // Tăng từ 7 lên 8 vì tách ảnh ra
 
     if (!categories || categories.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="${TOTAL_COLS}" class="text-center p-4">
-                    <i class="bi bi-inbox" style="font-size:32px;"></i><br>
-                    Không có danh mục nào
+                <td colspan="${TOTAL_COLS}" class="empty-state-cell">
+                    <i class="bi bi-inbox"></i>
+                    <p>Không có danh mục nào</p>
                 </td>
             </tr>`;
         return;
@@ -133,44 +123,53 @@ function renderCategoriesTable(categories) {
         const safeName = JSON.stringify(cat.category_name || '');
         return `
             <tr data-category-id="${cat.category_id}">
-                <td>${cat.category_id}</td>
+                <td class="text-center"><strong>${cat.category_id}</strong></td>
 
-                <td>
-                    <div style="display:flex;gap:10px;align-items:center">
+                <td class="category-image-cell">
+                    <div class="category-image-wrapper">
                         <img src="${getImagePath(cat.category_image)}"
-                             style="width:56px;height:56px;object-fit:cover;border-radius:6px"
+                             alt="${escapeHtml(cat.category_name)}"
                              onerror="this.src='${IMAGE_BASE}category-default.png'">
-                        <strong>${escapeHtml(cat.category_name)}</strong>
                     </div>
                 </td>
 
-                <td>${escapeHtml(cat.description || '')}</td>
-
-                <td class="text-center" style="color:#2ba8e2;font-weight:600;">
-                    ${cat.product_count || 0}
+                <td class="category-name-text-only">
+                    <strong>${escapeHtml(cat.category_name)}</strong>
                 </td>
 
                 <td>
-                    <div style="display:flex;gap:6px;">
-                        <button class="btn btn-sm btn-info btn-view" data-id="${cat.category_id}">
+                    <span style="color: #6c757d; font-size: 14px; line-height: 1.5;">
+                        ${escapeHtml(cat.description || 'Chưa có mô tả')}
+                    </span>
+                </td>
+
+                <td class="text-center">
+                    <span class="product-count-badge">${cat.product_count || 0}</span>
+                </td>
+
+                <td>
+                    <div class="action-buttons-group">
+                        <button class="btn btn-info btn-view" data-id="${cat.category_id}" title="Xem chi tiết">
                             <i class="bi bi-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-warning btn-edit" data-id="${cat.category_id}">
+                        <button class="btn btn-warning btn-edit" data-id="${cat.category_id}" title="Chỉnh sửa">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger btn-delete"
-                                data-id="${cat.category_id}" data-name='${safeName}'>
+                        <button class="btn btn-danger btn-delete"
+                                data-id="${cat.category_id}" 
+                                data-name='${safeName}'
+                                title="Xóa">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </td>
 
-                <td>${formatDate(cat.created_at)}</td>
-                <td>${formatDate(cat.update_at)}</td>
+                <td class="text-center">${formatDate(cat.created_at)}</td>
+                <td class="text-center">${formatDate(cat.update_at)}</td>
             </tr>`;
     }).join("");
 
-    // gán event view/edit/delete
+    // Gán event handlers
     tbody.querySelectorAll(".btn-view").forEach(btn =>
         btn.onclick = () => viewCategoryDetail(btn.dataset.id)
     );
@@ -210,10 +209,7 @@ function renderPagination(pagination) {
         </li>`;
 
     for (let i = 1; i <= totalPages; i++) {
-        if (
-            i === 1 || i === totalPages ||
-            (i >= page - 2 && i <= page + 2)
-        ) {
+        if (i === 1 || i === totalPages || (i >= page - 2 && i <= page + 2)) {
             html += `
                 <li class="page-item ${i === page ? "active" : ""}">
                     <a class="page-link" href="#" data-page="${i}">${i}</a>
@@ -244,7 +240,6 @@ function renderPagination(pagination) {
 
 /* ======================= SEARCH / FILTER ======================= */
 
-// debounce tìm kiếm
 function handleSearch() {
     const input = document.getElementById("searchInput");
     if (!input) return;
@@ -262,8 +257,10 @@ function handleFilter() {
 
 function handleResetFilter() {
     currentFilters = { search: '', sort:'newest' };
-    document.getElementById("searchInput").value = '';
-    document.getElementById("sortFilter").value = 'newest';
+    const searchInput = document.getElementById("searchInput");
+    const sortFilter = document.getElementById("sortFilter");
+    if (searchInput) searchInput.value = '';
+    if (sortFilter) sortFilter.value = 'newest';
     loadCategories(1);
 }
 
@@ -281,36 +278,58 @@ async function viewCategoryDetail(id) {
 
         const cat = data.data;
 
-        // tạo modal chi tiết
         const modalHtml = `
             <div class="modal fade" id="categoryDetailModal">
                 <div class="modal-dialog modal-lg"><div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Chi tiết danh mục</h5>
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Chi tiết danh mục
+                        </h5>
                         <button class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-4 text-center">
                                 <img src="${getImagePath(cat.category_image)}"
-                                     class="img-fluid rounded mb-3"
-                                     style="max-height:300px;object-fit:cover"
-                                     onerror="this.src='${IMAGE_BASE}category-default.png'">
+                                     class="category-detail-image"
+                                     onerror="this.src='${IMAGE_BASE}category-default.png'"
+                                     alt="${escapeHtml(cat.category_name)}">
                             </div>
                             <div class="col-md-8">
-                                <h4>${escapeHtml(cat.category_name)}</h4>
-                                <p><strong>Số sản phẩm:</strong> ${cat.product_count}</p>
-                                <p><strong>Ngày tạo:</strong> ${formatDate(cat.created_at)}</p>
-                                <p><strong>Ngày cập nhật:</strong> ${formatDate(cat.update_at)}</p>
-                                <hr>
-                                <h6>Mô tả:</h6>
-                                <p>${escapeHtml(cat.description)}</p>
+                                <h4 style="color: var(--blue-color); margin-bottom: 20px;">
+                                    ${escapeHtml(cat.category_name)}
+                                </h4>
+                                
+                                <div class="detail-info-item">
+                                    <strong><i class="bi bi-box-seam me-2"></i>Số sản phẩm</strong>
+                                    <p><span class="product-count-badge">${cat.product_count || 0}</span></p>
+                                </div>
+
+                                <div class="detail-info-item">
+                                    <strong><i class="bi bi-calendar-plus me-2"></i>Ngày tạo</strong>
+                                    <p>${new Date(cat.created_at).toLocaleString('vi-VN')}</p>
+                                </div>
+
+                                <div class="detail-info-item">
+                                    <strong><i class="bi bi-calendar-check me-2"></i>Ngày cập nhật</strong>
+                                    <p>${cat.update_at ? new Date(cat.update_at).toLocaleString('vi-VN') : 'Chưa có'}</p>
+                                </div>
+
+                                <div class="detail-info-item">
+                                    <strong><i class="bi bi-text-paragraph me-2"></i>Mô tả</strong>
+                                    <p>${escapeHtml(cat.description || 'Chưa có mô tả')}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button class="btn btn-warning" id="detailToEditBtn">Chỉnh sửa</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Đóng
+                        </button>
+                        <button class="btn btn-warning" id="detailToEditBtn">
+                            <i class="bi bi-pencil me-2"></i>Chỉnh sửa
+                        </button>
                     </div>
                 </div></div>
             </div>`;
@@ -351,9 +370,6 @@ async function editCategory(id) {
     }
 }
 
-/**
- * Hiển thị modal form thêm/sửa danh mục
- */
 function showCategoryForm(category = null) {
     const isEdit = category !== null;
 
@@ -361,7 +377,10 @@ function showCategoryForm(category = null) {
         <div class="modal fade" id="categoryFormModal">
             <div class="modal-dialog modal-md"><div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">${isEdit ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}</h5>
+                    <h5 class="modal-title">
+                        <i class="bi bi-${isEdit ? 'pencil-square' : 'plus-circle'} me-2"></i>
+                        ${isEdit ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
+                    </h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -370,29 +389,44 @@ function showCategoryForm(category = null) {
                         ${isEdit ? `<input type="hidden" name="category_id" value="${category.category_id}">` : ''}
 
                         <div class="mb-3">
-                            <label class="form-label">Tên danh mục *</label>
+                            <label class="form-label">
+                                <i class="bi bi-tag me-2"></i>Tên danh mục *
+                            </label>
                             <input type="text" class="form-control" name="category_name"
-                                   value="${isEdit ? escapeHtml(category.category_name) : ''}" required>
+                                   value="${isEdit ? escapeHtml(category.category_name) : ''}" 
+                                   placeholder="Nhập tên danh mục"
+                                   required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Mô tả</label>
-                            <textarea class="form-control" name="description" rows="4">${isEdit ? escapeHtml(category.description || '') : ''}</textarea>
+                            <label class="form-label">
+                                <i class="bi bi-text-left me-2"></i>Mô tả
+                            </label>
+                            <textarea class="form-control" name="description" rows="4"
+                                      placeholder="Nhập mô tả cho danh mục">${isEdit ? escapeHtml(category.description || '') : ''}</textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Hình ảnh (tên file)</label>
+                            <label class="form-label">
+                                <i class="bi bi-image me-2"></i>Hình ảnh
+                            </label>
                             <input type="text" class="form-control" name="category_image"
                                    value="${isEdit ? (category.category_image || '') : ''}"
                                    placeholder="VD: category-abc.jpg">
-                            <small class="text-muted">Ảnh phải được upload vào asset/image/</small>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Ảnh phải được upload vào thư mục asset/image/
+                            </small>
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Hủy
+                    </button>
                     <button class="btn btn-primary" id="categoryFormSubmit">
+                        <i class="bi bi-${isEdit ? 'check-circle' : 'plus-circle'} me-2"></i>
                         ${isEdit ? 'Cập nhật' : 'Thêm mới'}
                     </button>
                 </div>
@@ -453,7 +487,7 @@ async function submitCategoryForm(isEdit) {
 /* ======================= DELETE CATEGORY ======================= */
 
 async function deleteCategory(id, name) {
-    if (!confirm(`Bạn có chắc muốn xóa danh mục "${name}"?`)) return;
+    if (!confirm(`Bạn có chắc muốn xóa danh mục "${name}"?\n\nHành động này không thể hoàn tác!`)) return;
 
     try {
         const resp = await fetch(`${API_URL}?action=delete`, {
@@ -509,7 +543,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/* ======================= Export Functions (onclick inline) ======================= */
+/* ======================= Export Functions ======================= */
 
 window.loadCategories = loadCategories;
 window.viewCategoryDetail = viewCategoryDetail;

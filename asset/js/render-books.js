@@ -1,9 +1,8 @@
 /**
  * ============================================================
- * FILE: render-books.js
- * MÔ TẢ: Render dữ liệu từ database vào HTML có sẵn
+ * FILE: render-books.js (ĐÃ HỢP NHẤT & SỬA LỖI)
+ * MÔ TẢ: Render dữ liệu từ database - HỢP NHẤT products.js
  * ĐẶT TẠI: asset/js/render-books.js
- * CẬP NHẬT: Fix ScrollReveal cho phần tử động
  * ============================================================
  */
 
@@ -19,6 +18,13 @@ function getImagePath(imageName) {
         return imageName;
     }
     return IMAGE_BASE + imageName;
+}
+
+// ==========================================
+// FORMAT CURRENCY
+// ==========================================
+function formatPrice(price) {
+    return new Intl.NumberFormat('vi-VN').format(price) + ' đ';
 }
 
 // ==========================================
@@ -48,17 +54,23 @@ async function renderFeaturedProducts() {
                         </a>
                         <div class="icons">
                             <a href="./product.html?id=${book.book_id}" class="views">Xem chi tiết</a>
-                            <a href="#" class="add">Mua ngay</a>
+                            <a href="javascript:void(0)" 
+                               class="add add-to-cart" 
+                               data-book-id="${book.book_id}"
+                               data-quantity="1">Thêm giỏ hàng</a>
                         </div>
                     </div>
                     <div class="product-title">${book.title}</div>
-                    <div class="product-price">${book.price_formatted}<span class="product-price-old">${book.price_formatted}</span></div>
+                    <div class="product-price">${formatPrice(book.price)}<span class="product-price-old">${formatPrice(book.price)}</span></div>
                 </div>
             `;
             container.innerHTML += productHTML;
         });
 
         console.log('✅ Đã render', data.books.length, 'sản phẩm nổi bật');
+
+        // ✅ Gắn event listeners CHO CÁC NÚT MỚI RENDER
+        attachAddToCartEvents();
 
         // ✅ Gọi lại ScrollReveal sau khi render
         setTimeout(() => {
@@ -114,11 +126,16 @@ async function renderHotDeals() {
                     </div>
                     <div class="deal-content">
                         <div class="product-title">${book.title}</div>
-                        <div class="product-price">${book.price_formatted} <span class="product-price-old">${book.price_formatted}</span></div>
+                        <div class="product-price">${formatPrice(book.price)} <span class="product-price-old">${formatPrice(book.price)}</span></div>
                         <div class="deal-bestseller">Hot</div>
                         <div class="deal-auth">
                             <a href="./product.html?id=${book.book_id}" class="deal-view">Xem chi tiết</a>
-                            <a href="#" class="add"><button class="deal-btn">Mua ngay</button></a>
+                            <a href="javascript:void(0)" 
+                               class="add add-to-cart" 
+                               data-book-id="${book.book_id}"
+                               data-quantity="1">
+                                <button class="deal-btn">Thêm giỏ hàng</button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -127,6 +144,9 @@ async function renderHotDeals() {
         });
 
         console.log('✅ Đã render', data.books.length, 'hot deal');
+
+        // ✅ Gắn event listeners CHO CÁC NÚT MỚI RENDER
+        attachAddToCartEvents();
 
         // ✅ Gọi lại ScrollReveal sau khi render
         setTimeout(() => {
@@ -192,6 +212,34 @@ async function renderCategories() {
     } catch (error) {
         console.error('❌ Lỗi render danh mục:', error);
     }
+}
+
+// ==========================================
+// ✅ GẮN EVENT LISTENERS CHO NÚT THÊM GIỎ HÀNG
+// ==========================================
+function attachAddToCartEvents() {
+    // ✅ Chỉ gắn cho các nút CHƯA có event listener
+    document.querySelectorAll('.add-to-cart:not([data-listener-attached])').forEach(btn => {
+        btn.setAttribute('data-listener-attached', 'true'); // Đánh dấu đã gắn
+        
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Ngăn event bubbling
+            
+            const bookId = this.dataset.bookId;
+            const quantity = parseInt(this.dataset.quantity) || 1;
+            
+            // ✅ Kiểm tra CartHandler có tồn tại không
+            if (typeof window.CartHandler !== 'undefined' && window.CartHandler.addToCart) {
+                window.CartHandler.addToCart(bookId, quantity);
+            } else {
+                console.error('❌ CartHandler chưa được load!');
+                alert('Lỗi: Không thể thêm vào giỏ hàng. Vui lòng tải lại trang.');
+            }
+        });
+    });
+    
+    console.log('✅ Đã gắn event listeners cho', document.querySelectorAll('.add-to-cart[data-listener-attached]').length, 'nút');
 }
 
 // ==========================================

@@ -246,15 +246,15 @@
     width: 100%;
     background: linear-gradient(to top, white, var(--blue-color));
     display: grid;
-    grid-template-columns: 2fr 1fr; /* 2 phần cho left, 1 phần cho right */
-    align-items: stretch; /* ✅ đảm bảo 2 cột cao bằng nhau */
-    /* gap: 20px; */
+    grid-template-columns: 2fr 1fr;
+    align-items: stretch;
+    gap: 20px;
     padding: 20px 30px;
     border-radius: var(--border-radius);
 }
 
 .product-feature .left {
-    width: max-content;
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -264,12 +264,12 @@
     background-color: white;
     border-radius: var(--border-radius);
     transition: var(--transition);
-    padding: 10px !important;
+    padding: 20px !important;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-image {
-    display: grid;
-    place-items: center;
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -280,9 +280,19 @@
     bottom: 0;
 }
 
+/* ✅ QUAN TRỌNG: Link chứa ảnh phải full height */
+.product-image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ✅ QUAN TRỌNG: Ảnh phải fill full container */
 .product-image a img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover; /* ✅ THÊM: Giữ tỷ lệ ảnh */
+    display: block;
 }
 
 .product-image .icons {
@@ -345,14 +355,12 @@
 .right {
     background-color: #2483af;
     color: white;
-    /* padding: 20px; */
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    width: max-content;
-    border-radius: var(--border-radius);
+    width: 100%;
     overflow: hidden;
 }
 .product-feature .right a {
@@ -364,7 +372,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* border-radius: 10px; */
 }
 .viewmore-product{
     width: 100%;

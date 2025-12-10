@@ -1,0 +1,372 @@
+/* ============================================================
+   FILE: admin/css/table-user.css
+   Cải thiện giao diện bảng và modal người dùng (dựa trên category)
+============================================================ */
+
+/* Wrapper cho bảng (giống category) */
+.table-wrapper {
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(43, 168, 226, 0.1);
+}
+
+/* Cải thiện table chính cho user (chỉ add nếu cần, không overwrite core) */
+table.account-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-family: var(--primary-font);
+    background-color: white;
+}
+
+/* Header cải tiến (nếu chưa có) */
+.account-table thead {
+    background: linear-gradient(135deg, #4fbaec 0%, #1a8fc7 100%);
+    box-shadow: 0 2px 4px rgba(43, 168, 226, 0.15);
+    font-weight: 700;
+}
+
+ .account-table td {
+    padding: 10px;
+    text-align: center;
+    border-color: var(--blue-color);
+}
+
+.account-table th {
+    padding: 16px 12px;
+    text-align: center !important;
+    color: white;
+    text-transform: uppercase;
+    font-size: var(--font-sm);
+    letter-spacing: 0.5px;
+    border: 1px solid var(--blue-color) !important;
+    white-space: nowrap;
+}
+
+/* Adjust widths cho user table (dựa trên category, adjust theo số cột) */
+.account-table th:nth-child(1),
+.account-table td:nth-child(1) {
+    width: 20%;
+    text-align: left;
+}
+
+.account-table th:nth-child(2),
+.account-table td:nth-child(2) {
+    width: 90px;
+    text-align: center;
+}
+
+.account-table th:nth-child(3),
+.account-table td:nth-child(3) {
+    width: 20%;
+    text-align: left;
+}
+
+.account-table th:nth-child(4),
+.account-table td:nth-child(4) {
+    width: 10%;
+}
+
+.account-table th:nth-child(5),
+.account-table td:nth-child(5) {
+    width: 15%;
+}
+
+.account-table th:nth-child(6),
+.account-table td:nth-child(6) {
+    width: 140px;
+}
+
+.account-table th:nth-child(7),
+.account-table td:nth-child(7) {
+    width: 140px;
+}
+
+.account-table th:nth-child(8),
+.account-table td:nth-child(8) {
+    width: 140px;
+}
+
+.account-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.account-table td {
+    padding: 14px 12px;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    transition: background 0.2s ease;
+    font-size: var(--font-base);
+}
+
+.account-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.account-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* Cột ảnh user*/
+.users-image-wrapper {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e6f7ff 0%, #b3e5ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(43, 168, 226, 0.2);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.users-image-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(43, 168, 226, 0.15);
+    border-color: var(--blue-color);
+}
+
+.users-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Cột vai trò*/
+.role-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: var(--font-sm);
+    font-weight: 500;
+    min-width: 40px;
+    display: inline-block;
+}
+
+/* Cột thao tác (giống category) */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-buttons button {
+    padding: 4px 8px;
+    font-size: var(--font-sm);
+    border: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.action-buttons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-view {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-toggle-status {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+/* Cột ngày tháng*/
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: var(--font-sm);
+}
+
+.date-cell .time {
+    display: block;
+    color: #6c757d;
+}
+
+.date-cell .date {
+    font-weight: 600;
+    color: #495057;
+    display: block;
+    font-size: 14px;
+}
+
+
+/* Status badge (nếu có, giống category) */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: var(--font-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Detail modal cho user (giống #categoryDetailModal) */
+#userDetailModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+#userDetailModal .modal-header {
+    background: linear-gradient(135deg, #2ba8e2 0%, #1a8fc7 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 30px;
+    border: none;
+}
+
+#userDetailModal .modal-header h5 {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+#userDetailModal .modal-body {
+    padding: 30px;
+}
+
+.user-detail-image {
+    width: 100%;
+    max-height: 300px;
+    max-width: 200px;
+    object-fit: cover;
+    border-radius: 50%;  /* Tròn cho avatar user */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.detail-info-item {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-info-item i {
+    color: var(--blue-color);
+}
+
+.detail-info-item:last-child {
+    border-bottom: none;
+}
+
+.detail-info-item strong {
+    display: block;
+    color: var(--blue-color);
+    font-size: var(--font-sm);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-info-item p {
+    margin: 0;
+    color: var(--text-color);
+    font-size: var(--font-base);
+    line-height: 1.6;
+}
+
+/* Form modal cho user (giống #categoryFormModal) */
+#userFormModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+#userFormModal .modal-header {
+    background: linear-gradient(135deg, #2ba8e2 0%, #1a8fc7 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 30px;
+    border: none;
+}
+
+#userFormModal .form-label {
+    font-weight: 600;
+    color: var(--blue-color);
+    margin-bottom: 8px;
+    font-size: var(--font-sm);
+}
+
+#userFormModal .form-control,
+#userFormModal .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+}
+
+#userFormModal .form-control:focus,
+#userFormModal .form-select:focus {
+    border-color: var(--blue-color);
+    box-shadow: 0 0 0 3px rgba(43, 168, 226, 0.1);
+}
+
+.modal-footer button{
+    color: white;
+}
+.modal-footer .btn-warning:hover {
+    color: white;
+}
+
+.modal-content .modal-header i,
+button.btn-close i
+ {
+    color: white !important;
+}
+.modal-content .modal-body i {
+    color: var(--blue-color);
+}
+
+/* Responsive (giống category) */
+@media (max-width: 1200px) {
+    .account-table th,
+    .account-table td {
+        padding: 12px 8px;
+        font-size: var(--font-xs);
+    }
+    
+    .users-image-wrapper {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .account-table {
+        min-width: 1000px;
+    }
+}

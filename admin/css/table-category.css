@@ -1,0 +1,380 @@
+/* ============================================================
+   FILE: admin/css/table-improved.css
+   Cải thiện giao diện bảng danh mục
+============================================================ */
+
+/* Wrapper cho bảng để có border radius đẹp hơn */
+.table-wrapper {
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(43, 168, 226, 0.1);
+}
+
+/* Cải thiện table chính */
+table.category-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-family: var(--primary-font);
+    background-color: white;
+}
+
+/* Header cải tiến - màu nhẹ hơn, gradient tinh tế */
+.category-table thead {
+    background: linear-gradient(135deg, #4fbaec 0%, #1a8fc7 100%);
+    box-shadow: 0 2px 4px rgba(43, 168, 226, 0.15);
+    font-weight: 700;
+}
+ .category-table td {
+    padding: 10px;
+    text-align: center;
+    border-color: var(--blue-color);
+}
+
+
+.category-table th {
+    padding: 16px 12px;
+    text-align: center !important;
+    color: white;
+    text-transform: uppercase;
+    font-size: var(--font-sm);
+    letter-spacing: 0.5px;
+    border: 1px solid var(--blue-color) !important;
+    white-space: nowrap;
+}
+
+/* Cột ID nhỏ hơn */
+.category-table th:nth-child(1),
+.category-table td:nth-child(1) {
+    width: 60px;
+}
+
+/* Cột Ảnh */
+.category-table th:nth-child(2),
+.category-table td:nth-child(2) {
+    width: 90px;
+    text-align: center;
+}
+
+/* Cột Tên danh mục */
+.category-table th:nth-child(3),
+.category-table td:nth-child(3) {
+    width: 20%;
+    text-align: center;
+}
+
+/* Cột Mô tả */
+.category-table th:nth-child(4),
+.category-table td:nth-child(4) {
+    width: 28%;
+    text-align: left;
+}
+
+/* Cột Số sản phẩm */
+.category-table th:nth-child(5),
+.category-table td:nth-child(5) {
+    width: 100px;
+}
+
+/* Cột Thao tác */
+.category-table th:nth-child(6),
+.category-table td:nth-child(6) {
+    width: 140px;
+}
+
+/* Cột Ngày tạo */
+.category-table th:nth-child(7),
+.category-table td:nth-child(7) {
+    width: 140px;
+}
+
+/* Cột Ngày cập nhật */
+.category-table th:nth-child(8),
+.category-table td:nth-child(8) {
+    width: 140px;
+}
+
+.category-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.category-table td {
+    padding: 14px 12px;
+    color: var(--text-color);
+    font-size: var(--font-sm);
+    vertical-align: middle;
+}
+
+/* Category image - cột riêng */
+.category-image-cell {
+    padding: 8px !important;
+}
+
+.category-image-wrapper {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #e6f7ff 0%, #b3e5ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(43, 168, 226, 0.2);
+    overflow: hidden;
+}
+
+.category-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-name-text-only strong {
+    display: block;
+    font-size: var(--font-base);
+    color: #1a5f7a;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Số sản phẩm badge */
+.product-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 32px;
+    padding: 0 12px;
+    font-weight: 700;
+    font-size: var(--font-base);
+    border-radius: 20px;
+}
+
+/* Action buttons cải tiến */
+.action-buttons-group {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-buttons-group .btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.action-buttons-group .btn i {
+    font-size: 14px;
+}
+
+
+.action-buttons-group .btn-info:hover {
+    background: #138496;
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+
+.action-buttons-group .btn-warning:hover {
+    background: #e0a800;
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+
+.action-buttons-group .btn-danger:hover {
+    background: #c82333;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Date cells */
+.date-cell {
+    font-size: var(--font-sm);
+    line-height: 1.4;
+}
+
+.date-cell .time {
+    display: block;
+    color: #6c757d;
+}
+
+.date-cell .date {
+    font-weight: 600;
+    color: #495057;
+    display: block;
+    font-size: 14px;
+}
+
+/* Empty state */
+.empty-state-cell {
+    text-align: center;
+    padding: 60px 20px !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.empty-state-cell i {
+    font-size: 48px;
+    color: #adb5bd;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.empty-state-cell p {
+    color: #6c757d;
+    font-size: var(--font-base);
+    margin: 0;
+}
+
+/* Modal cải tiến */
+#categoryDetailModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+#categoryDetailModal .modal-header {
+    background: linear-gradient(135deg, #2ba8e2 0%, #1a8fc7 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 30px;
+    border: none;
+}
+
+#categoryDetailModal .modal-title {
+    font-weight: 700;
+    font-size: var(--font-xl);
+}
+
+#categoryDetailModal .modal-title i {
+    color: white;
+}
+
+#categoryDetailModal .btn-close,
+#categoryFormModal .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+#categoryDetailModal .modal-body {
+    padding: 30px;
+}
+
+.category-detail-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.detail-info-item {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-info-item i {
+    color: var(--blue-color);
+}
+
+.detail-info-item:last-child {
+    border-bottom: none;
+}
+
+.detail-info-item strong {
+    display: block;
+    color: var(--blue-color);
+    font-size: var(--font-sm);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-info-item p {
+    margin: 0;
+    color: var(--text-color);
+    font-size: var(--font-base);
+    line-height: 1.6;
+}
+
+/* Form modal cải tiến */
+#categoryFormModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+#categoryFormModal .modal-header {
+    background: linear-gradient(135deg, #2ba8e2 0%, #1a8fc7 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 30px;
+    border: none;
+}
+
+#categoryFormModal .form-label {
+    font-weight: 600;
+    color: var(--blue-color);
+    margin-bottom: 8px;
+    font-size: var(--font-sm);
+}
+
+#categoryFormModal .form-control,
+#categoryFormModal .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+}
+
+#categoryFormModal .form-control:focus,
+#categoryFormModal .form-select:focus {
+    border-color: var(--blue-color);
+    box-shadow: 0 0 0 3px rgba(43, 168, 226, 0.1);
+}
+
+.modal-footer button{
+    color: white;
+}
+.modal-footer .btn-warning:hover {
+    color: white;
+}
+
+.modal-content .modal-header i,
+button.btn-close i
+ {
+    color: white !important;
+}
+.modal-content .modal-body i {
+    color: var(--blue-color);
+}
+/* Responsive */
+@media (max-width: 1200px) {
+    .category-table th,
+    .category-table td {
+        padding: 12px 8px;
+        font-size: var(--font-xs);
+    }
+    
+    .category-image-wrapper {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .category-table {
+        min-width: 1000px;
+    }
+}

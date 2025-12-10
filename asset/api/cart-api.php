@@ -4,6 +4,7 @@
  * FILE: cart-api.php
  * MÔ TẢ: API quản lý giỏ hàng (thêm, sửa, xóa, lấy danh sách)
  * ĐẶT TẠI: asset/api/cart-api.php
+ * CẬP NHẬT: Đã sửa lỗi trả về cart_id khi thêm vào giỏ
  * ============================================================
  */
 
@@ -39,6 +40,9 @@ switch ($action) {
         break;
     case 'count':
         getCartCount($user_id);
+        break;
+    case 'create_order':
+        createOrder($user_id);
         break;
     default:
         response(false, 'Action không hợp lệ', 400);
@@ -95,6 +99,7 @@ function getCart($user_id) {
 
 /**
  * Thêm sản phẩm vào giỏ
+ * ✅ ĐÃ SỬA: Trả về cart_id trong response
  */
 function addToCart($user_id) {
     global $pdo;
@@ -153,13 +158,26 @@ function addToCart($user_id) {
             $stmt = $pdo->prepare("UPDATE carts SET quantity = ? WHERE cart_id = ?");
             $stmt->execute([$newQuantity, $existingItem['cart_id']]);
             
-            response(true, 'Đã cập nhật số lượng trong giỏ hàng', 200);
+            // ✅ QUAN TRỌNG: Trả về cart_id khi cập nhật
+            response(true, 'Đã cập nhật số lượng trong giỏ hàng', 200, [
+                'cart_id' => $existingItem['cart_id'],
+                'quantity' => $newQuantity,
+                'book_id' => $book_id
+            ]);
         } else {
             // Thêm mới
             $stmt = $pdo->prepare("INSERT INTO carts (user_id, book_id, quantity) VALUES (?, ?, ?)");
             $stmt->execute([$user_id, $book_id, $quantity]);
             
-            response(true, 'Đã thêm vào giỏ hàng', 201);
+            // ✅ QUAN TRỌNG: Lấy cart_id vừa insert
+            $cart_id = $pdo->lastInsertId();
+            
+            // ✅ QUAN TRỌNG: Trả về cart_id trong response
+            response(true, 'Đã thêm vào giỏ hàng', 201, [
+                'cart_id' => $cart_id,
+                'quantity' => $quantity,
+                'book_id' => $book_id
+            ]);
         }
         
     } catch (PDOException $e) {
@@ -300,6 +318,86 @@ function getCartCount($user_id) {
     } catch (PDOException $e) {
         error_log("Get Cart Count Error: " . $e->getMessage());
         response(false, 'Không thể đếm giỏ hàng', 500);
+    }
+}
+
+/**
+ * Tạo Order từ các mục trong giỏ hàng
+ */
+function createOrder($user_id) {
+    global $pdo;
+    
+    if (!$user_id) {
+        response(false, 'Vui lòng đăng nhập để đặt hàng', 401);
+    }
+    
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if (empty($data['full_name']) || empty($data['phone']) || empty($data['email']) || 
+        empty($data['address']) || empty($data['city']) || empty($data['district']) || 
+        empty($data['payment_method']) || empty($data['cart_ids']) || !is_array($data['cart_ids'])) {
+        response(false, 'Thiếu thông tin đặt hàng', 400);
+    }
+    
+    try {
+        $pdo->beginTransaction();
+        
+        // Tính total từ carts chọn
+        $placeholders = implode(',', array_fill(0, count($data['cart_ids']), '?'));
+        $total_sql = "SELECT SUM(b.price * c.quantity) as total 
+                      FROM carts c JOIN books b ON c.book_id = b.book_id 
+                      WHERE c.user_id = ? AND c.cart_id IN ($placeholders)";
+        $total_stmt = $pdo->prepare($total_sql);
+        $total_params = array_merge([$user_id], $data['cart_ids']);
+        $total_stmt->execute($total_params);
+        $total = $total_stmt->fetchColumn() ?? 0;
+        
+        if ($total <= 0) {
+            throw new Exception('Giỏ hàng rỗng hoặc lỗi tính tổng');
+        }
+        
+        // Insert order
+        $order_sql = "INSERT INTO orders (user_id, full_name, phone, email, address, city, district, payment_method, total_amount, status)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
+        $order_stmt = $pdo->prepare($order_sql);
+        $order_stmt->execute([
+            $user_id,
+            $data['full_name'],
+            $data['phone'],
+            $data['email'],
+            $data['address'],
+            $data['city'],
+            $data['district'],
+            $data['payment_method'],
+            $total
+        ]);
+        
+        $order_id = $pdo->lastInsertId();
+        
+        // Insert order_details từ carts
+        $detail_sql = "INSERT INTO order_details (order_id, book_id, quantity, price)
+                       SELECT ?, c.book_id, c.quantity, b.price
+                       FROM carts c JOIN books b ON c.book_id = b.book_id
+                       WHERE c.cart_id = ?";
+        $detail_stmt = $pdo->prepare($detail_sql);
+        
+        foreach ($data['cart_ids'] as $cart_id) {
+            $detail_stmt->execute([$order_id, $cart_id]);
+        }
+        
+        // Xóa carts đã thanh toán
+        $delete_sql = "DELETE FROM carts WHERE cart_id IN ($placeholders)";
+        $delete_stmt = $pdo->prepare($delete_sql);
+        $delete_stmt->execute($data['cart_ids']);
+        
+        $pdo->commit();
+        
+        response(true, 'Đặt hàng thành công', 200, ['order_id' => $order_id]);
+        
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        error_log("Create Order Error: " . $e->getMessage());
+        response(false, 'Không thể tạo đơn hàng: ' . $e->getMessage(), 500);
     }
 }
 

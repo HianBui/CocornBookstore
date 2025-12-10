@@ -134,105 +134,102 @@ function handleDelete($pdo, $action) {
 // ============================================================
 
 /**
- * Lấy danh sách users với phân trang và tìm kiếm
+ * Lấy danh sách users với phân trang, tìm kiếm và sort (ĐÃ SỬA LỖI HY093)
  */
 function getUsersList($pdo) {
     try {
-        // Lấy tham số tìm kiếm và phân trang
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
-        $search = $_GET['search'] ?? '';
-        $role = $_GET['role'] ?? ''; // all, admin, user
-        $status = $_GET['status'] ?? ''; // all, active, inactive
-        
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = max(1, (int)($_GET['limit'] ?? 10));
+        $search = trim($_GET['search'] ?? '');
+        $role = $_GET['role'] ?? 'all';
+        $status = $_GET['status'] ?? 'all';
+        $sort = $_GET['sort'] ?? 'newest';
         $offset = ($page - 1) * $limit;
-        
-        // Build query
-        $sql = "SELECT 
-                    user_id,
-                    username,
-                    email,
-                    display_name,
-                    role,
-                    status,
-                    phone,
-                    address,
-                    avatar,
-                    is_agree,
-                    created_at,
-                    updated_at
-                FROM users
-                WHERE 1=1";
-        
+
+        $where = '1=1';
         $params = [];
-        
-        // Tìm kiếm
-        if (!empty($search)) {
-            $sql .= " AND (username LIKE :search 
-                      OR email LIKE :search 
-                      OR display_name LIKE :search)";
-            $params['search'] = "%$search%";
+
+        // TÌM KIẾM - DÙNG 3 placeholder riêng biệt để tránh lỗi HY093
+        if ($search !== '') {
+            $where .= " AND (username LIKE :search1 OR email LIKE :search2 OR display_name LIKE :search3)";
+            $searchVal = "%$search%";
+            $params[':search1'] = $searchVal;
+            $params[':search2'] = $searchVal;
+            $params[':search3'] = $searchVal;
         }
-        
-        // Lọc theo role
-        if (!empty($role) && $role !== 'all') {
-            $sql .= " AND role = :role";
-            $params['role'] = $role;
+
+        // Lọc role
+        if ($role !== 'all') {
+            $where .= " AND role = :role";
+            $params[':role'] = $role;
         }
-        
-        // Lọc theo status
-        if (!empty($status) && $status !== 'all') {
-            $sql .= " AND status = :status";
-            $params['status'] = $status;
+
+        // Lọc status
+        if ($status !== 'all') {
+            $where .= " AND status = :status";
+            $params[':status'] = $status;
         }
-        
-        // Đếm tổng số records
-        $countSql = "SELECT COUNT(*) FROM users WHERE 1=1";
-        if (!empty($search)) {
-            $countSql .= " AND (username LIKE :search 
-                           OR email LIKE :search 
-                           OR display_name LIKE :search)";
-        }
-        if (!empty($role) && $role !== 'all') {
-            $countSql .= " AND role = :role";
-        }
-        if (!empty($status) && $status !== 'all') {
-            $countSql .= " AND status = :status";
-        }
-        
-        $countStmt = $pdo->prepare($countSql);
-        foreach ($params as $key => $value) {
-            $countStmt->bindValue(":$key", $value);
-        }
-        $countStmt->execute();
-        $totalRecords = $countStmt->fetchColumn();
-        
-        // Lấy danh sách
-        $sql .= " ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-        
+
+        // Đếm tổng
+        $countSql = "SELECT COUNT(*) FROM users WHERE $where";
+        $cstmt = $pdo->prepare($countSql);
+        foreach ($params as $k => $v) $cstmt->bindValue($k, $v);
+        $cstmt->execute();
+        $total = (int)$cstmt->fetchColumn();
+
+        // Sắp xếp
+        $orderSql = match ($sort) {
+            'newest'     => "ORDER BY created_at DESC, user_id DESC",
+            'oldest'     => "ORDER BY created_at ASC, user_id ASC",
+            'name_desc'  => "ORDER BY username DESC",
+            'name_asc'   => "ORDER BY username ASC",
+            'id_asc'     => "ORDER BY user_id ASC",
+            'id_desc'    => "ORDER BY user_id DESC",
+            default      => "ORDER BY created_at DESC, user_id DESC"
+        };
+
+        // Query chính
+        $sql = "SELECT 
+                    user_id, username, email, display_name, role, status,
+                    phone, address, avatar, created_at, updated_at
+                FROM users
+                WHERE $where
+                $orderSql
+                LIMIT :limit OFFSET :offset";
+
         $stmt = $pdo->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+        
+        // Bind các param động
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
         }
+        
+        // Bind limit & offset (phải dùng PDO::PARAM_INT)
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
         $stmt->execute();
-        
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
+        $totalPages = ceil($total / $limit);
+
         echo json_encode([
             'success' => true,
             'data' => $users,
             'pagination' => [
-                'page' => $page,
-                'limit' => $limit,
-                'total' => $totalRecords,
-                'totalPages' => ceil($totalRecords / $limit)
+                'totalRecords' => $total,
+                'totalPages' => $totalPages,
+                'currentPage' => $page,
+                'limit' => $limit
             ]
         ], JSON_UNESCAPED_UNICODE);
-        
+
     } catch (PDOException $e) {
-        throw new Exception('Lỗi truy vấn: ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Lỗi truy vấn: ' . $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
     }
 }
 

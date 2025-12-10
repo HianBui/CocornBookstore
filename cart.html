@@ -175,7 +175,7 @@
                     <span id="total">0 đ</span>
                 </div>
 
-                <button class="checkout-btn" onclick="checkout()">
+                <button class="checkout-btn" id="checkoutBtn">
                     <i class="bi bi-credit-card"></i> Thanh toán
                 </button>
 
@@ -229,32 +229,5 @@
 
     <!-- JavaScript của SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // Checkout function
-        function checkout() {
-            const rows = document.querySelectorAll('#cartTableBody tr');
-            const checkedItems = Array.from(rows).filter(row => 
-                row.querySelector('.item-checkbox')?.checked
-            );
-
-            if (checkedItems.length === 0) {
-                // Info
-                Swal.fire({
-                icon: 'info',
-                title: 'Thông tin',
-                text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!'
-                });
-                return;
-            }
-
-            // TODO: Chuyển đến trang thanh toán
-            // Info
-            Swal.fire({
-            icon: 'info',
-            title: 'Thông tin',
-            text: 'Chức năng đang được phát triển'
-            });
-        }
-    </script>
 </body>
 </html>
