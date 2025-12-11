@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận đơn hàng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Header */
+        .email-header {
+            background: linear-gradient(135deg, #2ba8e2 0%, #1a8ccc 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .email-header .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .email-header .logo::before {
+            content: "🥥";
+            font-size: 36px;
+        }
+        
+        .email-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .email-header .checkmark {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background-color: #28a745;
+            border-radius: 50%;
+            margin: 20px 0 10px;
+            position: relative;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        .email-header .checkmark::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Content */
+        .email-content {
+            padding: 40px 30px;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .order-info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2ba8e2;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .order-info h2 {
+            color: #2ba8e2;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .order-info h2::before {
+            content: "📦";
+            font-size: 24px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .order-id {
+            color: #2ba8e2;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        /* Products Table */
+        .products-section {
+            margin: 30px 0;
+        }
+        
+        .products-section h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2ba8e2;
+        }
+        
+        .product-item {
+            display: flex;
+            padding: 15px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .product-image {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            background-color: #e0e0e0;
+        }
+        
+        .product-details {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .product-quantity {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .product-price {
+            color: #2ba8e2;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: right;
+        }
+        
+        /* Order Summary */
+        .order-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #333;
+        }
+        
+        .summary-row.total {
+            border-top: 2px solid #2ba8e2;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2ba8e2;
+        }
+        
+        /* Shipping Info */
+        .shipping-info {
+            background-color: #fff8e6;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .shipping-info h3 {
+            color: #f57c00;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .shipping-info h3::before {
+            content: "🚚";
+            font-size: 24px;
+        }
+        
+        .shipping-info p {
+            color: #666;
+            line-height: 1.8;
+            margin: 5px 0;
+        }
+        
+        .shipping-info strong {
+            color: #333;
+        }
+        
+        /* Payment Info */
+        .payment-info {
+            background-color: #e8f5e9;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .payment-info h3 {
+            color: #28a745;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payment-info h3::before {
+            content: "💳";
+            font-size: 24px;
+        }
+        
+        .payment-method {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #2ba8e2;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1a8ccc;
+            box-shadow: 0 4px 12px rgba(43, 168, 226, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #2ba8e2;
+            border: 2px solid #2ba8e2;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f0f9ff;
+        }
+        
+        /* Help Section */
+        .help-section {
+            background-color: #f0f9ff;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .help-section h3 {
+            color: #2ba8e2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .help-section p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #2ba8e2;
+            color: white;
+            border-radius: 50%;
+            margin: 0 8px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: #1a8ccc;
+            transform: translateY(-3px);
+        }
+        
+        .footer-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        
+        .copyright {
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .email-content {
+                padding: 25px 20px;
+            }
+            
+            .email-header {
+                padding: 30px 20px;
+            }
+            
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .product-price {
+                text-align: center;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <div class="logo">Coconut Corn</div>
+            <div class="checkmark"></div>
+            <h1>Đặt hàng thành công!</h1>
+            <p>Cảm ơn bạn đã mua hàng tại Coconut Corn</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="email-content">
+            <div class="greeting">
+                Xin chào <strong>{{CUSTOMER_NAME}}</strong>,
+                <br><br>
+                Chúng tôi đã nhận được đơn hàng của bạn và đang xử lý. Đơn hàng sẽ được giao đến bạn trong thời gian sớm nhất.
+            </div>
+            
+            <!-- Order Info -->
+            <div class="order-info">
+                <h2>Thông tin đơn hàng</h2>
+                <div class="info-row">
+                    <span class="info-label">Mã đơn hàng:</span>
+                    <span class="info-value order-id">#{{ORDER_ID}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ngày đặt:</span>
+                    <span class="info-value">{{ORDER_DATE}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Trạng thái:</span>
+                    <span class="info-value" style="color: #28a745;">Đang xử lý</span>
+                </div>
+            </div>
+            
+            <!-- Products -->
+            <div class="products-section">
+                <h3>📚 Sản phẩm đã đặt</h3>
+                {{PRODUCTS_LIST}}
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>Tạm tính:</span>
+                    <span>{{SUBTOTAL}}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Phí vận chuyển:</span>
+                    <span>{{SHIPPING_FEE}}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Giảm giá:</span>
+                    <span style="color: #dc3545;">-{{DISCOUNT}}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Tổng cộng:</span>
+                    <span>{{TOTAL}}</span>
+                </div>
+            </div>
+            
+            <!-- Shipping Info -->
+            <div class="shipping-info">
+                <h3>Thông tin giao hàng</h3>
+                <p><strong>Người nhận:</strong> {{CUSTOMER_NAME}}</p>
+                <p><strong>Số điện thoại:</strong> {{PHONE}}</p>
+                <p><strong>Email:</strong> {{EMAIL}}</p>
+                <p><strong>Địa chỉ:</strong> {{ADDRESS}}</p>
+            </div>
+            
+            <!-- Payment Info -->
+            <div class="payment-info">
+                <h3>Phương thức thanh toán</h3>
+                <span class="payment-method">{{PAYMENT_METHOD}}</span>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{{WEBSITE_URL}}" class="btn btn-primary">Tiếp tục mua sắm</a>
+                <a href="{{WEBSITE_URL}}/orders.html" class="btn btn-secondary">Xem đơn hàng</a>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="help-section">
+                <h3>💬 Cần hỗ trợ?</h3>
+                <p>Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, đừng ngần ngại liên hệ với chúng tôi:</p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        📞 <strong>0383714805</strong>
+                    </div>
+                    <div class="contact-item">
+                        📧 <strong>contact@cocorn.vn</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="email-footer">
+            <div class="social-links">
+                <a href="#" title="Facebook">f</a>
+                <a href="#" title="Instagram">📷</a>
+                <a href="#" title="Twitter">🐦</a>
+            </div>
+            
+            <p class="footer-text">
+                <strong>Coconut Corn - Dừa và Bắp</strong><br>
+                180 Cao Lỗ, phường 4, Quận 8, TP.HCM<br>
+                Email: contact@cocorn.vn | Hotline: 0383714805
+            </p>
+            
+            <p class="footer-text" style="font-size: 12px; color: #999;">
+                Email này được gửi tự động, vui lòng không trả lời trực tiếp.<br>
+                Nếu bạn không thực hiện đơn hàng này, vui lòng liên hệ với chúng tôi ngay.
+            </p>
+            
+            <div class="copyright">
+                © 2025 Coconut Corn. All rights reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

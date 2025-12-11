@@ -1,13 +1,14 @@
 /**
  * ============================================================
- * FILE: checkout.js
- * MÔ TẢ: Xử lý thanh toán giỏ hàng hoàn chỉnh
+ * FILE: checkout.js (DEBUG VERSION)
+ * MÔ TẢ: Xử lý thanh toán giỏ hàng hoàn chỉnh + Gửi email
  * ĐẶT TẠI: asset/js/checkout.js
  * ============================================================
  */
 
 const CheckoutHandler = {
     API_URL: './asset/api/cart-api.php',
+    EMAIL_API_URL: './asset/api/send-order-email.php',
     selectedItems: [],
     cartIds: [],
     
@@ -31,7 +32,6 @@ const CheckoutHandler = {
             this.cartIds = cartIdsParam.split(',').map(id => parseInt(id));
             console.log('Cart IDs from URL:', this.cartIds);
         } else {
-            // Nếu không có cart_ids, redirect về cart
             Swal.fire({
                 icon: 'warning',
                 title: 'Không có sản phẩm',
@@ -56,7 +56,6 @@ const CheckoutHandler = {
             Swal.close();
 
             if (data.success && data.data.items.length > 0) {
-                // Lọc chỉ những items được chọn
                 this.selectedItems = data.data.items.filter(item => 
                     this.cartIds.includes(item.cart_id)
                 );
@@ -135,7 +134,6 @@ const CheckoutHandler = {
             const data = await response.json();
 
             if (data.success && data.user) {
-                // Fill form với thông tin user
                 const fullNameEl = document.getElementById('fullName');
                 const phoneEl = document.getElementById('phone');
                 const emailEl = document.getElementById('email');
@@ -153,13 +151,11 @@ const CheckoutHandler = {
      * Setup event listeners
      */
     setupEventListeners() {
-        // Nút đặt hàng
         const placeOrderBtn = document.getElementById('placeOrderBtn');
         if (placeOrderBtn) {
             placeOrderBtn.addEventListener('click', () => this.placeOrder());
         }
 
-        // Validation real-time
         this.setupFormValidation();
     },
 
@@ -212,7 +208,7 @@ const CheckoutHandler = {
             this.removeError(field);
         } else {
             field.classList.remove('is-valid');
-            field.classList.add('is-valid');
+            field.classList.add('is-invalid');
             this.showError(field, errorMessage);
         }
 
@@ -275,7 +271,79 @@ const CheckoutHandler = {
                 return radio.value;
             }
         }
-        return 'cod'; // Default
+        return 'cod';
+    },
+
+    /**
+     * Gửi email xác nhận đơn hàng (CÓ DEBUG)
+     */
+    async sendOrderEmail(orderData) {
+        console.log('🔵 [DEBUG] sendOrderEmail() được gọi');
+        console.log('🔵 [DEBUG] Order data:', orderData);
+        
+        try {
+            // Chuẩn bị dữ liệu email
+            const subtotal = this.selectedItems.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
+            const shipping = subtotal > 300000 ? 0 : 30000;
+            const discount = 0;
+            const total = subtotal + shipping - discount;
+
+            const citySelect = document.getElementById('city');
+            const districtSelect = document.getElementById('district');
+            const cityText = citySelect.options[citySelect.selectedIndex]?.text || '';
+            const districtText = districtSelect.options[districtSelect.selectedIndex]?.text || '';
+            
+            const fullAddress = `${orderData.address}, ${districtText}, ${cityText}`;
+
+            const emailData = {
+                order_id: orderData.order_id,
+                customer_name: orderData.full_name,
+                email: orderData.email,
+                phone: orderData.phone,
+                full_address: fullAddress,
+                payment_method: orderData.payment_method,
+                order_date: new Date().toISOString(),
+                subtotal: subtotal,
+                shipping_fee: shipping,
+                discount: discount,
+                total: total,
+                products: this.selectedItems.map(item => ({
+                    title: item.title,
+                    quantity: item.quantity,
+                    subtotal: item.subtotal,
+                    main_img: item.main_img
+                })),
+                website_url: window.location.origin
+            };
+
+            console.log('🔵 [DEBUG] Email data chuẩn bị gửi:', emailData);
+            console.log('🔵 [DEBUG] API URL:', this.EMAIL_API_URL);
+
+            // Gửi email
+            const response = await fetch(this.EMAIL_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(emailData)
+            });
+
+            console.log('🔵 [DEBUG] Response status:', response.status);
+            console.log('🔵 [DEBUG] Response ok:', response.ok);
+
+            const result = await response.json();
+            console.log('🔵 [DEBUG] Response data:', result);
+            
+            if (result.success) {
+                console.log('✅ [SUCCESS] Email sent successfully');
+            } else {
+                console.error('❌ [ERROR] Email sending failed:', result.message);
+                console.error('❌ [ERROR] Full error:', result);
+            }
+        } catch (error) {
+            console.error('❌ [CATCH ERROR] Error sending email:', error);
+            console.error('❌ [CATCH ERROR] Error stack:', error.stack);
+        }
     },
 
     /**
@@ -327,6 +395,8 @@ const CheckoutHandler = {
                 notes: document.getElementById('notes')?.value.trim() || ''
             };
 
+            console.log('🔵 [DEBUG] Đang tạo đơn hàng với data:', orderData);
+
             const response = await fetch(`${this.API_URL}?action=create_order`, {
                 method: 'POST',
                 headers: {
@@ -336,10 +406,19 @@ const CheckoutHandler = {
             });
 
             const data = await response.json();
-
-            Swal.close();
+            console.log('🔵 [DEBUG] Create order response:', data);
 
             if (data.success) {
+                // Thêm order_id vào orderData để gửi email
+                orderData.order_id = data.data.order_id;
+                
+                console.log('🔵 [DEBUG] Đơn hàng tạo thành công, bắt đầu gửi email...');
+                
+                // Gửi email xác nhận (không đợi kết quả)
+                this.sendOrderEmail(orderData);
+                
+                Swal.close();
+                
                 // Đặt hàng thành công
                 await Swal.fire({
                     icon: 'success',
@@ -347,6 +426,12 @@ const CheckoutHandler = {
                     html: `
                         <p>Mã đơn hàng: <strong>#${data.data.order_id}</strong></p>
                         <p>Cảm ơn bạn đã mua hàng!</p>
+                        <p style="color: #28a745; margin-top: 15px;">
+                            ✉️ Email xác nhận đang được gửi đến <strong>${orderData.email}</strong>
+                        </p>
+                        <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                            Vui lòng kiểm tra cả thư mục spam nếu không thấy email.
+                        </p>
                     `,
                     confirmButtonText: 'Về trang chủ',
                     confirmButtonColor: '#28a745'
@@ -358,7 +443,8 @@ const CheckoutHandler = {
                 throw new Error(data.message || 'Không thể đặt hàng');
             }
         } catch (error) {
-            console.error('Place order error:', error);
+            console.error('❌ [ERROR] Place order error:', error);
+            Swal.close();
             Swal.fire({
                 icon: 'error',
                 title: 'Lỗi đặt hàng',
@@ -390,21 +476,21 @@ const CheckoutHandler = {
  * Helper function: Select payment method
  */
 window.selectPayment = function(element, method) {
-    // Remove active từ tất cả
     document.querySelectorAll('.payment-option').forEach(opt => {
         opt.classList.remove('active');
     });
     
-    // Add active cho option được chọn
     element.classList.add('active');
     
-    // Check radio button
     const radio = element.querySelector('input[type="radio"]');
     if (radio) {
         radio.checked = true;
     }
 };
-// Hàm loading SweetAlert dùng chung
+
+/**
+ * Hàm loading SweetAlert dùng chung
+ */
 function showLoading(message = "Đang xử lý...") {
     Swal.fire({
         title: message,
@@ -419,7 +505,7 @@ function showLoading(message = "Đang xử lý...") {
  * Initialize khi DOM loaded
  */
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Checkout page loaded');
+    console.log('✅ Checkout page loaded');
     CheckoutHandler.init();
 });
 
