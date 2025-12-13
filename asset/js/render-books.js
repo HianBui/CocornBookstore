@@ -7,7 +7,7 @@
  */
 
 const API_BASE = './asset/api';
-const IMAGE_BASE = './asset/image/';
+const IMAGE_BASE = './asset/image/books/';
 
 // ==========================================
 // HÀM TẠO ĐƯỜNG DẪN ẢNH ĐẦY ĐỦ

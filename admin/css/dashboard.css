@@ -57,13 +57,15 @@
     padding: 25px;
     margin-bottom: 20px;
     position: relative;
-    min-height: max-content;
-    height: 650px;
+    min-height: auto;        /* Thay vì max-content */
+    height: auto;            /* Để tự động theo nội dung */
+    max-height: 400px;
     background-color: white;
 }
-canvas{
-    /* max-width: 80%; */
-    height: auto;
+canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px;       /* Giới hạn chiều cao tối đa của từng chart */
 }
 .categoryViewsChart{
     display: grid;

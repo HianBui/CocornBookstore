@@ -57,27 +57,27 @@ function getOverviewStats($pdo) {
     $stats = [];
     
     try {
-        // Khách truy cập (số lượt xem trong 30 ngày gần nhất)
-        $sql = "SELECT COUNT(*) as total_views 
-                FROM book_views 
-                WHERE view_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+        // ✅ Khách truy cập (tổng lượt xem sách)
+        $sql = "SELECT COUNT(*) as total_views FROM book_views";
         $stmt = $pdo->query($sql);
         $stats['visitors'] = (int)$stmt->fetchColumn();
         
-        // Đơn hàng
-        $sql = "SELECT COUNT(*) as total_orders FROM orders";
+        // ✅ Đơn hàng (KHÔNG bao gồm đơn đã hủy)
+        $sql = "SELECT COUNT(*) as total_orders 
+                FROM orders 
+                WHERE status != 'cancelled'";
         $stmt = $pdo->query($sql);
         $stats['orders'] = (int)$stmt->fetchColumn();
         
-        // Sản phẩm (số lượng sách)
-        $sql = "SELECT COUNT(*) as total_books FROM books WHERE status = 'available'";
+        // ✅ Sản phẩm (số lượng sách)
+        $sql = "SELECT COUNT(*) as total_books FROM books";
         $stmt = $pdo->query($sql);
         $stats['books'] = (int)$stmt->fetchColumn();
         
-        // Doanh thu
-        $sql = "SELECT COALESCE(SUM(final_amount), 0) as total_revenue 
+        // ✅ Doanh thu (CHỈ tính đơn đã giao - delivered)
+        $sql = "SELECT COALESCE(SUM(total_amount), 0) as total_revenue 
                 FROM orders 
-                WHERE status != 'cancelled'";
+                WHERE status = 'delivered'";
         $stmt = $pdo->query($sql);
         $stats['revenue'] = (float)$stmt->fetchColumn();
         
@@ -102,8 +102,7 @@ function getCategoryRatio($pdo) {
     try {
         $sql = "SELECT 
                     c.category_name,
-                    COUNT(b.book_id) as book_count,
-                    ROUND((COUNT(b.book_id) * 100.0 / (SELECT COUNT(*) FROM books)), 2) as percentage
+                    COUNT(b.book_id) as book_count
                 FROM categories c
                 LEFT JOIN books b ON c.category_id = b.category_id
                 GROUP BY c.category_id, c.category_name
@@ -115,8 +114,7 @@ function getCategoryRatio($pdo) {
         while ($row = $stmt->fetch()) {
             $data[] = [
                 'category' => $row['category_name'],
-                'count' => (int)$row['book_count'],
-                'percentage' => (float)$row['percentage']
+                'count' => (int)$row['book_count']
             ];
         }
         
@@ -166,16 +164,20 @@ function getCategoryViews($pdo) {
 
 /**
  * Doanh thu theo tháng trong năm (cho biểu đồ cột)
+ * ✅ CHỈ tính đơn đã giao (delivered)
  */
 function getMonthlyRevenue($pdo) {
     try {
+        // ✅ SỬA: Dùng created_at thay vì order_date
+        // ✅ SỬA: Dùng total_amount thay vì final_amount
+        // ✅ SỬA: CHỈ tính đơn delivered
         $sql = "SELECT 
-                    MONTH(order_date) as month,
-                    ROUND(SUM(final_amount) / 1000000, 2) as revenue_millions
+                    MONTH(created_at) as month,
+                    ROUND(SUM(total_amount) / 1000000, 2) as revenue_millions
                 FROM orders
-                WHERE YEAR(order_date) = YEAR(NOW())
-                    AND status != 'cancelled'
-                GROUP BY MONTH(order_date)
+                WHERE YEAR(created_at) = YEAR(NOW())
+                    AND status = 'delivered'
+                GROUP BY MONTH(created_at)
                 ORDER BY month";
         
         $stmt = $pdo->query($sql);

@@ -2,7 +2,7 @@
 /**
  * ============================================================
  * FILE: admin/api/products.php
- * MÔ TẢ: API quản lý sản phẩm cho admin
+ * MÔ TẢ: API quản lý sản phẩm (books) cho admin
  * METHODS: GET, POST, PUT, DELETE
  * ============================================================
  */
@@ -53,12 +53,10 @@ try {
 function handleGet($pdo, $action) {
     switch ($action) {
         case 'list':
-            // Lấy danh sách tất cả products
             getProductsList($pdo);
             break;
             
         case 'detail':
-            // Lấy chi tiết 1 product
             $productId = $_GET['id'] ?? null;
             if (!$productId) {
                 throw new Exception('Thiếu ID sản phẩm');
@@ -67,12 +65,10 @@ function handleGet($pdo, $action) {
             break;
             
         case 'stats':
-            // Thống kê products
             getProductsStats($pdo);
             break;
             
         default:
-            // Mặc định trả về danh sách
             getProductsList($pdo);
     }
 }
@@ -130,131 +126,118 @@ function handleDelete($pdo, $action) {
 // ============================================================
 
 /**
- * Lấy danh sách products với phân trang và tìm kiếm
+ * Lấy danh sách products với phân trang, tìm kiếm và sort
  */
 function getProductsList($pdo) {
     try {
-        // Lấy tham số tìm kiếm và phân trang
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
-        $search = $_GET['search'] ?? '';
-        $category = $_GET['category'] ?? ''; // all, category_id
-        $status = $_GET['status'] ?? ''; // all, available, out_of_stock, discontinued
-        $sort = $_GET['sort'] ?? 'newest'; // newest, oldest, price_asc, price_desc, view_desc
-        
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = max(1, (int)($_GET['limit'] ?? 10));
+        $search = trim($_GET['search'] ?? '');
+        $category = $_GET['category'] ?? 'all';
+        $status = $_GET['status'] ?? 'all';
+        $sort = $_GET['sort'] ?? 'newest';
         $offset = ($page - 1) * $limit;
-        
-        // Build query
+
+        $where = '1=1';
+        $params = [];
+
+        // TÌM KIẾM
+        if ($search !== '') {
+            $where .= " AND (b.title LIKE :search1 OR b.author LIKE :search2 OR b.description LIKE :search3)";
+            $searchVal = "%$search%";
+            $params[':search1'] = $searchVal;
+            $params[':search2'] = $searchVal;
+            $params[':search3'] = $searchVal;
+        }
+
+        // Lọc category
+        if ($category !== 'all') {
+            $where .= " AND b.category_id = :category";
+            $params[':category'] = $category;
+        }
+
+        // Lọc status
+        if ($status !== 'all') {
+            $where .= " AND b.status = :status";
+            $params[':status'] = $status;
+        }
+
+        // Đếm tổng
+        $countSql = "SELECT COUNT(*) FROM books b WHERE $where";
+        $cstmt = $pdo->prepare($countSql);
+        foreach ($params as $k => $v) $cstmt->bindValue($k, $v);
+        $cstmt->execute();
+        $total = (int)$cstmt->fetchColumn();
+
+        // Sắp xếp
+        $orderSql = match ($sort) {
+            'newest'     => "ORDER BY b.created_at DESC, b.book_id DESC",
+            'oldest'     => "ORDER BY b.created_at ASC, b.book_id ASC",
+            'price_asc'  => "ORDER BY b.price ASC",
+            'price_desc' => "ORDER BY b.price DESC",
+            'view_desc'  => "ORDER BY b.view_count DESC",
+            default      => "ORDER BY b.created_at DESC, b.book_id DESC"
+        };
+
+        // Query chính với JOIN category và book_images
         $sql = "SELECT 
-                    b.book_id,
-                    b.title,
-                    b.author,
-                    b.publisher,
-                    b.published_year,
-                    b.price,
-                    b.quantity,
-                    b.view_count,
+                    b.book_id as product_id,
+                    b.title as product_name,
                     b.description,
+                    b.price,
+                    b.quantity as stock_quantity,
+                    bi.main_img as image_url,
+                    b.author,
                     b.status,
+                    b.view_count,
                     b.category_id,
                     b.created_at,
                     c.category_name,
-                    bi.main_img,
-                    bi.sub_img1,
-                    bi.sub_img2,
-                    bi.sub_img3
+                    COALESCE(
+                        (SELECT SUM(od.quantity) 
+                         FROM order_details od 
+                         WHERE od.book_id = b.book_id), 0
+                    ) as sold_count
                 FROM books b
                 LEFT JOIN categories c ON b.category_id = c.category_id
                 LEFT JOIN book_images bi ON b.book_id = bi.book_id
-                WHERE 1=1";
-        
-        $params = [];
-        
-        // Tìm kiếm
-        if (!empty($search)) {
-            $sql .= " AND (b.title LIKE :search 
-                      OR b.author LIKE :search 
-                      OR b.publisher LIKE :search)";
-            $params['search'] = "%$search%";
-        }
-        
-        // Lọc theo category
-        if (!empty($category) && $category !== 'all') {
-            $sql .= " AND b.category_id = :category";
-            $params['category'] = $category;
-        }
-        
-        // Lọc theo status
-        if (!empty($status) && $status !== 'all') {
-            $sql .= " AND b.status = :status";
-            $params['status'] = $status;
-        }
-        
-        // Sắp xếp
-        switch ($sort) {
-            case 'oldest':
-                $sql .= " ORDER BY b.created_at ASC";
-                break;
-            case 'price_asc':
-                $sql .= " ORDER BY b.price ASC";
-                break;
-            case 'price_desc':
-                $sql .= " ORDER BY b.price DESC";
-                break;
-            case 'view_desc':
-                $sql .= " ORDER BY b.view_count DESC";
-                break;
-            default: // newest
-                $sql .= " ORDER BY b.created_at DESC";
-        }
-        
-        // Đếm tổng số records
-        $countSql = "SELECT COUNT(*) FROM books b WHERE 1=1";
-        if (!empty($search)) {
-            $countSql .= " AND (b.title LIKE :search 
-                           OR b.author LIKE :search 
-                           OR b.publisher LIKE :search)";
-        }
-        if (!empty($category) && $category !== 'all') {
-            $countSql .= " AND b.category_id = :category";
-        }
-        if (!empty($status) && $status !== 'all') {
-            $countSql .= " AND b.status = :status";
-        }
-        
-        $countStmt = $pdo->prepare($countSql);
-        foreach ($params as $key => $value) {
-            $countStmt->bindValue(":$key", $value);
-        }
-        $countStmt->execute();
-        $totalRecords = $countStmt->fetchColumn();
-        
-        // Lấy danh sách
-        $sql .= " LIMIT :limit OFFSET :offset";
-        
+                WHERE $where
+                $orderSql
+                LIMIT :limit OFFSET :offset";
+
         $stmt = $pdo->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+        
+        // Bind các param động
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
         }
+        
+        // Bind limit & offset
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
         $stmt->execute();
-        
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
+        $totalPages = ceil($total / $limit);
+
         echo json_encode([
             'success' => true,
             'data' => $products,
             'pagination' => [
-                'page' => $page,
-                'limit' => $limit,
-                'total' => $totalRecords,
-                'totalPages' => ceil($totalRecords / $limit)
+                'totalRecords' => $total,
+                'totalPages' => $totalPages,
+                'currentPage' => $page,
+                'limit' => $limit
             ]
         ], JSON_UNESCAPED_UNICODE);
-        
+
     } catch (PDOException $e) {
-        throw new Exception('Lỗi truy vấn: ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Lỗi truy vấn: ' . $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
     }
 }
 
@@ -264,19 +247,30 @@ function getProductsList($pdo) {
 function getProductDetail($pdo, $productId) {
     try {
         $sql = "SELECT 
-                    b.*,
+                    b.book_id as product_id,
+                    b.title as product_name,
+                    b.description,
+                    b.price,
+                    b.quantity as stock_quantity,
+                    bi.main_img as image_url,
+                    b.author,
+                    b.status,
+                    b.view_count,
+                    b.category_id,
+                    b.created_at,
                     c.category_name,
-                    bi.main_img,
-                    bi.sub_img1,
-                    bi.sub_img2,
-                    bi.sub_img3
+                    COALESCE(
+                        (SELECT SUM(od.quantity) 
+                         FROM order_details od 
+                         WHERE od.book_id = b.book_id), 0
+                    ) as sold_count
                 FROM books b
                 LEFT JOIN categories c ON b.category_id = c.category_id
                 LEFT JOIN book_images bi ON b.book_id = bi.book_id
-                WHERE b.book_id = :book_id";
+                WHERE b.book_id = :product_id";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':book_id', $productId, PDO::PARAM_INT);
+        $stmt->bindValue(':product_id', $productId, PDO::PARAM_INT);
         $stmt->execute();
         
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -302,10 +296,10 @@ function getProductsStats($pdo) {
     try {
         $sql = "SELECT 
                     COUNT(*) as total_products,
-                    SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available,
-                    SUM(CASE WHEN status = 'out_of_stock' THEN 1 ELSE 0 END) as out_of_stock,
-                    SUM(CASE WHEN status = 'discontinued' THEN 1 ELSE 0 END) as discontinued,
-                    SUM(quantity) as total_quantity,
+                    SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available_products,
+                    SUM(CASE WHEN status = 'out_of_stock' THEN 1 ELSE 0 END) as out_of_stock_products,
+                    SUM(CASE WHEN status = 'discontinued' THEN 1 ELSE 0 END) as discontinued_products,
+                    SUM(quantity) as total_stock,
                     SUM(view_count) as total_views
                 FROM books";
         
@@ -328,57 +322,60 @@ function getProductsStats($pdo) {
 function createProduct($pdo, $data) {
     try {
         // Validate dữ liệu
-        if (empty($data['title']) || empty($data['price']) || empty($data['quantity']) || empty($data['category_id'])) {
+        if (empty($data['product_name']) || empty($data['category_id']) || !isset($data['price'])) {
             throw new Exception('Thiếu thông tin bắt buộc');
+        }
+        
+        // Kiểm tra tên sản phẩm đã tồn tại
+        $checkSQL = "SELECT book_id FROM books WHERE title = :product_name";
+        $checkStmt = $pdo->prepare($checkSQL);
+        $checkStmt->bindValue(':product_name', $data['product_name']);
+        $checkStmt->execute();
+        
+        if ($checkStmt->fetch()) {
+            throw new Exception('Tên sản phẩm đã tồn tại');
         }
         
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
         // Insert vào bảng books
-        $sql = "INSERT INTO books (title, author, publisher, published_year, price, quantity, 
-                description, status, category_id) 
-                VALUES (:title, :author, :publisher, :published_year, :price, :quantity, 
-                :description, :status, :category_id)";
+        $sql = "INSERT INTO books 
+                (title, description, price, quantity, author, category_id, status) 
+                VALUES 
+                (:title, :description, :price, :quantity, :author, :category_id, :status)";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':title', $data['title']);
-        $stmt->bindValue(':author', $data['author'] ?? null);
-        $stmt->bindValue(':publisher', $data['publisher'] ?? null);
-        $stmt->bindValue(':published_year', $data['published_year'] ?? null);
-        $stmt->bindValue(':price', $data['price']);
-        $stmt->bindValue(':quantity', $data['quantity']);
+        $stmt->bindValue(':title', $data['product_name']);
         $stmt->bindValue(':description', $data['description'] ?? null);
-        $stmt->bindValue(':status', $data['status'] ?? 'available');
+        $stmt->bindValue(':price', $data['price']);
+        $stmt->bindValue(':quantity', $data['stock_quantity'] ?? 0);
+        $stmt->bindValue(':author', $data['author'] ?? null);
         $stmt->bindValue(':category_id', $data['category_id']);
+        $stmt->bindValue(':status', $data['status'] ?? 'available');
         
         $stmt->execute();
         $bookId = $pdo->lastInsertId();
         
         // Insert vào bảng book_images
-        $imgSql = "INSERT INTO book_images (book_id, main_img, sub_img1, sub_img2, sub_img3) 
-                   VALUES (:book_id, :main_img, :sub_img1, :sub_img2, :sub_img3)";
-        
-        $imgStmt = $pdo->prepare($imgSql);
+        $imgSQL = "INSERT INTO book_images (book_id, main_img) VALUES (:book_id, :main_img)";
+        $imgStmt = $pdo->prepare($imgSQL);
         $imgStmt->bindValue(':book_id', $bookId);
-        $imgStmt->bindValue(':main_img', $data['main_img'] ?? '300x300.svg');
-        $imgStmt->bindValue(':sub_img1', $data['sub_img1'] ?? null);
-        $imgStmt->bindValue(':sub_img2', $data['sub_img2'] ?? null);
-        $imgStmt->bindValue(':sub_img3', $data['sub_img3'] ?? null);
-        
+        $imgStmt->bindValue(':main_img', $data['image_url'] ?? '300x300.svg');
         $imgStmt->execute();
         
-        // Commit transaction
         $pdo->commit();
         
         echo json_encode([
             'success' => true,
             'message' => 'Tạo sản phẩm thành công',
-            'book_id' => $bookId
+            'product_id' => $bookId
         ], JSON_UNESCAPED_UNICODE);
         
     } catch (PDOException $e) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new Exception('Lỗi tạo product: ' . $e->getMessage());
     }
 }
@@ -388,8 +385,20 @@ function createProduct($pdo, $data) {
  */
 function updateProduct($pdo, $data) {
     try {
-        if (empty($data['book_id'])) {
+        if (empty($data['product_id'])) {
             throw new Exception('Thiếu ID sản phẩm');
+        }
+        
+        // Kiểm tra tên trùng (trừ chính nó)
+        $checkSQL = "SELECT book_id FROM books 
+                     WHERE title = :product_name AND book_id != :product_id";
+        $checkStmt = $pdo->prepare($checkSQL);
+        $checkStmt->bindValue(':product_name', $data['product_name']);
+        $checkStmt->bindValue(':product_id', $data['product_id'], PDO::PARAM_INT);
+        $checkStmt->execute();
+        
+        if ($checkStmt->fetch()) {
+            throw new Exception('Tên sản phẩm đã tồn tại');
         }
         
         // Bắt đầu transaction
@@ -398,48 +407,35 @@ function updateProduct($pdo, $data) {
         // Update bảng books
         $sql = "UPDATE books SET 
                     title = :title,
-                    author = :author,
-                    publisher = :publisher,
-                    published_year = :published_year,
+                    description = :description,
                     price = :price,
                     quantity = :quantity,
-                    description = :description,
-                    status = :status,
-                    category_id = :category_id
-                WHERE book_id = :book_id";
+                    author = :author,
+                    category_id = :category_id,
+                    status = :status
+                WHERE book_id = :product_id";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':book_id', $data['book_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':title', $data['title']);
-        $stmt->bindValue(':author', $data['author'] ?? null);
-        $stmt->bindValue(':publisher', $data['publisher'] ?? null);
-        $stmt->bindValue(':published_year', $data['published_year'] ?? null);
-        $stmt->bindValue(':price', $data['price']);
-        $stmt->bindValue(':quantity', $data['quantity']);
+        $stmt->bindValue(':product_id', $data['product_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':title', $data['product_name']);
         $stmt->bindValue(':description', $data['description'] ?? null);
-        $stmt->bindValue(':status', $data['status']);
+        $stmt->bindValue(':price', $data['price']);
+        $stmt->bindValue(':quantity', $data['stock_quantity']);
+        $stmt->bindValue(':author', $data['author'] ?? null);
         $stmt->bindValue(':category_id', $data['category_id']);
+        $stmt->bindValue(':status', $data['status']);
         
         $stmt->execute();
         
-        // Update bảng book_images
-        $imgSql = "UPDATE book_images SET 
-                      main_img = :main_img,
-                      sub_img1 = :sub_img1,
-                      sub_img2 = :sub_img2,
-                      sub_img3 = :sub_img3
-                   WHERE book_id = :book_id";
+        // Update bảng book_images (nếu có ảnh mới)
+        if (!empty($data['image_url'])) {
+            $imgSQL = "UPDATE book_images SET main_img = :main_img WHERE book_id = :book_id";
+            $imgStmt = $pdo->prepare($imgSQL);
+            $imgStmt->bindValue(':book_id', $data['product_id'], PDO::PARAM_INT);
+            $imgStmt->bindValue(':main_img', $data['image_url']);
+            $imgStmt->execute();
+        }
         
-        $imgStmt = $pdo->prepare($imgSql);
-        $imgStmt->bindValue(':book_id', $data['book_id'], PDO::PARAM_INT);
-        $imgStmt->bindValue(':main_img', $data['main_img'] ?? '300x300.svg');
-        $imgStmt->bindValue(':sub_img1', $data['sub_img1'] ?? null);
-        $imgStmt->bindValue(':sub_img2', $data['sub_img2'] ?? null);
-        $imgStmt->bindValue(':sub_img3', $data['sub_img3'] ?? null);
-        
-        $imgStmt->execute();
-        
-        // Commit transaction
         $pdo->commit();
         
         echo json_encode([
@@ -448,7 +444,9 @@ function updateProduct($pdo, $data) {
         ], JSON_UNESCAPED_UNICODE);
         
     } catch (PDOException $e) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new Exception('Lỗi cập nhật: ' . $e->getMessage());
     }
 }
@@ -458,25 +456,25 @@ function updateProduct($pdo, $data) {
  */
 function deleteProduct($pdo, $data) {
     try {
-        if (empty($data['book_id'])) {
+        if (empty($data['product_id'])) {
             throw new Exception('Thiếu ID sản phẩm');
         }
         
-        // Kiểm tra có trong đơn hàng không
-        $checkSQL = "SELECT COUNT(*) FROM order_details WHERE book_id = :book_id";
+        // Kiểm tra có đơn hàng không
+        $checkSQL = "SELECT COUNT(*) FROM order_details WHERE book_id = :product_id";
         $checkStmt = $pdo->prepare($checkSQL);
-        $checkStmt->bindValue(':book_id', $data['book_id'], PDO::PARAM_INT);
+        $checkStmt->bindValue(':product_id', $data['product_id'], PDO::PARAM_INT);
         $checkStmt->execute();
         $orderCount = $checkStmt->fetchColumn();
         
         if ($orderCount > 0) {
-            throw new Exception('Không thể xóa sản phẩm đã có trong đơn hàng. Hãy đổi trạng thái thành "Ngừng bán" thay vì xóa.');
+            throw new Exception('Không thể xóa sản phẩm đã có trong đơn hàng. Hãy đặt trạng thái "Ngừng bán" thay vì xóa.');
         }
         
-        // Xóa sản phẩm (book_images sẽ tự xóa do ON DELETE CASCADE)
-        $sql = "DELETE FROM books WHERE book_id = :book_id";
+        // Xóa từ books (book_images sẽ tự động xóa do CASCADE)
+        $sql = "DELETE FROM books WHERE book_id = :product_id";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':book_id', $data['book_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':product_id', $data['product_id'], PDO::PARAM_INT);
         $stmt->execute();
         
         echo json_encode([

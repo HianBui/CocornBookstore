@@ -94,10 +94,11 @@ table.account-table {
 
 .account-table td {
     padding: 14px 12px;
-    color: #495057;
+    color: #515749;
     border: 1px solid #dee2e6;
     transition: background 0.2s ease;
     font-size: var(--font-base);
+    text-align: center;
 }
 
 .account-table tbody tr {
@@ -300,6 +301,7 @@ table.account-table {
     border-radius: 16px;
     border: none;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    font-family: var(--primary-font);
 }
 
 #userFormModal .modal-header {
@@ -347,6 +349,10 @@ button.btn-close i
     color: var(--blue-color);
 }
 
+
+.modal-body{
+    font-family: var(--primary-font);
+}
 /* Responsive (giống category) */
 @media (max-width: 1200px) {
     .account-table th,

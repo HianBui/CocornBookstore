@@ -131,3 +131,35 @@ tr td:nth-child(6) a:nth-child(2) {
     transition: all 0.3s ease;
     overflow: hidden;
 }
+/* Font cho modal sản phẩm */
+#productDetailModal,
+#productFormModal {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Tiêu đề */
+#productDetailModal .modal-title,
+#productFormModal .modal-title {
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+/* Label */
+#productDetailModal label,
+#productFormModal label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Input và select */
+#productFormModal .form-control,
+#productFormModal .form-select {
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+#resetFilterBtn i{
+    color: white;
+}

@@ -264,10 +264,10 @@ function getUserDetail($pdo, $userId) {
         
         // Lấy thống kê đơn hàng của user
         $orderStatsSQL = "SELECT 
-                            COUNT(*) as total_orders,
-                            COALESCE(SUM(final_amount), 0) as total_spent
-                          FROM orders
-                          WHERE user_id = :user_id";
+                    COUNT(*) as total_orders,
+                    COALESCE(SUM(total_amount), 0) as total_spent
+                    FROM orders
+                    WHERE user_id = :user_id";
         $orderStmt = $pdo->prepare($orderStatsSQL);
         $orderStmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $orderStmt->execute();

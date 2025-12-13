@@ -7,6 +7,7 @@
 
 const API_URL = '../../admin/api/users.php';
 const IMAGE_BASE = '../../asset/image/';
+const IMAGE_BASE_RENDER = '../../asset/image/avatars/';
 
 let currentPage = 1;
 let currentLimit = 10;
@@ -18,9 +19,9 @@ const SEARCH_DEBOUNCE_MS = 300;
 /* ======================= HELPER FUNCTIONS ======================= */
 
 function getImagePath(img) {
-    if (!img) return IMAGE_BASE + '324x300.svg';
+    if (!img) return IMAGE_BASE_RENDER + '300x300.svg';
     if (img.startsWith('http') || img.startsWith('./')) return img;
-    return IMAGE_BASE + img;
+    return IMAGE_BASE_RENDER + img;
 }
 
 function escapeHtml(text) {
@@ -136,7 +137,7 @@ function renderUsersTable(users) {
     const tbody = document.getElementById("accountTableBody");
     if (!tbody) return;
 
-    const TOTAL_COLS = 8; // Cập nhật vì thêm 2 cột mới
+    const TOTAL_COLS = 8;
 
     if (!users || users.length === 0) {
         tbody.innerHTML = `
@@ -151,29 +152,55 @@ function renderUsersTable(users) {
 
     tbody.innerHTML = users.map(user => {
         const safeName = JSON.stringify(user.display_name || user.username);
+        
+        //Tạo đường dẫn avatar đúng
+        const avatarPath = user.avatar && user.avatar !== '300x300.svg' 
+            ? `${IMAGE_BASE}avatars/${user.avatar}` 
+            : `${IMAGE_BASE}300x300.svg`;
+        
         return `
             <tr data-user-id="${user.user_id}">
-                <td>${escapeHtml(user.display_name || user.username)}</td>
+                <!-- Cột 1: Tên hiển thị -->
                 <td>
-                    <div class="users-image-wrapper">
-                        <img src="${getImagePath(user.avatar)}" 
+                    <strong>${escapeHtml(user.display_name || user.username)}</strong>
+                </td>
+                
+                <!-- Cột 2: Hình ảnh -->
+                <td>
+                    <div style="text-align: center;">
+                        <img src="${avatarPath}" 
                              alt="${escapeHtml(user.display_name)}"
-                             onerror="this.src='${IMAGE_BASE}200x250.svg'">
+                             style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #ddd;"
+                             onerror="this.src='${IMAGE_BASE}300x300.svg'">
                     </div>
                 </td>
+                
+                <!-- Cột 3: Tên đăng nhập + Email -->
                 <td>
-                    ${escapeHtml(user.username)}
+                    <strong>${escapeHtml(user.username)}</strong>
                     <br>
                     <small style="color: #666;">${escapeHtml(user.email)}</small>
                 </td>
-                <td>
+                
+                <!-- Cột 4: Vai trò + Status -->
+                <td style="text-align: center;">
                     <span class="badge ${getRoleBadgeClass(user.role)}">
                         ${getRoleText(user.role)}
                     </span>
+                    <br>
+                    <small>
+                        <span class="badge ${getStatusBadgeClass(user.status)}" style="font-size: 10px; margin-top: 5px;">
+                            ${getStatusText(user.status)}
+                        </span>
+                    </small>
                 </td>
-                <td>
+                
+                <!-- Cột 5: SDT -->
+                <td style="text-align: center;">
                     <small style="color: #666;">${user.phone || 'Chưa có'}</small>
                 </td>
+                
+                <!-- Cột 6: Thao tác -->
                 <td>
                     <div style="display: flex; gap: 5px; justify-content: center;">
                         <button class="btn btn-sm btn-info" onclick="viewUserDetail(${user.user_id})" title="Xem chi tiết">
@@ -188,17 +215,19 @@ function renderUsersTable(users) {
                             <i class="bi bi-${user.status === 'active' ? 'lock' : 'unlock'}"></i>
                         </button>
                         <button class="btn btn-sm btn-danger" 
-                                onclick="deleteUser(${user.user_id}, '${safeName}')" title="Xóa">
+                                onclick="deleteUser(${user.user_id}, ${safeName})" title="Xóa">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </td>
+                
+                <!-- Cột 7: Ngày tạo -->
                 <td class="text-center">${formatDate(user.created_at)}</td>
+                
+                <!-- Cột 8: Ngày cập nhật -->
                 <td class="text-center">${formatDate(user.updated_at)}</td>
             </tr>`;
     }).join("");
-
-    // Gán event handlers (nếu cần thêm)
 }
 
 /* ======================= PAGINATION ======================= */
@@ -304,52 +333,119 @@ async function viewUserDetail(id) {
         if (!data.success) throw new Error(data.message);
 
         const user = data.data;
+        const orderStats = user.order_stats || { total_orders: 0, total_spent: 0 };
+
         const html = `
-            <div class="modal fade" id="userDetailModal" tabindex="-1">
+            <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title"><i class="bi bi-person me-2"></i>Chi tiết người dùng</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="userDetailModalLabel">
+                                <i class="bi bi-person-circle me-2"></i>Chi tiết người dùng
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <img src="${getImagePath(user.avatar)}" alt="${escapeHtml(user.display_name)}" class="user-detail-image">
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-person-badge me-2"></i>Tên hiển thị</strong>
-                                <p>${escapeHtml(user.display_name || 'Chưa có')}</p>
+                            <!-- Avatar + Tên + Role -->
+                            <div class="text-center mb-4">
+                                <img src="${getImagePath(user.avatar)}" 
+                                     alt="${escapeHtml(user.display_name || user.username)}"
+                                     class="rounded-circle mb-3"
+                                     style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #e9ecef;">
+                                <h4 class="mb-1">${escapeHtml(user.display_name || user.username)}</h4>
+                                <p class="text-muted">@${escapeHtml(user.username)}</p>
+                                <span class="badge ${getRoleBadgeClass(user.role)} fs-6 px-3 py-2">
+                                    ${getRoleText(user.role)}
+                                </span>
+                                <span class="badge ${getStatusBadgeClass(user.status)} ms-2 fs-6 px-3 py-2">
+                                    ${getStatusText(user.status)}
+                                </span>
                             </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-person me-2"></i>Username</strong>
-                                <p>${escapeHtml(user.username)}</p>
+
+                            <hr>
+
+                            <!-- Thông tin chính - 2 cột -->
+                            <div class="row g-4">
+                                <!-- Cột trái -->
+                                <div class="col-md-6">
+                                    <h6 style="color: var(--blue-color);" class="fw-bold mb-3"><i class="bi bi-person me-2"></i>Thông tin cá nhân</h6>
+                                    <div class="bg-light p-3 rounded">
+                                        <div class="mb-3">
+                                            <strong class="text-muted">Tên đăng nhập</strong>
+                                            <p class="mb-0">${escapeHtml(user.username)}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <strong class="text-muted">Email</strong>
+                                            <p class="mb-0">${escapeHtml(user.email)}</p>
+                                        </div>
+                                        <div>
+                                            <strong class="text-muted">Tên hiển thị</strong>
+                                            <p class="mb-0">${escapeHtml(user.display_name || 'Chưa đặt')}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cột phải -->
+                                <div class="col-md-6">
+                                    <h6 style="color: var(--blue-color);" class="fw-bold mb-3"><i class="bi bi-telephone me-2"></i>Thông tin liên hệ</h6>
+                                    <div class="bg-light p-3 rounded">
+                                        <div class="mb-3">
+                                            <strong class="text-muted">Số điện thoại</strong>
+                                            <p class="mb-0">${user.phone || '<span class="text-muted">Chưa có</span>'}</p>
+                                        </div>
+                                        <div>
+                                            <strong class="text-muted">Địa chỉ</strong>
+                                            <p class="mb-0">${user.address || '<span class="text-muted">Chưa có</span>'}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-envelope me-2"></i>Email</strong>
-                                <p>${escapeHtml(user.email)}</p>
+
+                            <hr>
+
+                            <!-- Thống kê đơn hàng -->
+                            <div class="row g-4 mt-2">
+                                <div class="col-md-12">
+                                    <h6 style="color: var(--blue-color);" class="fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>Thống kê đơn hàng</h6>
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <div class="p-3 bg-success text-white rounded">
+                                                <h5 class="mb-0">${orderStats.total_orders}</h5>
+                                                <small>Đơn hàng</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="p-3 bg-info text-white rounded">
+                                                <h5 class="mb-0">${new Intl.NumberFormat('vi-VN').format(orderStats.total_spent)} ₫</h5>
+                                                <small>Tổng chi tiêu</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-phone me-2"></i>SDT</strong>
-                                <p>${user.phone || 'Chưa có'}</p>
+
+                            <hr>
+
+                            <!-- Thời gian -->
+                            <div class="row mt-3">
+                                <div class="col-6 text-center">
+                                    <small class="text-muted"><i class="bi bi-calendar-plus me-1"></i> Ngày tạo</small>
+                                    <p class="mb-0">${formatDate(user.created_at)}</p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <small class="text-muted"><i class="bi bi-calendar-check me-1"></i> Cập nhật lần cuối</small>
+                                    <p class="mb-0">${formatDate(user.updated_at || user.created_at)}</p>
+                                </div>
                             </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-geo-alt me-2"></i>Địa chỉ</strong>
-                                <p>${user.address || 'Chưa có'}</p>
-                            </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-person-check me-2"></i>Vai trò</strong>
-                                <p><span class="status-badge ${user.role === 'admin' ? 'status-active' : ''}">${getRoleText(user.role)}</span></p>
-                            </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-shield-lock me-2"></i>Trạng thái</strong>
-                                <p><span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">${getStatusText(user.status)}</span></p>
-                            </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-calendar-event me-2"></i>Ngày tạo</strong>
-                                <p>${formatDate(user.created_at)}</p>
-                            </div>
-                            <div class="detail-info-item">
-                                <strong><i class="bi bi-calendar-check me-2"></i>Ngày cập nhật</strong>
-                                <p>${formatDate(user.updated_at)}</p>
-                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Đóng
+                            </button>
+                            <button type="button" class="btn btn-warning" onclick="editUser(${user.user_id}); bootstrap.Modal.getInstance(document.getElementById('userDetailModal')).hide();">
+                                <i class="bi bi-pencil me-1"></i> Chỉnh sửa
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -388,62 +484,77 @@ async function editUser(id) {
 /* ======================= SHOW FORM ======================= */
 
 function showUserForm(isEdit = false, user = {}) {
+    const title = isEdit ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới';
+    const btnText = isEdit ? 'Cập nhật' : 'Tạo mới';
+
     const html = `
         <div class="modal fade" id="userFormModal" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="bi bi-person-${isEdit ? 'check' : 'plus'} me-2"></i>${isEdit ? 'Sửa' : 'Thêm'} người dùng</h5>
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">
+                            <i class="bi bi-person-${isEdit ? 'gear' : 'plus'} me-2"></i>${title}
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <form id="userForm">
                             ${isEdit ? `<input type="hidden" name="user_id" value="${user.user_id}">` : ''}
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-person me-2"></i>Username *</label>
-                                <input type="text" class="form-control" name="username" value="${escapeHtml(user.username || '')}" ${isEdit ? 'readonly' : ''} required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-envelope me-2"></i>Email *</label>
-                                <input type="email" class="form-control" name="email" value="${escapeHtml(user.email || '')}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-person-badge me-2"></i>Tên hiển thị</label>
-                                <input type="text" class="form-control" name="display_name" value="${escapeHtml(user.display_name || '')}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-lock me-2"></i>Mật khẩu ${isEdit ? '(Để trống nếu không đổi)' : '*'}</label>
-                                <input type="password" class="form-control" name="password" ${isEdit ? '' : 'required'}>
-                                ${isEdit ? '<small class="password-note">Để trống nếu không muốn thay đổi mật khẩu</small>' : ''}
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-phone me-2"></i>SDT</label>
-                                <input type="text" class="form-control" name="phone" value="${user.phone || ''}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Địa chỉ</label>
-                                <input type="text" class="form-control" name="address" value="${user.address || ''}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-person-check me-2"></i>Vai trò</label>
-                                <select class="form-select" name="role">
-                                    <option value="user" ${user.role === 'user' ? 'selected' : ''}>Người dùng</option>
-                                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-shield-lock me-2"></i>Trạng thái</label>
-                                <select class="form-select" name="status">
-                                    <option value="active" ${user.status === 'active' ? 'selected' : ''}>Hoạt động</option>
-                                    <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Tạm khóa</option>
-                                    <option value="banned" ${user.status === 'banned' ? 'selected' : ''}>Bị cấm</option>
-                                </select>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-person me-2"></i>Username ${isEdit ? '' : '*'}</label>
+                                    <input type="text" class="form-control" name="username" value="${escapeHtml(user.username || '')}" ${isEdit ? 'readonly' : 'required'}>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-envelope me-2"></i>Email *</label>
+                                    <input type="email" class="form-control" name="email" value="${escapeHtml(user.email || '')}" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-person-badge me-2"></i>Tên hiển thị</label>
+                                    <input type="text" class="form-control" name="display_name" value="${escapeHtml(user.display_name || '')}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-lock me-2"></i>Mật khẩu ${isEdit ? '(để trống nếu không đổi)' : '*'}</label>
+                                    <input type="password" class="form-control" name="password" ${isEdit ? '' : 'required'}>
+                                    ${isEdit ? '<small class="text-muted">Để trống nếu không muốn thay đổi</small>' : ''}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-phone me-2"></i>Số điện thoại</label>
+                                    <input type="text" class="form-control" name="phone" value="${user.phone || ''}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Địa chỉ</label>
+                                    <input type="text" class="form-control" name="address" value="${escapeHtml(user.address || '')}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-person-check me-2"></i>Vai trò</label>
+                                    <select class="form-select" name="role">
+                                        <option value="user" ${user.role === 'user' ? 'selected' : ''}>Người dùng</option>
+                                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Quản trị viên</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-shield-lock me-2"></i>Trạng thái</label>
+                                    <select class="form-select" name="status">
+                                        <option value="active" ${user.status === 'active' ? 'selected' : ''}>Hoạt động</option>
+                                        <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Tạm khóa</option>
+                                        <option value="banned" ${user.status === 'banned' ? 'selected' : ''}>Bị cấm</option>
+                                    </select>
+                                </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle me-2"></i>Hủy</button>
-                        <button class="btn btn-primary" onclick="submitUserForm(${isEdit})"><i class="bi bi-save me-2"></i>Lưu</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Hủy
+                        </button>
+                        <button class="btn btn-primary" onclick="submitUserForm(${isEdit})">
+                            <i class="bi bi-save me-2"></i>${btnText}
+                        </button>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,10 @@
-// asset/js/sweetalert-helper.js
+/**
+ * ============================================================
+ * FILE: sweetalert-helper.js
+ * MÔ TẢ: Xử lý thanh toán giỏ hàng hoàn chỉnh + Gửi email
+ * ĐẶT TẠI: asset/js/sweetalert-helper.js
+ * ============================================================
+ */
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',

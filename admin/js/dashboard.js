@@ -165,46 +165,117 @@ async function loadMonthlyRevenueChart() {
         const data = await res.json();
         if (data.error) throw new Error(data.error);
 
+        // data là mảng 12 phần tử: [T1, T2, ..., T12]
+        const currentMonth = new Date().getMonth() + 1; // Tháng hiện tại (1-12), vì hôm nay là 13/12/2025 → 12
+
         const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
-        new Chart(ctx, {
+        
+        const chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'],
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                         'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
                 datasets: [{
-                    label: 'Doanh thu (triệu đồng)',
-                    data,
-                    backgroundColor: '#007bff',
-                    borderRadius: 5
+                    label: 'Doanh thu thực tế',
+                    data: data,
+                    backgroundColor: '#2ba8e2',
+                    borderSkipped: true,
+                    barThickness: 30,
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { callback: v => v + 'M' }
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' triệu';
+                            },
+                            font: {
+                                size: 12
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Doanh thu (triệu VNĐ)',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            color: (context) => {
+                                // Highlight tháng hiện tại (Tháng 12)
+                                return context.tick.label === 'Tháng 12' ? '#004173' : '#333';
+                            },
+                            font: (context) => {
+                                return {
+                                    weight: context.tick.label === 'Tháng 12' ? 'bold' : 'normal',
+                                    size: 12
+                                };
+                            }
+                        }
                     }
                 },
                 plugins: {
                     legend: {
-                        display: true, // ✅ Hiển thị legend
+                        display: true,
                         position: 'top',
-                        onClick: function(e, legendItem, legend) {
-                            // ✅ XỬ LÝ CLICK VÀO LEGEND
-                            const index = legendItem.datasetIndex;
-                            const chart = legend.chart;
-                            const meta = chart.getDatasetMeta(index);
-                            
-                            // Toggle ẩn/hiện dataset
-                            meta.hidden = !meta.hidden;
-                            
-                            chart.update();
+                        labels: {
+                            font: { size: 14 },
+                            padding: 20
                         }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                const month = context.label;
+                                const status = month === 'Tháng 12' ? ' (dự kiến)' : '';
+                                return `Doanh thu ${month}: ${value.toLocaleString('vi-VN')} triệu VNĐ${status}`;
+                            }
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 }
                     }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+                // Highlight cột tháng hiện tại
+                onComplete: function() {
+                    const meta = chart.getDatasetMeta(0);
+                    meta.data.forEach((bar, index) => {
+                        if (index === currentMonth - 1) { // Tháng 12 → index 11
+                            bar.borderWidth = 3;
+                            bar.backgroundColor = '#2ba8e2';
+                        }
+                    });
                 }
             }
         });
+
     } catch (err) {
         console.error('Lỗi biểu đồ doanh thu:', err);
+        document.querySelector('#monthlyRevenueChart').insertAdjacentHTML('beforebegin', 
+            '<div class="text-center text-danger">Không tải được dữ liệu doanh thu</div>'
+        );
     }
 }
 

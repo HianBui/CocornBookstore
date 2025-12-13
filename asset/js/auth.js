@@ -358,7 +358,12 @@ async function checkLoginStatus() {
         };
     }
 }
-
+window.addEventListener('userUpdated', function() {
+    const updatedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (updatedUser.user_id) {
+        updateUIForLoggedIn(updatedUser);
+    }
+});
 // ===========================
 // ĐĂNG XUẤT
 // ===========================
@@ -445,7 +450,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 // ===========================
 // Cập nhật UI CHO USER ĐÃ ĐĂNG NHẬP
 // ===========================
+// ===========================
+// Cập nhật UI CHO USER ĐÃ ĐĂNG NHẬP
+// ===========================
 function updateUIForLoggedIn(user) {
+    // LƯU LẠI USER VÀO LOCALSTORAGE
+    localStorage.setItem('user', JSON.stringify(user));
+    
     // Ẩn nút đăng nhập/đăng ký
     const buttonLogReg = document.getElementById('button-logreg');
     if (buttonLogReg) {
@@ -467,6 +478,12 @@ function updateUIForLoggedIn(user) {
         const userNameShow = dropdownUser.querySelector('.user-name-show');
         if (userNameShow) {
             userNameShow.textContent = user.display_name || user.username;
+        }
+
+        // Cập nhật avatar
+        const avatarImg = document.querySelector('.avatar-img');
+        if (avatarImg && user.avatar) {
+            avatarImg.src = user.avatar;
         }
     }
 

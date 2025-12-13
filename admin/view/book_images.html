@@ -1,0 +1,149 @@
+<!-- 
+ * ============================================================
+ * FILE: admin/view/book_images.html
+ * MÔ TẢ: Trang quản lý ảnh sản phẩm
+ * ============================================================ 
+-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý ảnh sản phẩm - Coconut Corn</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link rel="stylesheet" href="../../asset/css/style.css">
+    
+    <style>
+        .date-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .date-cell .time {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .date-cell .date {
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .empty-state-cell {
+            text-align: center;
+            padding: 3rem !important;
+            color: #999;
+        }
+        
+        .empty-state-cell i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../../asset/image/Logo.svg" alt="">
+            <h2 class="admin-name">Bùi Khắc Hiếu</h2>
+            <div class="role user-role">Quản trị viên</div>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="../dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="./users.html"><i class="bi bi-people"></i> Quản lý người dùng</a></li>
+            <li><a href="./products.html"><i class="bi bi-box-seam"></i> Quản lý sản phẩm</a></li>
+            <li><a href="./orders.html"><i class="bi bi-cart-check"></i> Đơn hàng</a></li>
+            <li><a href="./categories.html"><i class="bi bi-grid"></i> Danh mục</a></li>
+            <li><a href="./book_images.html" class="active"><i class="bi bi-image"></i> Ảnh sản phẩm</a></li>
+            <li><a href="./settings.html"><i class="bi bi-gear"></i> Cài đặt</a></li>
+            <li><a href="#" data-admin-logout><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-bar">
+            <h1><i class="bi bi-images me-2"></i>Quản lý ảnh sản phẩm</h1>
+            <div class="user-info">
+                <div class="avatar">B</div>
+                <div>
+                    <strong class="admin-name">Bùi Khắc Hiếu</strong>
+                    <div style="font-size: 12px; color: #7f8c8d;" class="admin-email">buikhachieu2574@gmail.com</div>
+                </div>
+                <button class="logout-btn" data-admin-logout>
+                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-grid">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sách...">
+                <button type="button" onclick="handleSearch()"><i class="bi bi-search"></i></button>
+            </div>
+            <button class="btn btn-secondary" onclick="window.location.href='products.html'" style="padding: 10px 20px; border-radius: 8px;">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại Sản phẩm
+            </button>
+        </div>
+
+        <!-- Hướng dẫn -->
+        <div class="alert alert-info mb-3">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Hướng dẫn:</strong> Mỗi sản phẩm có 1 ảnh chính và tối đa 3 ảnh phụ. 
+            Chỉ cần nhập tên file ảnh (vd: 300x300.svg), hệ thống tự động lưu vào <code>asset/image/books/</code>
+        </div>
+
+        <!-- Bảng ảnh sản phẩm -->
+        <table class="account-table" border="1">
+            <thead>
+                <tr>
+                    <th style="width: 80px; text-align: center;">ID</th>
+                    <th style="width: 250px;">Tên Sách</th>
+                    <th style="width: 120px; text-align: center;">Ảnh Chính</th>
+                    <th style="width: 100px; text-align: center;">Ảnh Phụ 1</th>
+                    <th style="width: 100px; text-align: center;">Ảnh Phụ 2</th>
+                    <th style="width: 100px; text-align: center;">Ảnh Phụ 3</th>
+                    <th style="width: 150px; text-align: center;">Cập Nhật</th>
+                    <th style="width: 150px; text-align: center;">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody id="imageTableBody">
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 30px;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div>Đang tải dữ liệu...</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Phân trang -->
+        <div id="pagination" style="margin-top: 20px;"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../asset/js/sweetAlert-Helper.js"></script>
+    <script src="../js/admin_auth.js"></script>
+    <script src="../js/book_images.js"></script>
+</body>
+</html>
