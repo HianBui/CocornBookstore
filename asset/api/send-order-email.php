@@ -26,9 +26,8 @@ function sendOrderConfirmationEmail($orderData) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        
-        // ✏️ THAY ĐỔI THÔNG TIN GMAIL CỦA BẠN
-        $mail->Username = 'cocornbookstore@gmail.com';     // Gmail của bạn
+
+        $mail->Username = 'cocornbookstore@gmail.com';     // Gmail 
         $mail->Password = 'qmce mozf zmdz vsuj';           // App Password 16 ký tự
         
         // Cấu hình kết nối
@@ -41,7 +40,7 @@ function sendOrderConfirmationEmail($orderData) {
         $mail->SMTPKeepAlive = true;
         
         // ⚠️ TẮT DEBUG trong production
-        $mail->SMTPDebug = 2;  // 0 = tắt, 2 = bật (chỉ dùng khi test)
+        $mail->SMTPDebug = 0;  // 0 = tắt, 2 = bật (chỉ dùng khi test)
         
         // ========== THÔNG TIN NGƯỜI GỬI ==========
         $mail->setFrom('cocornbookstore@gmail.com', 'Coconut Corn');
@@ -163,7 +162,7 @@ function generateEmailText($data) {
     $text = "========================================\n";
     $text .= "XÁC NHẬN ĐƠN HÀNG - COCONUT CORN\n";
     $text .= "========================================\n\n";
-    
+
     $text .= "Xin chào " . $data['customer_name'] . ",\n\n";
     $text .= "Cảm ơn bạn đã đặt hàng tại Coconut Corn!\n\n";
     
@@ -197,7 +196,7 @@ function generateEmailText($data) {
 }
 
 /**
- * Log email (tùy chọn)
+ * Log email xử lý lỗi
  */
 function logEmail($email, $orderId, $status, $error = null) {
     $logFile = __DIR__ . '/../../logs/email-log.txt';

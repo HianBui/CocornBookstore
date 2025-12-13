@@ -275,7 +275,7 @@ const CheckoutHandler = {
     },
 
     /**
-     * Gửi email xác nhận đơn hàng (CÓ DEBUG)
+     * Gửi email xác nhận đơn hàng
      */
     async sendOrderEmail(orderData) {
         console.log('🔵 [DEBUG] sendOrderEmail() được gọi');
@@ -347,7 +347,7 @@ const CheckoutHandler = {
     },
 
     /**
-     * Đặt hàng
+     * Đặt hàng 
      */
     async placeOrder() {
         // Validate form
