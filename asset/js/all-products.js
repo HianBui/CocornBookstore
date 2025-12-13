@@ -1,7 +1,7 @@
 /**
  * ============================================================
- * FILE: all-products.js (ĐÃ SỬA LỖI)
- * MÔ TẢ: JavaScript load và hiển thị tất cả sản phẩm
+ * FILE: all-products.js (ĐÃ THÊM CHỨC NĂNG TÌM KIẾM)
+ * MÔ TẢ: JavaScript load và hiển thị tất cả sản phẩm + TÌM KIẾM
  * ĐẶT TẠI: asset/js/all-products.js
  * ============================================================
  */
@@ -13,7 +13,8 @@ const API_CONFIG = {
     baseUrl: './asset/api',
     endpoints: {
         books: '/get_books.php',
-        categories: '/get_categories.php'
+        categories: '/get_categories.php',
+        search: '/search-api.php'
     }
 };
 
@@ -21,6 +22,7 @@ const API_CONFIG = {
 let currentPage = 1;
 let currentCategory = null;
 let currentSort = 'default';
+let currentSearchQuery = null;
 let totalProducts = 0;
 const productsPerPage = 12;
 
@@ -38,15 +40,30 @@ function getCategoryFromURL() {
 }
 
 /**
- * Cập nhật URL khi đổi category (không reload trang)
+ * Lấy search query từ URL parameter
  */
-function updateURL(categoryId) {
+function getSearchQueryFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('search') || null;
+}
+
+/**
+ * Cập nhật URL khi đổi category/search (không reload trang)
+ */
+function updateURL(categoryId, searchQuery) {
     const url = new URL(window.location);
-    if (categoryId) {
+    
+    // Xóa tất cả params cũ
+    url.searchParams.delete('id');
+    url.searchParams.delete('search');
+    
+    // Thêm param mới
+    if (searchQuery) {
+        url.searchParams.set('search', searchQuery);
+    } else if (categoryId) {
         url.searchParams.set('id', categoryId);
-    } else {
-        url.searchParams.delete('id');
     }
+    
     window.history.pushState({}, '', url);
 }
 
@@ -92,7 +109,7 @@ function showEmpty(container) {
     container.innerHTML = `
         <div class="empty-product col-12 text-center py-5">
             <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-            <p class="mt-3 text-muted" style=" color: #ccc;">Không tìm thấy sản phẩm nào</p>
+            <p class="mt-3 text-muted" style="color: #ccc;">Không tìm thấy sản phẩm nào</p>
         </div>
     `;
 }
@@ -155,7 +172,7 @@ function renderProductList(books) {
     
     container.innerHTML = books.map(book => renderProduct(book)).join('');
     
-    // ✅ Attach event listeners CHO CÁC NÚT MỚI RENDER
+    // Attach event listeners CHO CÁC NÚT MỚI RENDER
     attachAddToCartListeners();
 }
 
@@ -283,6 +300,28 @@ async function fetchBooks(options = {}) {
 }
 
 /**
+ * TÌM KIẾM SÁCH
+ */
+async function searchBooks(query) {
+    try {
+        const response = await fetch(
+            `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.search}?q=${encodeURIComponent(query)}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error('Search Error:', error);
+        throw error;
+    }
+}
+
+/**
  * Sắp xếp sản phẩm
  */
 function sortProducts(books, sortType) {
@@ -316,7 +355,7 @@ async function loadCategories() {
         
         if (!categoryList || !data.categories) return;
         
-        // Clear existing categories (keep "Tất cả sản phẩm")
+        // Clear existing categories
         categoryList.innerHTML = `
             <li><a href="#" data-category-id="">Tất cả sản phẩm</a></li>
         `;
@@ -356,18 +395,21 @@ function setActiveCategory(categoryId) {
         
         if (isActive) {
             link.closest('li').classList.add('active');
-            
-            // Update title
-            const categoryName = link.textContent.trim();
-            const title = document.querySelector('.header-box-product h3');
-            const pageTitle = document.querySelector('.page-title h1');
-            
-            if (title) title.textContent = categoryName;
-            if (pageTitle) pageTitle.textContent = categoryName;
         } else {
             link.closest('li').classList.remove('active');
         }
     });
+}
+
+/**
+ * Cập nhật tiêu đề trang
+ */
+function updatePageTitle(title) {
+    const headerTitle = document.querySelector('.header-box-product h3');
+    const pageTitle = document.querySelector('.page-title h1');
+    
+    if (headerTitle) headerTitle.textContent = title;
+    if (pageTitle) pageTitle.textContent = title;
 }
 
 /**
@@ -381,18 +423,64 @@ async function loadProducts() {
     showLoading(container);
     
     try {
-        const offset = (currentPage - 1) * productsPerPage;
-        const data = await fetchBooks({
-            section: 'all',
-            limit: 100, // Lấy nhiều để có thể sort
-            offset: 0,
-            category_id: currentCategory
-        });
+        let books = [];
+        let pageTitle = 'Tất cả sản phẩm';
         
-        totalProducts = data.count;
+        // NẾU CÓ SEARCH QUERY - TÌM KIẾM
+        if (currentSearchQuery) {
+            console.log('Searching for:', currentSearchQuery);
+            const searchData = await searchBooks(currentSearchQuery);
+            
+            if (searchData.success && searchData.books) {
+                books = searchData.books;
+                pageTitle = `Kết quả tìm kiếm: "${currentSearchQuery}"`;
+            } else {
+                books = [];
+                pageTitle = `Không tìm thấy: "${currentSearchQuery}"`;
+            }
+            
+            // Xóa active category khi search
+            setActiveCategory(null);
+            document.querySelectorAll('.category-list li').forEach(li => {
+                li.classList.remove('active');
+            });
+        }
+        // NẾU CÓ CATEGORY - LỌC THEO DANH MỤC
+        else if (currentCategory) {
+            const data = await fetchBooks({
+                section: 'all',
+                limit: 100,
+                offset: 0,
+                category_id: currentCategory
+            });
+            
+            books = data.books;
+            
+            // Lấy tên category
+            const categoryLink = document.querySelector(`.category-list a[data-category-id="${currentCategory}"]`);
+            if (categoryLink) {
+                pageTitle = categoryLink.textContent.trim();
+            }
+        }
+        // MẶC ĐỊNH - TẤT CẢ SẢN PHẨM
+        else {
+            const data = await fetchBooks({
+                section: 'all',
+                limit: 100,
+                offset: 0
+            });
+            
+            books = data.books;
+            pageTitle = 'Tất cả sản phẩm';
+        }
+        
+        totalProducts = books.length;
+        
+        // Cập nhật tiêu đề
+        updatePageTitle(pageTitle);
         
         // Sắp xếp
-        let sortedBooks = sortProducts(data.books, currentSort);
+        let sortedBooks = sortProducts(books, currentSort);
         
         // Phân trang
         const start = (currentPage - 1) * productsPerPage;
@@ -416,33 +504,31 @@ async function loadProducts() {
 // ==========================================
 
 /**
- * ✅ Thêm vào giỏ hàng - GỌI ĐÚNG CartHandler
+ * Thêm vào giỏ hàng - GỌI ĐÚNG CartHandler
  */
 function attachAddToCartListeners() {
-    // ✅ Chỉ gắn cho các nút CHƯA có event listener
     const addButtons = document.querySelectorAll('.add-to-cart:not([data-listener-attached])');
     
     addButtons.forEach(button => {
-        button.setAttribute('data-listener-attached', 'true'); // Đánh dấu đã gắn
+        button.setAttribute('data-listener-attached', 'true');
         
         button.addEventListener('click', async (e) => {
             e.preventDefault();
-            e.stopPropagation(); // Ngăn event bubbling
+            e.stopPropagation();
             
             const bookId = button.dataset.bookId;
             const quantity = parseInt(button.dataset.quantity) || 1;
             
-            // ✅ Kiểm tra CartHandler có tồn tại không
             if (typeof window.CartHandler !== 'undefined' && window.CartHandler.addToCart) {
                 await window.CartHandler.addToCart(bookId, quantity);
             } else {
-                console.error('❌ CartHandler chưa được load!');
+                console.error('CartHandler chưa được load!');
                 alert('Lỗi: Không thể thêm vào giỏ hàng. Vui lòng tải lại trang.');
             }
         });
     });
     
-    console.log('✅ [all-products.js] Đã gắn event listeners cho', addButtons.length, 'nút');
+    console.log('[all-products.js] Đã gắn event listeners cho', addButtons.length, 'nút');
 }
 
 /**
@@ -450,7 +536,7 @@ function attachAddToCartListeners() {
  */
 function handleSortChange(e) {
     currentSort = e.target.value;
-    currentPage = 1; // Reset về trang 1
+    currentPage = 1;
     loadProducts();
 }
 
@@ -485,13 +571,14 @@ function attachCategoryListeners() {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // Get category ID (empty string = all products)
+            // Get category ID
             const categoryId = link.dataset.categoryId;
             currentCategory = categoryId === '' ? null : parseInt(categoryId);
-            currentPage = 1; // Reset về trang 1
+            currentSearchQuery = null; // XÓA SEARCH KHI CHỌN CATEGORY
+            currentPage = 1;
             
             // Update URL
-            updateURL(currentCategory);
+            updateURL(currentCategory, null);
             
             // Update active state
             setActiveCategory(currentCategory);
@@ -507,10 +594,18 @@ function attachCategoryListeners() {
  */
 function handlePopState() {
     const categoryId = getCategoryFromURL();
+    const searchQuery = getSearchQueryFromURL();
+    
     currentCategory = categoryId;
+    currentSearchQuery = searchQuery;
     currentPage = 1;
     
-    setActiveCategory(currentCategory);
+    if (searchQuery) {
+        setActiveCategory(null);
+    } else {
+        setActiveCategory(currentCategory);
+    }
+    
     loadProducts();
 }
 
@@ -527,15 +622,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load categories first
     await loadCategories();
     
-    // Lấy category từ URL
-    const urlCategoryId = getCategoryFromURL();
-    if (urlCategoryId) {
-        currentCategory = urlCategoryId;
-        console.log('Category from URL:', currentCategory);
+    // Lấy search query từ URL
+    const urlSearchQuery = getSearchQueryFromURL();
+    if (urlSearchQuery) {
+        currentSearchQuery = urlSearchQuery;
+        console.log('Search query from URL:', currentSearchQuery);
+        
+        // Cập nhật ô tìm kiếm
+        const searchInput = document.getElementById('search');
+        if (searchInput) {
+            searchInput.value = currentSearchQuery;
+        }
+    } else {
+        // Lấy category từ URL
+        const urlCategoryId = getCategoryFromURL();
+        if (urlCategoryId) {
+            currentCategory = urlCategoryId;
+            console.log('Category from URL:', currentCategory);
+        }
+        
+        // Set active category trong sidebar
+        setActiveCategory(currentCategory);
     }
-    
-    // Set active category trong sidebar
-    setActiveCategory(currentCategory);
     
     // Load products
     await loadProducts();
@@ -557,6 +665,8 @@ window.AllProductsAPI = {
     loadProducts,
     currentPage,
     currentCategory,
+    currentSearchQuery,
     getCategoryFromURL,
+    getSearchQueryFromURL,
     updateURL
 };

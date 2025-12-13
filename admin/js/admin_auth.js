@@ -11,7 +11,6 @@
 // ===========================
 async function checkAdminAccess() {
     try {
-        // ✅ Tự động xác định đường dẫn dựa trên vị trí file HTML
         let apiPath;
         
         if (window.location.pathname.includes('/view/')) {

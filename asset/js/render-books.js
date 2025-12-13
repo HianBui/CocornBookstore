@@ -8,6 +8,7 @@
 
 const API_BASE = './asset/api';
 const IMAGE_BASE = './asset/image/books/';
+const IMAGE_BASE_CATE = './asset/image/categories/';
 
 // ==========================================
 // HÀM TẠO ĐƯỜNG DẪN ẢNH ĐẦY ĐỦ
@@ -18,6 +19,13 @@ function getImagePath(imageName) {
         return imageName;
     }
     return IMAGE_BASE + imageName;
+}
+function getImagePathCate(imageName) {
+    if (!imageName) return IMAGE_BASE_CATE + '75x100.svg';
+    if (imageName.startsWith('./') || imageName.startsWith('http')) {
+        return imageName;
+    }
+    return IMAGE_BASE_CATE + imageName;
 }
 
 // ==========================================
@@ -184,7 +192,7 @@ async function renderCategories() {
             const categoryHTML = `
                 <a class="item catI" href="./all-product.html?id=${category.category_id}">
                     <div class="item-img">
-                        <img src="${getImagePath(category.image)}" alt="${category.category_name}">
+                        <img src="${getImagePathCate(category.image)}" alt="${category.category_name}">
                     </div>
                     <p class="des">${displayText}</p>
                 </a>
