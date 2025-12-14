@@ -1,7 +1,7 @@
 <!-- 
  * ============================================================
- * FILE: admin/view/categories.html
- * MÔ TẢ: Trang quản lý danh mục cho admin
+ * FILE: admin/view/carts.html
+ * MÔ TẢ: Trang quản lý giỏ hàng cho admin
  * ============================================================ 
 -->
 <!DOCTYPE html>
@@ -9,19 +9,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý danh mục - Coconut Corn</title>
+    <title>Quản lý Giỏ hàng - Coconut Corn</title>
     
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <!-- CSS -->
-    <link rel="stylesheet" href="../../asset/css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/table.css">
-    <link rel="stylesheet" href="../css/table-category.css">
-    <link rel="stylesheet" href="../css/user.css">
+    <link rel="stylesheet" href="../../asset/css/style.css">
     
 </head>
 <body>
@@ -38,9 +39,9 @@
             <li><a href="./users.html"><i class="bi bi-people"></i> Quản lý người dùng</a></li>
             <li><a href="./products.html"><i class="bi bi-box-seam"></i> Quản lý sản phẩm</a></li>
             <li><a href="./orders.html"><i class="bi bi-cart-check"></i> Đơn hàng</a></li>
-            <li><a href="./categories.html" class="active"><i class="bi bi-grid"></i> Danh mục</a></li>
+            <li><a href="./categories.html"><i class="bi bi-grid"></i> Danh mục</a></li>
             <li><a href="./book_images.html"><i class="bi bi-image"></i> Ảnh sản phẩm</a></li>
-            <li><a href="./carts.html"><i class="bi bi-cart3"></i>Giỏ hàng</a></li>
+            <li><a href="./carts.html" class="active"><i class="bi bi-cart3"></i>Giỏ hàng</a></li>
             <li><a href="#" data-admin-logout><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
         </ul>
     </aside>
@@ -48,7 +49,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="top-bar">
-            <h1>Quản lý danh mục</h1>
+            <h1>Quản lý Giỏ hàng</h1>
             <div class="user-info">
                 <div class="avatar">A</div>
                 <div>
@@ -64,12 +65,9 @@
         <!-- Action Bar -->
         <div class="action-grid">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Tìm kiếm danh mục...">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sách, người dùng...">
                 <button type="button" onclick="handleSearch()"><i class="bi bi-search"></i></button>
             </div>
-            <button class="addBtn" onclick="showCategoryForm()">
-                <i class="bi bi-plus"></i>Thêm danh mục
-            </button>
         </div>
 
         <!-- Bộ lọc -->
@@ -80,6 +78,8 @@
                     <select id="sortFilter" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ddd;">
                         <option value="newest">Mới nhất</option>
                         <option value="oldest">Cũ nhất</option>
+                        <option value="user_asc">Người dùng A-Z</option>
+                        <option value="user_desc">Người dùng Z-A</option>
                     </select>
                 </div>
                 <button id="filterBtn" onclick="handleFilter()" style="padding: 8px 20px; background: #2ba8e2; color: white; border: none; border-radius: 5px; cursor: pointer;">
@@ -91,23 +91,23 @@
             </div>
         </div>
 
-        <!-- Bảng danh mục -->
-        <table class="category-table" border="1">
+        <!-- Bảng giỏ hàng -->
+        <table class="account-table" border="1">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>ẢNH</th>
-                    <th>TÊN DANH MỤC</th>
-                    <th>MÔ TẢ</th>
-                    <th>SỐ SẢN PHẨM</th>
-                    <th>THAO TÁC</th>
-                    <th>NGÀY TẠO</th>
-                    <th>NGÀY CẬP NHẬT</th>
+                    <th style="width: 60px;">STT</th>
+                    <th style="width: 80px;">Ảnh</th>
+                    <th style="width: 250px;">Sản phẩm</th>
+                    <th style="width: 200px;">Người dùng</th>
+                    <th style="width: 120px;">Đơn giá</th>
+                    <th style="width: 100px;">Số lượng</th>
+                    <th style="width: 120px;">Thành tiền</th>
+                    <th style="width: 150px;">Thao tác</th>
                 </tr>
             </thead>
-            <tbody id="categoryTableBody">
+            <tbody id="cartTableBody">
                 <tr>
-                    <td colspan="10" style="text-align: center; padding: 30px;">
+                    <td colspan="8" style="text-align: center; padding: 30px;">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -126,6 +126,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../../asset/js/sweetAlert-Helper.js"></script>
     <script src="../js/admin_auth.js"></script>
-    <script src="../js/categories.js"></script>
+    <script src="../js/carts.js"></script>
 </body>
 </html>

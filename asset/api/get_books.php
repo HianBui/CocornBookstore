@@ -4,6 +4,7 @@
  * FILE: get_books.php
  * MÔ TẢ: API lấy danh sách sách từ database (CẬP NHẬT)
  * ĐẶT TẠI: asset/api/get_books.php
+ * CẬP NHẬT: Lấy lượt xem từ book_views
  * ============================================================
  */
 
@@ -20,7 +21,7 @@ $offset = (int)($_GET['offset'] ?? 0);
 $category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
 
 try {
-    // Base query
+    // Base query - JOIN với book_views để đếm lượt xem
     $baseQuery = "
         SELECT 
             b.book_id,
@@ -28,14 +29,15 @@ try {
             b.author,
             b.price,
             b.quantity,
-            b.view_count,
             b.created_at,
             bi.main_img,
             bi.sub_img1,
             bi.sub_img2,
-            bi.sub_img3
+            bi.sub_img3,
+            COUNT(bv.view_id) as view_count
         FROM books b
         LEFT JOIN book_images bi ON b.book_id = bi.book_id
+        LEFT JOIN book_views bv ON b.book_id = bv.book_id
         WHERE b.status = 'available'
     ";
     
@@ -44,10 +46,13 @@ try {
         $baseQuery .= " AND b.category_id = :category_id";
     }
     
+    // Group by để đếm views
+    $baseQuery .= " GROUP BY b.book_id";
+    
     // Query dựa trên section
     if ($section === 'featured') {
         // Sản phẩm nổi bật - sắp xếp theo lượt xem
-        $query = $baseQuery . " ORDER BY b.view_count DESC, b.created_at DESC";
+        $query = $baseQuery . " ORDER BY view_count DESC, b.created_at DESC";
     } 
     elseif ($section === 'hotdeal') {
         // Hot deal - sách mới trong 7 ngày
@@ -83,7 +88,7 @@ try {
             'price' => (float)$book['price'],
             'price_formatted' => number_format($book['price'], 0, ',', '.') . 'đ',
             'quantity' => (int)$book['quantity'],
-            'view_count' => (int)$book['view_count'],
+            'view_count' => (int)$book['view_count'], // ✅ Từ COUNT(bv.view_id)
             'main_img' => $book['main_img'] ?? '300x300.svg',
             'sub_images' => [
                 $book['sub_img1'] ?? null,

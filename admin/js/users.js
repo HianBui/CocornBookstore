@@ -1,13 +1,13 @@
 /**
  * ============================================================
  * FILE: admin/js/users.js
- * MÔ TẢ: Xử lý quản lý người dùng - load, thêm, sửa, xóa (thiết kế lại giống categories.js)
+ * MÔ TẢ: Xử lý quản lý người dùng - load, thêm, sửa, xóa
+ * VERSION: 2.0 - HOÀN CHỈNH
  * ============================================================
  */
 
 const API_URL = '../../admin/api/users.php';
 const IMAGE_BASE = '../../asset/image/';
-const IMAGE_BASE_RENDER = '../../asset/image/avatars/';
 
 let currentPage = 1;
 let currentLimit = 10;
@@ -18,10 +18,20 @@ const SEARCH_DEBOUNCE_MS = 300;
 
 /* ======================= HELPER FUNCTIONS ======================= */
 
-function getImagePath(img) {
-    if (!img) return IMAGE_BASE_RENDER + '300x300.svg';
-    if (img.startsWith('http') || img.startsWith('./')) return img;
-    return IMAGE_BASE_RENDER + img;
+/**
+ * Xây dựng đường dẫn avatar đúng
+ */
+function getAvatarPath(avatar) {
+    if (!avatar || avatar === '300x300.svg') {
+        return IMAGE_BASE + '300x300.svg';
+    }
+    if (avatar.startsWith('http') || avatar.startsWith('./') || avatar.startsWith('../')) {
+        return avatar;
+    }
+    if (!avatar.includes('avatars/')) {
+        return IMAGE_BASE + 'avatars/' + avatar;
+    }
+    return IMAGE_BASE + avatar;
 }
 
 function escapeHtml(text) {
@@ -76,11 +86,11 @@ function getStatusText(status) {
 }
 
 function showSuccess(msg) { 
-    alert('✅ ' + msg); 
+    showToast('success', 'Thành công!', msg);
 }
 
 function showError(msg) { 
-    alert('❌ ' + msg); 
+    showToast('error', 'Lỗi!', msg);
 }
 
 /* ======================= LOAD USERS ======================= */
@@ -152,20 +162,14 @@ function renderUsersTable(users) {
 
     tbody.innerHTML = users.map(user => {
         const safeName = JSON.stringify(user.display_name || user.username);
-        
-        //Tạo đường dẫn avatar đúng
-        const avatarPath = user.avatar && user.avatar !== '300x300.svg' 
-            ? `${IMAGE_BASE}avatars/${user.avatar}` 
-            : `${IMAGE_BASE}300x300.svg`;
+        const avatarPath = getAvatarPath(user.avatar);
         
         return `
             <tr data-user-id="${user.user_id}">
-                <!-- Cột 1: Tên hiển thị -->
                 <td>
                     <strong>${escapeHtml(user.display_name || user.username)}</strong>
                 </td>
                 
-                <!-- Cột 2: Hình ảnh -->
                 <td>
                     <div style="text-align: center;">
                         <img src="${avatarPath}" 
@@ -175,14 +179,12 @@ function renderUsersTable(users) {
                     </div>
                 </td>
                 
-                <!-- Cột 3: Tên đăng nhập + Email -->
                 <td>
                     <strong>${escapeHtml(user.username)}</strong>
                     <br>
                     <small style="color: #666;">${escapeHtml(user.email)}</small>
                 </td>
                 
-                <!-- Cột 4: Vai trò + Status -->
                 <td style="text-align: center;">
                     <span class="badge ${getRoleBadgeClass(user.role)}">
                         ${getRoleText(user.role)}
@@ -195,12 +197,10 @@ function renderUsersTable(users) {
                     </small>
                 </td>
                 
-                <!-- Cột 5: SDT -->
                 <td style="text-align: center;">
                     <small style="color: #666;">${user.phone || 'Chưa có'}</small>
                 </td>
                 
-                <!-- Cột 6: Thao tác -->
                 <td>
                     <div style="display: flex; gap: 5px; justify-content: center;">
                         <button class="btn btn-sm btn-info" onclick="viewUserDetail(${user.user_id})" title="Xem chi tiết">
@@ -215,16 +215,13 @@ function renderUsersTable(users) {
                             <i class="bi bi-${user.status === 'active' ? 'lock' : 'unlock'}"></i>
                         </button>
                         <button class="btn btn-sm btn-danger" 
-                                onclick="deleteUser(${user.user_id}, ${safeName})" title="Xóa">
+                                onclick="deleteUser(${user.user_id}, '${escapeHtml(user.display_name || user.username)}')", ${safeName})" title="Xóa">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </td>
                 
-                <!-- Cột 7: Ngày tạo -->
                 <td class="text-center">${formatDate(user.created_at)}</td>
-                
-                <!-- Cột 8: Ngày cập nhật -->
                 <td class="text-center">${formatDate(user.updated_at)}</td>
             </tr>`;
     }).join("");
@@ -243,7 +240,6 @@ function renderPagination(pagination) {
 
     let html = '<nav><ul class="pagination justify-content-center">';
 
-    // Nút Previous
     html += `
         <li class="page-item ${pagination.currentPage === 1 ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="loadUsers(${pagination.currentPage - 1}); return false;">
@@ -252,7 +248,6 @@ function renderPagination(pagination) {
         </li>
     `;
 
-    // Các trang
     for (let i = 1; i <= pagination.totalPages; i++) {
         if (
             i === 1 || 
@@ -272,7 +267,6 @@ function renderPagination(pagination) {
         }
     }
 
-    // Nút Next
     html += `
         <li class="page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="loadUsers(${pagination.currentPage + 1}); return false;">
@@ -322,9 +316,9 @@ function handleResetFilter() {
 
 /* ======================= VIEW DETAIL ======================= */
 
-/* ======================= VIEW DETAIL ======================= */
-
 async function viewUserDetail(id) {
+    showLoading('Đang tải thông tin...');
+
     try {
         const resp = await fetch(`${API_URL}?action=detail&id=${id}`);
         const text = await resp.text();
@@ -332,8 +326,11 @@ async function viewUserDetail(id) {
 
         if (!data.success) throw new Error(data.message);
 
+        Swal.close();
+
         const user = data.data;
         const orderStats = user.order_stats || { total_orders: 0, total_spent: 0 };
+        const avatarPath = getAvatarPath(user.avatar);
 
         const html = `
             <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
@@ -346,12 +343,12 @@ async function viewUserDetail(id) {
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Avatar + Tên + Role -->
                             <div class="text-center mb-4">
-                                <img src="${getImagePath(user.avatar)}" 
+                                <img src="${avatarPath}" 
                                      alt="${escapeHtml(user.display_name || user.username)}"
                                      class="rounded-circle mb-3"
-                                     style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #e9ecef;">
+                                     style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #e9ecef;"
+                                     onerror="this.src='${IMAGE_BASE}300x300.svg'">
                                 <h4 class="mb-1">${escapeHtml(user.display_name || user.username)}</h4>
                                 <p class="text-muted">@${escapeHtml(user.username)}</p>
                                 <span class="badge ${getRoleBadgeClass(user.role)} fs-6 px-3 py-2">
@@ -364,9 +361,7 @@ async function viewUserDetail(id) {
 
                             <hr>
 
-                            <!-- Thông tin chính - 2 cột -->
                             <div class="row g-4">
-                                <!-- Cột trái -->
                                 <div class="col-md-6">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3"><i class="bi bi-person me-2"></i>Thông tin cá nhân</h6>
                                     <div class="bg-light p-3 rounded">
@@ -385,7 +380,6 @@ async function viewUserDetail(id) {
                                     </div>
                                 </div>
 
-                                <!-- Cột phải -->
                                 <div class="col-md-6">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3"><i class="bi bi-telephone me-2"></i>Thông tin liên hệ</h6>
                                     <div class="bg-light p-3 rounded">
@@ -403,7 +397,6 @@ async function viewUserDetail(id) {
 
                             <hr>
 
-                            <!-- Thống kê đơn hàng -->
                             <div class="row g-4 mt-2">
                                 <div class="col-md-12">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>Thống kê đơn hàng</h6>
@@ -426,7 +419,6 @@ async function viewUserDetail(id) {
 
                             <hr>
 
-                            <!-- Thời gian -->
                             <div class="row mt-3">
                                 <div class="col-6 text-center">
                                     <small class="text-muted"><i class="bi bi-calendar-plus me-1"></i> Ngày tạo</small>
@@ -460,6 +452,7 @@ async function viewUserDetail(id) {
         });
 
     } catch (err) {
+        Swal.close();
         showError("Không thể tải chi tiết: " + err.message);
     }
 }
@@ -467,6 +460,8 @@ async function viewUserDetail(id) {
 /* ======================= EDIT USER ======================= */
 
 async function editUser(id) {
+    showLoading('Đang tải dữ liệu...');
+
     try {
         const resp = await fetch(`${API_URL}?action=detail&id=${id}`);
         const text = await resp.text();
@@ -474,9 +469,11 @@ async function editUser(id) {
 
         if (!data.success) throw new Error(data.message);
 
+        Swal.close();
         showUserForm(true, data.data);
 
     } catch (err) {
+        Swal.close();
         showError("Không thể tải dữ liệu: " + err.message);
     }
 }
@@ -503,42 +500,42 @@ function showUserForm(isEdit = false, user = {}) {
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-person me-2"></i>Username ${isEdit ? '' : '*'}</label>
+                                    <label class="form-label">Username ${isEdit ? '' : '*'}</label>
                                     <input type="text" class="form-control" name="username" value="${escapeHtml(user.username || '')}" ${isEdit ? 'readonly' : 'required'}>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-envelope me-2"></i>Email *</label>
+                                    <label class="form-label">Email *</label>
                                     <input type="email" class="form-control" name="email" value="${escapeHtml(user.email || '')}" required>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-person-badge me-2"></i>Tên hiển thị</label>
+                                    <label class="form-label">Tên hiển thị</label>
                                     <input type="text" class="form-control" name="display_name" value="${escapeHtml(user.display_name || '')}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-lock me-2"></i>Mật khẩu ${isEdit ? '(để trống nếu không đổi)' : '*'}</label>
+                                    <label class="form-label">Mật khẩu ${isEdit ? '(để trống nếu không đổi)' : '*'}</label>
                                     <input type="password" class="form-control" name="password" ${isEdit ? '' : 'required'}>
                                     ${isEdit ? '<small class="text-muted">Để trống nếu không muốn thay đổi</small>' : ''}
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-phone me-2"></i>Số điện thoại</label>
+                                    <label class="form-label">Số điện thoại</label>
                                     <input type="text" class="form-control" name="phone" value="${user.phone || ''}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Địa chỉ</label>
+                                    <label class="form-label">Địa chỉ</label>
                                     <input type="text" class="form-control" name="address" value="${escapeHtml(user.address || '')}">
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-person-check me-2"></i>Vai trò</label>
+                                    <label class="form-label">Vai trò</label>
                                     <select class="form-select" name="role">
                                         <option value="user" ${user.role === 'user' ? 'selected' : ''}>Người dùng</option>
                                         <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Quản trị viên</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-shield-lock me-2"></i>Trạng thái</label>
+                                    <label class="form-label">Trạng thái</label>
                                     <select class="form-select" name="status">
                                         <option value="active" ${user.status === 'active' ? 'selected' : ''}>Hoạt động</option>
                                         <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Tạm khóa</option>
@@ -549,12 +546,8 @@ function showUserForm(isEdit = false, user = {}) {
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle me-2"></i>Hủy
-                        </button>
-                        <button class="btn btn-primary" onclick="submitUserForm(${isEdit})">
-                            <i class="bi bi-save me-2"></i>${btnText}
-                        </button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button class="btn btn-primary" onclick="submitUserForm(${isEdit})">${btnText}</button>
                     </div>
                 </div>
             </div>
@@ -585,6 +578,8 @@ async function submitUserForm(isEdit) {
         const action = isEdit ? 'update' : 'create';
         const method = isEdit ? 'PUT' : 'POST';
 
+        showLoading(isEdit ? 'Đang cập nhật...' : 'Đang tạo người dùng...');
+
         const resp = await fetch(`${API_URL}?action=${action}`, {
             method,
             headers: { 'Content-Type': 'application/json' },
@@ -598,11 +593,13 @@ async function submitUserForm(isEdit) {
             throw new Error(result.message || "Lỗi khi lưu");
         }
 
+        Swal.close();
         showSuccess(result.message);
         bootstrap.Modal.getInstance(document.getElementById("userFormModal")).hide();
         loadUsers(currentPage);
 
     } catch (err) {
+        Swal.close();
         showError("Không thể lưu: " + err.message);
     }
 }
@@ -613,7 +610,16 @@ async function toggleUserStatus(userId, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     const actionText = newStatus === 'active' ? 'kích hoạt' : 'khóa';
 
-    if (!confirm(`Bạn có chắc muốn ${actionText} người dùng này?`)) return;
+    const result = await showConfirm(
+        'Xác nhận thay đổi',
+        `Bạn có chắc muốn ${actionText} người dùng này?`,
+        actionText === 'kích hoạt' ? 'Kích hoạt' : 'Khóa',
+        'Hủy'
+    );
+
+    if (!result.isConfirmed) return;
+
+    showLoading(`Đang ${actionText}...`);
 
     try {
         const resp = await fetch(`${API_URL}?action=toggle-status`, {
@@ -623,14 +629,16 @@ async function toggleUserStatus(userId, currentStatus) {
         });
 
         const text = await resp.text();
-        const result = JSON.parse(text);
+        const resultData = JSON.parse(text);
 
-        if (!result.success) throw new Error(result.message);
+        if (!resultData.success) throw new Error(resultData.message);
 
-        showSuccess(result.message);
+        Swal.close();
+        showSuccess(resultData.message);
         loadUsers(currentPage);
 
     } catch (err) {
+        Swal.close();
         showError("Không thể thay đổi trạng thái: " + err.message);
     }
 }
@@ -641,8 +649,17 @@ async function deleteUser(id, name) {
     try {
         name = JSON.parse(name);
     } catch {}
+    
+    const result = await showConfirm(
+        'Xác nhận xóa',
+        `Bạn có chắc muốn xóa người dùng "${name}"?\n\nLưu ý: Không thể xóa nếu đã có đơn hàng!`,
+        'Xóa',
+        'Hủy'
+    );
 
-    if (!confirm(`Bạn có chắc muốn xóa người dùng "${name}"?\n\nLưu ý: Không thể xóa nếu đã có đơn hàng!`)) return;
+    if (!result.isConfirmed) return;
+
+    showLoading('Đang xóa người dùng...');
 
     try {
         const resp = await fetch(`${API_URL}?action=delete`, {
@@ -652,14 +669,16 @@ async function deleteUser(id, name) {
         });
 
         const text = await resp.text();
-        const result = JSON.parse(text);
+        const resultData = JSON.parse(text);
 
-        if (!result.success) throw new Error(result.message);
+        if (!resultData.success) throw new Error(resultData.message);
 
-        showSuccess(result.message);
+        Swal.close();
+        showSuccess(resultData.message);
         loadUsers(currentPage);
 
     } catch (err) {
+        Swal.close();
         showError("Không thể xóa: " + err.message);
     }
 }
@@ -698,7 +717,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/* ======================= Export Functions ======================= */
+/* ======================= EXPORT FUNCTIONS ======================= */
 
 window.loadUsers = loadUsers;
 window.viewUserDetail = viewUserDetail;
@@ -710,3 +729,4 @@ window.submitUserForm = submitUserForm;
 window.handleSearch = handleSearch;
 window.handleFilter = handleFilter;
 window.handleResetFilter = handleResetFilter;
+window.getAvatarPath = getAvatarPath;

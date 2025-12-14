@@ -41,6 +41,7 @@ echo json_encode([
         'username' => $_SESSION['username'],
         'display_name' => $_SESSION['display_name'],
         'email' => $_SESSION['email'],
-        'role' => $_SESSION['role']
+        'role' => $_SESSION['role'],
+        'avatar' => $_SESSION['avatar'] ?? null
     ]
 ]);

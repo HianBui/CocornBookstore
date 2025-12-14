@@ -1,6 +1,6 @@
 /**
  * FILE: admin/js/categories-improved.js
- * Quản lý danh mục với layout cải tiến
+ * Quản lý danh mục với layout cải tiến + SweetAlert2
  */
 
 const API_URL = '../../admin/api/categories.php';
@@ -46,14 +46,6 @@ function formatDate(dateStr) {
     `;
 }
 
-function showSuccess(msg) { 
-    alert('✅ ' + msg); 
-}
-
-function showError(msg) { 
-    alert('❌ ' + msg); 
-}
-
 /* ======================= LOAD CATEGORIES ======================= */
 
 async function loadCategories(page = 1) {
@@ -93,8 +85,7 @@ async function loadCategories(page = 1) {
         renderPagination(data.pagination);
 
     } catch (err) {
-        console.error("loadCategories error", err);
-        showError("Không thể tải danh mục: " + err.message);
+        showToast('error', 'Lỗi tải danh mục', err.message);
     } finally {
         isLoading = false;
     }
@@ -104,9 +95,12 @@ async function loadCategories(page = 1) {
 
 function renderCategoriesTable(categories) {
     const tbody = document.getElementById("categoryTableBody");
-    if (!tbody) return;
+    if (!tbody) {
+        showToast('warning', 'Cảnh báo', 'Không tìm thấy bảng danh mục trong DOM');
+        return;
+    }
 
-    const TOTAL_COLS = 8; // Tăng từ 7 lên 8 vì tách ảnh ra
+    const TOTAL_COLS = 8;
 
     if (!categories || categories.length === 0) {
         tbody.innerHTML = `
@@ -169,7 +163,6 @@ function renderCategoriesTable(categories) {
             </tr>`;
     }).join("");
 
-    // Gán event handlers
     tbody.querySelectorAll(".btn-view").forEach(btn =>
         btn.onclick = () => viewCategoryDetail(btn.dataset.id)
     );
@@ -261,6 +254,7 @@ function handleResetFilter() {
     const sortFilter = document.getElementById("sortFilter");
     if (searchInput) searchInput.value = '';
     if (sortFilter) sortFilter.value = 'newest';
+    showToast('info', 'Đã reset', 'Bộ lọc đã được đặt lại về mặc định');
     loadCategories(1);
 }
 
@@ -268,8 +262,12 @@ function handleResetFilter() {
 
 async function viewCategoryDetail(id) {
     try {
+        showLoading('Đang tải thông tin...');
+        
         const resp = await fetch(`${API_URL}?action=detail&id=${id}`);
         const text = await resp.text();
+
+        Swal.close();
 
         if (!resp.ok) throw new Error("Không thể lấy thông tin");
 
@@ -349,7 +347,8 @@ async function viewCategoryDetail(id) {
         };
 
     } catch (err) {
-        showError("Không thể xem chi tiết: " + err.message);
+        Swal.close();
+        showToast('error', 'Lỗi xem chi tiết', err.message);
     }
 }
 
@@ -357,8 +356,13 @@ async function viewCategoryDetail(id) {
 
 async function editCategory(id) {
     try {
+        showLoading('Đang tải thông tin...');
+        
         const resp = await fetch(`${API_URL}?action=detail&id=${id}`);
         const text = await resp.text();
+        
+        Swal.close();
+        
         if (!resp.ok) throw new Error("Không thể lấy thông tin");
 
         const data = JSON.parse(text);
@@ -366,7 +370,8 @@ async function editCategory(id) {
 
         showCategoryForm(data.data);
     } catch (err) {
-        showError("Không thể tải thông tin: " + err.message);
+        Swal.close();
+        showToast('error', 'Lỗi tải dữ liệu', err.message);
     }
 }
 
@@ -455,9 +460,11 @@ async function submitCategoryForm(isEdit) {
         const data = Object.fromEntries(formData.entries());
 
         if (!data.category_name.trim()) {
-            showError("Tên danh mục không được để trống");
+            showToast('error', 'Lỗi validation', 'Tên danh mục không được để trống');
             return;
         }
+
+        showLoading(isEdit ? 'Đang cập nhật...' : 'Đang thêm mới...');
 
         const action = isEdit ? 'update' : 'create';
         const method = isEdit ? 'PUT' : 'POST';
@@ -471,25 +478,37 @@ async function submitCategoryForm(isEdit) {
         const text = await resp.text();
         const result = JSON.parse(text);
 
+        Swal.close();
+
         if (!resp.ok || !result.success) {
             throw new Error(result.message || "Lỗi khi lưu");
         }
 
-        showSuccess(result.message);
+        showToast('success', 'Thành công', result.message);
         bootstrap.Modal.getInstance(document.getElementById("categoryFormModal")).hide();
         loadCategories(currentPage);
 
     } catch (err) {
-        showError("Không thể lưu: " + err.message);
+        Swal.close();
+        showToast('error', 'Lỗi lưu dữ liệu', err.message);
     }
 }
 
 /* ======================= DELETE CATEGORY ======================= */
 
 async function deleteCategory(id, name) {
-    if (!confirm(`Bạn có chắc muốn xóa danh mục "${name}"?\n\nHành động này không thể hoàn tác!`)) return;
+    const result = await showConfirm(
+        'Xác nhận xóa',
+        `Bạn có chắc muốn xóa danh mục "${name}"?\n\nHành động này không thể hoàn tác!`,
+        'Xóa',
+        'Hủy'
+    );
+
+    if (!result.isConfirmed) return;
 
     try {
+        showLoading('Đang xóa...');
+
         const resp = await fetch(`${API_URL}?action=delete`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -499,19 +518,23 @@ async function deleteCategory(id, name) {
         const text = await resp.text();
         const result = JSON.parse(text);
 
+        Swal.close();
+
         if (!result.success) {
-            if (result.has_products)
-                showError(result.message + ` (Số sản phẩm: ${result.product_count})`);
-            else
+            if (result.has_products) {
+                showToast('error', 'Không thể xóa', result.message + ` (Số sản phẩm: ${result.product_count})`);
+            } else {
                 throw new Error(result.message);
+            }
             return;
         }
 
-        showSuccess(result.message);
+        showToast('success', 'Đã xóa', result.message);
         loadCategories(currentPage);
 
     } catch (err) {
-        showError("Không thể xóa: " + err.message);
+        Swal.close();
+        showToast('error', 'Lỗi xóa', err.message);
     }
 }
 
@@ -522,6 +545,10 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.pathname.includes("categories.html") ||
         window.location.pathname.includes("products.html")
     ) {
+        // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        //     showToast('info', 'Khởi động', 'Module quản lý danh mục đã sẵn sàng');
+        // }
+
         loadCategories(1);
 
         const searchInput = document.getElementById("searchInput");

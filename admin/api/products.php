@@ -4,6 +4,7 @@
  * FILE: admin/api/products.php
  * MÔ TẢ: API quản lý sản phẩm (books) cho admin
  * METHODS: GET, POST, PUT, DELETE
+ * CẬP NHẬT: Lấy lượt xem từ book_views thay vì view_count
  * ============================================================
  */
 
@@ -169,17 +170,17 @@ function getProductsList($pdo) {
         $cstmt->execute();
         $total = (int)$cstmt->fetchColumn();
 
-        // Sắp xếp
+        // ✅ Sắp xếp - Thay view_count thành COUNT(bv.view_id)
         $orderSql = match ($sort) {
             'newest'     => "ORDER BY b.created_at DESC, b.book_id DESC",
             'oldest'     => "ORDER BY b.created_at ASC, b.book_id ASC",
             'price_asc'  => "ORDER BY b.price ASC",
             'price_desc' => "ORDER BY b.price DESC",
-            'view_desc'  => "ORDER BY b.view_count DESC",
+            'view_desc'  => "ORDER BY view_count DESC", // ✅ Sử dụng alias từ COUNT
             default      => "ORDER BY b.created_at DESC, b.book_id DESC"
         };
 
-        // Query chính với JOIN category và book_images
+        // ✅ Query chính - JOIN với book_views để đếm lượt xem
         $sql = "SELECT 
                     b.book_id as product_id,
                     b.title as product_name,
@@ -189,7 +190,7 @@ function getProductsList($pdo) {
                     bi.main_img as image_url,
                     b.author,
                     b.status,
-                    b.view_count,
+                    COUNT(bv.view_id) as view_count,
                     b.category_id,
                     b.created_at,
                     c.category_name,
@@ -201,7 +202,11 @@ function getProductsList($pdo) {
                 FROM books b
                 LEFT JOIN categories c ON b.category_id = c.category_id
                 LEFT JOIN book_images bi ON b.book_id = bi.book_id
+                LEFT JOIN book_views bv ON b.book_id = bv.book_id
                 WHERE $where
+                GROUP BY b.book_id, b.title, b.description, b.price, b.quantity,
+                         bi.main_img, b.author, b.status, b.category_id, 
+                         b.created_at, c.category_name
                 $orderSql
                 LIMIT :limit OFFSET :offset";
 
@@ -246,6 +251,7 @@ function getProductsList($pdo) {
  */
 function getProductDetail($pdo, $productId) {
     try {
+        // ✅ JOIN với book_views để đếm lượt xem
         $sql = "SELECT 
                     b.book_id as product_id,
                     b.title as product_name,
@@ -255,7 +261,7 @@ function getProductDetail($pdo, $productId) {
                     bi.main_img as image_url,
                     b.author,
                     b.status,
-                    b.view_count,
+                    COUNT(bv.view_id) as view_count,
                     b.category_id,
                     b.created_at,
                     c.category_name,
@@ -267,7 +273,11 @@ function getProductDetail($pdo, $productId) {
                 FROM books b
                 LEFT JOIN categories c ON b.category_id = c.category_id
                 LEFT JOIN book_images bi ON b.book_id = bi.book_id
-                WHERE b.book_id = :product_id";
+                LEFT JOIN book_views bv ON b.book_id = bv.book_id
+                WHERE b.book_id = :product_id
+                GROUP BY b.book_id, b.title, b.description, b.price, b.quantity, 
+                         bi.main_img, b.author, b.status, b.category_id, 
+                         b.created_at, c.category_name";
         
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':product_id', $productId, PDO::PARAM_INT);
@@ -294,13 +304,14 @@ function getProductDetail($pdo, $productId) {
  */
 function getProductsStats($pdo) {
     try {
+        // ✅ Lấy tổng lượt xem từ book_views
         $sql = "SELECT 
                     COUNT(*) as total_products,
                     SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available_products,
                     SUM(CASE WHEN status = 'out_of_stock' THEN 1 ELSE 0 END) as out_of_stock_products,
                     SUM(CASE WHEN status = 'discontinued' THEN 1 ELSE 0 END) as discontinued_products,
                     SUM(quantity) as total_stock,
-                    SUM(view_count) as total_views
+                    (SELECT COUNT(*) FROM book_views) as total_views -- ✅ Đếm từ book_views
                 FROM books";
         
         $stmt = $pdo->query($sql);
@@ -339,7 +350,7 @@ function createProduct($pdo, $data) {
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
-        // Insert vào bảng books
+        // ✅ Insert vào bảng books - KHÔNG CÓ view_count
         $sql = "INSERT INTO books 
                 (title, description, price, quantity, author, category_id, status) 
                 VALUES 
@@ -404,7 +415,7 @@ function updateProduct($pdo, $data) {
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
-        // Update bảng books
+        // ✅ Update bảng books - KHÔNG CÓ view_count
         $sql = "UPDATE books SET 
                     title = :title,
                     description = :description,
@@ -471,7 +482,7 @@ function deleteProduct($pdo, $data) {
             throw new Exception('Không thể xóa sản phẩm đã có trong đơn hàng. Hãy đặt trạng thái "Ngừng bán" thay vì xóa.');
         }
         
-        // Xóa từ books (book_images sẽ tự động xóa do CASCADE)
+        // Xóa từ books (book_images và book_views sẽ tự động xóa do CASCADE)
         $sql = "DELETE FROM books WHERE book_id = :product_id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':product_id', $data['product_id'], PDO::PARAM_INT);

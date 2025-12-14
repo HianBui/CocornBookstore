@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="./asset/css/reponsive.css" />
     <link rel="stylesheet" href="./asset/css/app.css" />
     <link rel="stylesheet" href="./asset/css/search.css" />
+    <link rel="stylesheet" href="./asset/css/trending_books.css">
   </head>
   <body>
     <!-- ===================== HEADER ===================== -->
@@ -424,7 +425,188 @@
       </div>
     </section>
     <!-- ===================== HOT DEAL END ===================== -->
-    <section id="fyp"></section>
+    <!-- ===================== TRENDING BOOKS - SÁCH XEM NHIỀU NHẤT TUẦN ===================== -->
+<section id="trending-books">
+  <div class="container">
+    <h1 class="title">
+      <i class="bi bi-fire"></i> Sách Trending Tuần Này
+    </h1>
+    
+    <div class="trending-subtitle">
+      <p>Top sách được yêu thích nhất trong 7 ngày qua</p>
+    </div>
+
+    <!-- Trending Books Grid -->
+    <div class="trending-grid">
+      
+      <!-- Book Item 1 - Featured (Lớn nhất) -->
+      <div class="trending-item featured">
+        <div class="trending-badge">
+          <i class="bi bi-trophy-fill"></i>
+          <span>#1</span>
+        </div>
+        <div class="trending-image">
+          <a href="#">
+            <img src="./asset/image/324x300.svg" alt="Book title">
+          </a>
+          <div class="trending-stats">
+            <span class="views">
+              <i class="bi bi-eye-fill"></i> 1,234
+            </span>
+            <span class="trend-up">
+              <i class="bi bi-graph-up-arrow"></i> +45%
+            </span>
+          </div>
+        </div>
+        <div class="trending-content">
+          <h3 class="book-title">Tên sách sẽ hiển thị ở đây</h3>
+          <p class="book-author">Tác giả</p>
+          <div class="book-price">999,999đ</div>
+          <div class="trending-actions">
+            <a href="#" class="btn-view">
+              <i class="bi bi-eye"></i> Xem chi tiết
+            </a>
+            <a href="#" class="btn-cart">
+              <i class="bi bi-cart-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Items 2-5 (Normal size) -->
+      <div class="trending-item">
+        <div class="trending-badge rank-2">
+          <span>#2</span>
+        </div>
+        <div class="trending-image">
+          <a href="#">
+            <img src="./asset/image/324x300.svg" alt="Book title">
+          </a>
+          <div class="trending-stats">
+            <span class="views">
+              <i class="bi bi-eye-fill"></i> 980
+            </span>
+            <span class="trend-up">
+              <i class="bi bi-graph-up-arrow"></i> +32%
+            </span>
+          </div>
+        </div>
+        <div class="trending-content">
+          <h3 class="book-title">Tên sách</h3>
+          <p class="book-author">Tác giả</p>
+          <div class="book-price">999,999đ</div>
+          <div class="trending-actions">
+            <a href="#" class="btn-view">Xem</a>
+            <a href="#" class="btn-cart">
+              <i class="bi bi-cart-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trending-item">
+        <div class="trending-badge rank-3">
+          <span>#3</span>
+        </div>
+        <div class="trending-image">
+          <a href="#">
+            <img src="./asset/image/324x300.svg" alt="Book title">
+          </a>
+          <div class="trending-stats">
+            <span class="views">
+              <i class="bi bi-eye-fill"></i> 856
+            </span>
+            <span class="trend-up">
+              <i class="bi bi-graph-up-arrow"></i> +28%
+            </span>
+          </div>
+        </div>
+        <div class="trending-content">
+          <h3 class="book-title">Tên sách</h3>
+          <p class="book-author">Tác giả</p>
+          <div class="book-price">999,999đ</div>
+          <div class="trending-actions">
+            <a href="#" class="btn-view">Xem</a>
+            <a href="#" class="btn-cart">
+              <i class="bi bi-cart-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trending-item">
+        <div class="trending-badge">
+          <span>#4</span>
+        </div>
+        <div class="trending-image">
+          <a href="#">
+            <img src="./asset/image/324x300.svg" alt="Book title">
+          </a>
+          <div class="trending-stats">
+            <span class="views">
+              <i class="bi bi-eye-fill"></i> 742
+            </span>
+            <span class="trend-up">
+              <i class="bi bi-graph-up-arrow"></i> +19%
+            </span>
+          </div>
+        </div>
+        <div class="trending-content">
+          <h3 class="book-title">Tên sách</h3>
+          <p class="book-author">Tác giả</p>
+          <div class="book-price">999,999đ</div>
+          <div class="trending-actions">
+            <a href="#" class="btn-view">Xem</a>
+            <a href="#" class="btn-cart">
+              <i class="bi bi-cart-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trending-item">
+        <div class="trending-badge">
+          <span>#5</span>
+        </div>
+        <div class="trending-image">
+          <a href="#">
+            <img src="./asset/image/324x300.svg" alt="Book title">
+          </a>
+          <div class="trending-stats">
+            <span class="views">
+              <i class="bi bi-eye-fill"></i> 698
+            </span>
+            <span class="trend-up">
+              <i class="bi bi-graph-up-arrow"></i> +15%
+            </span>
+          </div>
+        </div>
+        <div class="trending-content">
+          <h3 class="book-title">Tên sách</h3>
+          <p class="book-author">Tác giả</p>
+          <div class="book-price">999,999đ</div>
+          <div class="trending-actions">
+            <a href="#" class="btn-view">Xem</a>
+            <a href="#" class="btn-cart">
+              <i class="bi bi-cart-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- View All Button -->
+    <div class="viewmore-product">
+      <a href="./all-product.html?sort=trending">
+        Xem tất cả sách trending
+        <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ===================== TRENDING BOOKS END ===================== -->
 
     <!-- ===================== FOOTER ===================== -->
     <img class="wave" src="./asset/image/wave.svg" alt="" />
@@ -553,9 +735,13 @@
     <script src="./asset/js/auth.js"></script>
     <script src="./asset/js/form.js"></script>
     <script src="./asset/js/render-books.js"></script>
-    <script src="./asset/js/render-categories.js"></script>
+    <!-- <script src="./asset/js/render-categories.js"></script> -->
     <script src="./asset/js/app.js"></script>
     <script src="./asset/js/search-handler.js"></script>
+    <!-- Book View Tracking -->
+    <script src="./asset/js/book-view.js"></script>
+    <!-- ✅ THÊM DÒNG NÀY -->
+    <script src="./asset/js/render-trending.js"></script>
 
     <script>
       $(".slider").slick({

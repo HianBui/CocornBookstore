@@ -2,9 +2,9 @@
 /**
  * ============================================================
  * FILE: cart-api.php
- * MÔ TẢ: API quản lý giỏ hàng (thêm, sửa, xóa, lấy danh sách)
+ * MÔ TẢ: API quản lý giỏ hàng cho NGƯỜI DÙNG (thêm, sửa, xóa, lấy danh sách)
  * ĐẶT TẠI: asset/api/cart-api.php
- * CẬP NHẬT: Đã sửa lỗi trả về cart_id khi thêm vào giỏ
+ * ✅ ĐÃ KIỂM TRA: Tất cả dữ liệu lưu vào database table `carts`
  * ============================================================
  */
 
@@ -19,7 +19,7 @@ require_once __DIR__ . '/../../model/config/connectdb.php';
 // Lấy action từ request
 $action = $_GET['action'] ?? '';
 
-// Lấy user_id từ session (hoặc từ request nếu chưa đăng nhập)
+// ✅ Lấy user_id từ SESSION (người dùng phải đăng nhập)
 $user_id = $_SESSION['user_id'] ?? null;
 
 switch ($action) {
@@ -49,7 +49,7 @@ switch ($action) {
 }
 
 /**
- * Lấy danh sách giỏ hàng
+ * ✅ Lấy danh sách giỏ hàng từ DATABASE
  */
 function getCart($user_id) {
     global $pdo;
@@ -59,14 +59,17 @@ function getCart($user_id) {
     }
     
     try {
+        // ✅ Query từ database table `carts`
         $sql = "SELECT 
                     c.cart_id,
                     c.book_id,
                     c.quantity,
+                    c.added_at,
                     b.title,
                     b.author,
                     b.price,
                     b.status,
+                    b.quantity AS stock_quantity,
                     bi.main_img,
                     (b.price * c.quantity) as subtotal
                 FROM carts c
@@ -98,8 +101,7 @@ function getCart($user_id) {
 }
 
 /**
- * Thêm sản phẩm vào giỏ
- * ✅ ĐÃ SỬA: Trả về cart_id trong response
+ * ✅ Thêm sản phẩm vào giỏ (LƯU VÀO DATABASE)
  */
 function addToCart($user_id) {
     global $pdo;
@@ -138,13 +140,13 @@ function addToCart($user_id) {
             response(false, 'Số lượng vượt quá tồn kho (' . $book['quantity'] . ' cuốn)', 400);
         }
         
-        // Kiểm tra sách đã có trong giỏ chưa
+        // ✅ Kiểm tra sách đã có trong giỏ chưa (DATABASE)
         $stmt = $pdo->prepare("SELECT cart_id, quantity FROM carts WHERE user_id = ? AND book_id = ?");
         $stmt->execute([$user_id, $book_id]);
         $existingItem = $stmt->fetch();
         
         if ($existingItem) {
-            // Cập nhật số lượng
+            // ✅ Cập nhật số lượng trong DATABASE
             $newQuantity = $existingItem['quantity'] + $quantity;
             
             if ($newQuantity > 9999) {
@@ -158,21 +160,18 @@ function addToCart($user_id) {
             $stmt = $pdo->prepare("UPDATE carts SET quantity = ? WHERE cart_id = ?");
             $stmt->execute([$newQuantity, $existingItem['cart_id']]);
             
-            // ✅ QUAN TRỌNG: Trả về cart_id khi cập nhật
             response(true, 'Đã cập nhật số lượng trong giỏ hàng', 200, [
                 'cart_id' => $existingItem['cart_id'],
                 'quantity' => $newQuantity,
                 'book_id' => $book_id
             ]);
         } else {
-            // Thêm mới
-            $stmt = $pdo->prepare("INSERT INTO carts (user_id, book_id, quantity) VALUES (?, ?, ?)");
+            // ✅ Thêm mới vào DATABASE
+            $stmt = $pdo->prepare("INSERT INTO carts (user_id, book_id, quantity, added_at) VALUES (?, ?, ?, NOW())");
             $stmt->execute([$user_id, $book_id, $quantity]);
             
-            // ✅ QUAN TRỌNG: Lấy cart_id vừa insert
             $cart_id = $pdo->lastInsertId();
             
-            // ✅ QUAN TRỌNG: Trả về cart_id trong response
             response(true, 'Đã thêm vào giỏ hàng', 201, [
                 'cart_id' => $cart_id,
                 'quantity' => $quantity,
@@ -187,7 +186,7 @@ function addToCart($user_id) {
 }
 
 /**
- * Cập nhật số lượng sản phẩm
+ * ✅ Cập nhật số lượng sản phẩm (DATABASE)
  */
 function updateCart($user_id) {
     global $pdo;
@@ -209,8 +208,8 @@ function updateCart($user_id) {
     }
     
     try {
-        // Kiểm tra cart_id có thuộc user không
-        $stmt = $pdo->prepare("SELECT c.cart_id, c.book_id, b.quantity as stock 
+        // ✅ Kiểm tra cart_id có thuộc user không
+        $stmt = $pdo->prepare("SELECT c.cart_id, c.book_id, b.quantity as stock, b.title
                                FROM carts c 
                                JOIN books b ON c.book_id = b.book_id
                                WHERE c.cart_id = ? AND c.user_id = ?");
@@ -222,10 +221,10 @@ function updateCart($user_id) {
         }
         
         if ($quantity > $item['stock']) {
-            response(false, 'Số lượng vượt quá tồn kho', 400);
+            response(false, 'Số lượng vượt quá tồn kho (' . $item['stock'] . ' cuốn)', 400);
         }
         
-        // Cập nhật
+        // ✅ Cập nhật DATABASE
         $stmt = $pdo->prepare("UPDATE carts SET quantity = ? WHERE cart_id = ?");
         $stmt->execute([$quantity, $cart_id]);
         
@@ -238,7 +237,7 @@ function updateCart($user_id) {
 }
 
 /**
- * Xóa sản phẩm khỏi giỏ
+ * ✅ Xóa sản phẩm khỏi giỏ (DATABASE)
  */
 function deleteFromCart($user_id) {
     global $pdo;
@@ -255,7 +254,7 @@ function deleteFromCart($user_id) {
     }
     
     try {
-        // Kiểm tra cart_id có thuộc user không
+        // ✅ Kiểm tra cart_id có thuộc user không
         $stmt = $pdo->prepare("SELECT cart_id FROM carts WHERE cart_id = ? AND user_id = ?");
         $stmt->execute([$cart_id, $user_id]);
         
@@ -263,7 +262,7 @@ function deleteFromCart($user_id) {
             response(false, 'Không tìm thấy sản phẩm', 404);
         }
         
-        // Xóa
+        // ✅ Xóa khỏi DATABASE
         $stmt = $pdo->prepare("DELETE FROM carts WHERE cart_id = ?");
         $stmt->execute([$cart_id]);
         
@@ -276,7 +275,7 @@ function deleteFromCart($user_id) {
 }
 
 /**
- * Xóa toàn bộ giỏ hàng
+ * ✅ Xóa toàn bộ giỏ hàng (DATABASE)
  */
 function clearCart($user_id) {
     global $pdo;
@@ -286,10 +285,13 @@ function clearCart($user_id) {
     }
     
     try {
+        // ✅ Xóa tất cả items của user khỏi DATABASE
         $stmt = $pdo->prepare("DELETE FROM carts WHERE user_id = ?");
         $stmt->execute([$user_id]);
         
-        response(true, 'Đã xóa toàn bộ giỏ hàng', 200);
+        $affected = $stmt->rowCount();
+        
+        response(true, "Đã xóa toàn bộ giỏ hàng ({$affected} sản phẩm)", 200);
         
     } catch (PDOException $e) {
         error_log("Clear Cart Error: " . $e->getMessage());
@@ -298,7 +300,7 @@ function clearCart($user_id) {
 }
 
 /**
- * Đếm số lượng sản phẩm trong giỏ
+ * ✅ Đếm số lượng sản phẩm trong giỏ (DATABASE)
  */
 function getCartCount($user_id) {
     global $pdo;
@@ -309,6 +311,7 @@ function getCartCount($user_id) {
     }
     
     try {
+        // ✅ Đếm từ DATABASE
         $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM carts WHERE user_id = ?");
         $stmt->execute([$user_id]);
         $result = $stmt->fetch();
@@ -322,7 +325,7 @@ function getCartCount($user_id) {
 }
 
 /**
- * Tạo Order từ các mục trong giỏ hàng
+ * ✅ Tạo Order từ các mục trong giỏ hàng
  */
 function createOrder($user_id) {
     global $pdo;
@@ -342,7 +345,7 @@ function createOrder($user_id) {
     try {
         $pdo->beginTransaction();
         
-        // Tính total từ carts chọn
+        // ✅ Tính total từ carts đã chọn (DATABASE)
         $placeholders = implode(',', array_fill(0, count($data['cart_ids']), '?'));
         $total_sql = "SELECT SUM(b.price * c.quantity) as total 
                       FROM carts c JOIN books b ON c.book_id = b.book_id 
@@ -356,9 +359,9 @@ function createOrder($user_id) {
             throw new Exception('Giỏ hàng rỗng hoặc lỗi tính tổng');
         }
         
-        // Insert order
-        $order_sql = "INSERT INTO orders (user_id, full_name, phone, email, address, city, district, payment_method, total_amount, status)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
+        // ✅ Insert order
+        $order_sql = "INSERT INTO orders (user_id, full_name, phone, email, address, city, district, payment_method, total_amount, status, created_at)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
         $order_stmt = $pdo->prepare($order_sql);
         $order_stmt->execute([
             $user_id,
@@ -374,7 +377,7 @@ function createOrder($user_id) {
         
         $order_id = $pdo->lastInsertId();
         
-        // Insert order_details từ carts
+        // ✅ Insert order_details từ carts
         $detail_sql = "INSERT INTO order_details (order_id, book_id, quantity, price)
                        SELECT ?, c.book_id, c.quantity, b.price
                        FROM carts c JOIN books b ON c.book_id = b.book_id
@@ -385,10 +388,11 @@ function createOrder($user_id) {
             $detail_stmt->execute([$order_id, $cart_id]);
         }
         
-        // Xóa carts đã thanh toán
-        $delete_sql = "DELETE FROM carts WHERE cart_id IN ($placeholders)";
+        // ✅ Xóa carts đã thanh toán khỏi DATABASE
+        $delete_sql = "DELETE FROM carts WHERE cart_id IN ($placeholders) AND user_id = ?";
         $delete_stmt = $pdo->prepare($delete_sql);
-        $delete_stmt->execute($data['cart_ids']);
+        $delete_params = array_merge($data['cart_ids'], [$user_id]);
+        $delete_stmt->execute($delete_params);
         
         $pdo->commit();
         
@@ -415,6 +419,6 @@ function response($success, $message, $code = 200, $data = null) {
         $response['data'] = $data;
     }
     
-    echo json_encode($response);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
     exit;
 }

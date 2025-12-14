@@ -4,7 +4,7 @@
  * FILE: get_book_detail.php
  * MÔ TẢ: API lấy thông tin chi tiết sách theo book_id
  * ĐẶT TẠI: asset/api/get_book_detail.php
- * CẬP NHẬT: Phiên bản đầy đủ với đánh giá và sách liên quan
+ * CẬP NHẬT: Lấy lượt xem từ book_views thay vì view_count
  * ============================================================
  */
 
@@ -52,7 +52,6 @@ try {
             b.published_year,
             b.price,
             b.quantity,
-            b.view_count,
             b.description,
             b.status,
             b.created_at,
@@ -82,7 +81,19 @@ try {
     }
 
     // ===========================
-    // 2. TÍNH ĐIỂM ĐÁNH GIÁ TRUNG BÌNH
+    // 2. ĐẾM LƯỢT XEM TỪ BẢNG book_views
+    // ===========================
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as total_views
+        FROM book_views
+        WHERE book_id = ?
+    ");
+    $stmt->execute([$bookId]);
+    $viewData = $stmt->fetch(PDO::FETCH_ASSOC);
+    $totalViews = (int)$viewData['total_views'];
+
+    // ===========================
+    // 3. TÍNH ĐIỂM ĐÁNH GIÁ TRUNG BÌNH
     // ===========================
     $stmt = $pdo->prepare("
         SELECT 
@@ -95,7 +106,7 @@ try {
     $reviewStats = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // ===========================
-    // 3. LẤY DANH SÁCH ĐÁNH GIÁ (Mới nhất)
+    // 4. LẤY DANH SÁCH ĐÁNH GIÁ (Mới nhất)
     // ===========================
     $stmt = $pdo->prepare("
         SELECT 
@@ -118,7 +129,7 @@ try {
     $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // ===========================
-    // 4. LẤY SÁCH CÙNG DANH MỤC
+    // 5. LẤY SÁCH CÙNG DANH MỤC (Sắp xếp theo lượt xem từ book_views)
     // ===========================
     $stmt = $pdo->prepare("
         SELECT 
@@ -126,35 +137,73 @@ try {
             b.title,
             b.author,
             b.price,
-            b.view_count,
+            COUNT(bv.view_id) as view_count,
             bi.main_img
         FROM books b
         LEFT JOIN book_images bi ON b.book_id = bi.book_id
+        LEFT JOIN book_views bv ON b.book_id = bv.book_id
         WHERE b.category_id = ? 
             AND b.book_id != ? 
             AND b.status = 'available'
-        ORDER BY b.view_count DESC
+        GROUP BY b.book_id
+        ORDER BY view_count DESC
         LIMIT 8
     ");
     $stmt->execute([$book['category_id'], $bookId]);
     $relatedBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // ===========================
-    // 5. CẬP NHẬT LƯỢT XEM
+    // 6. GHI NHẬN LƯỢT XEM MỚI VÀO book_views
     // ===========================
     session_start();
     $userId = $_SESSION['user_id'] ?? null;
     $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-    $stmt = $pdo->prepare("
-        INSERT INTO book_views (book_id, user_id, ip_address, user_agent, view_date)
-        VALUES (?, ?, ?, ?, NOW())
-    ");
-    $stmt->execute([$bookId, $userId, $ipAddress, $userAgent]);
+    // Kiểm tra xem đã xem trong 30 phút gần đây chưa (chống spam)
+    $viewTimeout = date('Y-m-d H:i:s', strtotime('-30 minutes'));
+    
+    if ($userId) {
+        // Nếu đã đăng nhập, check theo user_id
+        $stmt = $pdo->prepare("
+            SELECT view_id 
+            FROM book_views 
+            WHERE book_id = ? 
+                AND user_id = ? 
+                AND view_date > ?
+            LIMIT 1
+        ");
+        $stmt->execute([$bookId, $userId, $viewTimeout]);
+    } else {
+        // Nếu chưa đăng nhập, check theo IP
+        $stmt = $pdo->prepare("
+            SELECT view_id 
+            FROM book_views 
+            WHERE book_id = ? 
+                AND ip_address = ? 
+                AND user_id IS NULL
+                AND view_date > ?
+            LIMIT 1
+        ");
+        $stmt->execute([$bookId, $ipAddress, $viewTimeout]);
+    }
+
+    $recentView = $stmt->fetch();
+
+    // Chỉ ghi nhận view mới nếu chưa xem trong 30 phút gần đây
+    if (!$recentView) {
+        $stmt = $pdo->prepare("
+            INSERT INTO book_views (book_id, user_id, ip_address, user_agent, view_date)
+            VALUES (?, ?, ?, ?, NOW())
+        ");
+        $stmt->execute([$bookId, $userId, $ipAddress, $userAgent]);
+        
+        // Tăng counter lượt xem
+        $totalViews++;
+    }
 
     // ===========================
-    // 6. CHUẨN BỊ DỮ LIỆU TRẢ VỀ
+    // 7. CHUẨN BỊ DỮ LIỆU TRẢ VỀ
     // ===========================
     $response = [
         'success' => true,
@@ -166,7 +215,7 @@ try {
             'published_year' => $book['published_year'] ?? 'Không rõ',
             'price' => (float)$book['price'],
             'quantity' => (int)$book['quantity'],
-            'view_count' => (int)$book['view_count'] + 1, // +1 vì vừa mới xem
+            'view_count' => $totalViews, // ✅ Lấy từ book_views
             'description' => $book['description'] ?? 'Chưa có mô tả',
             'status' => $book['status'],
             'created_at' => $book['created_at'],
@@ -206,7 +255,7 @@ try {
                 'title' => $relBook['title'],
                 'author' => $relBook['author'] ?? 'Không rõ',
                 'price' => (float)$relBook['price'],
-                'view_count' => (int)$relBook['view_count'],
+                'view_count' => (int)$relBook['view_count'], // ✅ Từ GROUP BY
                 'main_img' => $relBook['main_img'] ?? '324x300.svg'
             ];
         }, $relatedBooks)
