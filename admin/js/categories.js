@@ -277,7 +277,7 @@ async function viewCategoryDetail(id) {
         const cat = data.data;
 
         const modalHtml = `
-            <div class="modal fade" id="categoryDetailModal">
+            <div class="modal fade" id="categoryDetailModal" style="font-family: var(--primary-font);">
                 <div class="modal-dialog modal-lg"><div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">

@@ -295,7 +295,7 @@ async function viewUserCart(userId) {
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">
-                                <i class="bi bi-cart3 me-2"></i>Giỏ hàng của ${escapeHtml(user.display_name || user.username)}
+                                <i style="color: white;"class="bi bi-cart3 me-2"></i>Giỏ hàng của ${escapeHtml(user.display_name || user.username)}
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
@@ -303,7 +303,7 @@ async function viewUserCart(userId) {
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                        <i class="bi bi-person me-2"></i>Thông tin người dùng
+                                        <i class="bi bi-person me-2"style="color: #2ba8e2;"></i>Thông tin người dùng
                                     </h6>
                                     <div class="bg-light p-3 rounded">
                                         <div class="mb-2">
@@ -327,7 +327,7 @@ async function viewUserCart(userId) {
 
                                 <div class="col-md-6">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                        <i class="bi bi-calculator me-2"></i>Tổng quan
+                                        <i class="bi bi-calculator me-2" style="color: #2ba8e2;"></i>Tổng quan
                                     </h6>
                                     <div class="bg-light p-3 rounded">
                                         <div class="mb-3">
@@ -345,17 +345,17 @@ async function viewUserCart(userId) {
                             </div>
 
                             <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                <i class="bi bi-basket me-2"></i>Sản phẩm trong giỏ
+                                <i class="bi bi-basket me-2" style="color: #2ba8e2;"></i>Sản phẩm trong giỏ
                             </h6>
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead class="table-light">
                                         <tr>
-                                            <th style="width: 60px;">Ảnh</th>
-                                            <th>Sản phẩm</th>
-                                            <th class="text-end" style="width: 120px;">Đơn giá</th>
-                                            <th class="text-center" style="width: 100px;">Số lượng</th>
-                                            <th class="text-end" style="width: 150px;">Thành tiền</th>
+                                            <th class="text-center" style="width: 60px; color: #2ba8e2;">Ảnh</th>
+                                            <th class="text-center" style=" color: #2ba8e2;">Sản phẩm</th>
+                                            <th class="text-center" style="width: 120px; color: #2ba8e2;">Đơn giá</th>
+                                            <th class="text-center" style="width: 150px; color: #2ba8e2;">Số lượng</th>
+                                            <th class="text-center" style="width: 150px; color: #2ba8e2;">Thành tiền</th>
                                         </tr>
                                     </thead>
                                     <tbody>

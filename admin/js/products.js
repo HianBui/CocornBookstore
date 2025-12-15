@@ -348,12 +348,12 @@ async function viewProductDetail(id) {
         const product = data.data;
 
         const html = `
-            <div class="modal fade" id="productDetailModal" tabindex="-1">
+            <div class="modal fade" id="productDetailModal" tabindex="-1" style="font-family: var(--primary-font) !important; font-size: 14px !important;">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">
-                                <i class="bi bi-box-seam me-2"></i>Chi tiết sản phẩm
+                                <i style="color: #ffffffff;"class="bi bi-box-seam me-2"></i>Chi tiết sản phẩm
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
@@ -379,7 +379,7 @@ async function viewProductDetail(id) {
                                     <div class="row g-4">
                                         <div class="col-md-6">
                                             <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                                <i class="bi bi-info-circle me-2"></i>Thông tin cơ bản
+                                                <i style="color: #2ba8e2;"class="bi bi-info-circle me-2"></i>Thông tin cơ bản
                                             </h6>
                                             <div class="bg-light p-3 rounded">
                                                 <div class="mb-3">
@@ -407,7 +407,7 @@ async function viewProductDetail(id) {
 
                                         <div class="col-md-6">
                                             <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                                <i class="bi bi-box me-2"></i>Kho hàng & Thống kê
+                                                <i style="color: #2ba8e2;" class="bi bi-box me-2"></i>Kho hàng & Thống kê
                                             </h6>
                                             <div class="bg-light p-3 rounded">
                                                 <div class="mb-3">
@@ -421,13 +421,13 @@ async function viewProductDetail(id) {
                                                 <div class="mb-3">
                                                     <strong class="text-muted">Lượt xem:</strong>
                                                     <p class="mb-0">
-                                                        <i class="bi bi-eye text-primary"></i> ${product.view_count || 0} lượt
+                                                        <i style="color: #2ba8e2;"class="bi bi-eye"></i> ${product.view_count || 0} lượt
                                                     </p>
                                                 </div>
                                                 <div>
                                                     <strong class="text-muted">Đã bán:</strong>
                                                     <p class="mb-0">
-                                                        <i class="bi bi-cart-check text-success"></i> ${product.sold_count || 0} sản phẩm
+                                                        <i class="bi bi-cart-check" style="color: #2ba8e2;"></i> ${product.sold_count || 0} sản phẩm
                                                     </p>
                                                 </div>
                                             </div>
@@ -436,7 +436,7 @@ async function viewProductDetail(id) {
                                         <!-- Mô tả -->
                                         <div class="col-12">
                                             <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                                <i class="bi bi-file-text me-2"></i>Mô tả sản phẩm
+                                                <i style="color: #2ba8e2;" class="bi bi-file-text me-2"></i>Mô tả sản phẩm
                                             </h6>
                                             <div class="bg-light p-3 rounded" style="max-height: 200px; overflow-y: auto;">
                                                 <p class="mb-0">${escapeHtml(product.description || 'Chưa có mô tả')}</p>
@@ -531,8 +531,8 @@ function showProductForm(isEdit = false, product = {}) {
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title">
-                            <i class="bi bi-box-${isEdit ? 'seam' : 'plus'} me-2"></i>${title}
+                        <h5 class="modal-title" style="color: #ffffffff;">
+                            <i style="color: #ffffffff;" class="bi bi-box-${isEdit ? 'seam' : 'plus'} me-2"></i>${title}
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
@@ -542,24 +542,24 @@ function showProductForm(isEdit = false, product = {}) {
 
                             <div class="row g-3">
                                 <div class="col-md-8">
-                                    <label class="form-label"><i class="bi bi-tag me-2"></i>Tên sản phẩm *</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-tag me-2"style="color: #2ba8e2;"></i>Tên sản phẩm *</label>
                                     <input type="text" class="form-control" name="product_name" value="${escapeHtml(product.product_name || '')}" required>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label"><i class="bi bi-grid me-2"></i>Danh mục *</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-grid me-2"style="color: #2ba8e2;"></i>Danh mục *</label>
                                     <select class="form-select" name="category_id" required>
                                         ${categoryOptions}
                                     </select>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-person me-2"></i>Tác giả</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-person me-2"style="color: #2ba8e2;"></i>Tác giả</label>
                                     <input type="text" class="form-control" name="author" value="${escapeHtml(product.author || '')}">
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label"><i class="bi bi-link-45deg me-2"></i>Ảnh sản phẩm</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-link-45deg me-2"style="color: #2ba8e2;"></i>Ảnh sản phẩm</label>
                                     
                                     <!-- Nút chọn file -->
                                     <input type="file" 
@@ -586,17 +586,17 @@ function showProductForm(isEdit = false, product = {}) {
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label"><i class="bi bi-currency-dollar me-2"></i>Giá *</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-currency-dollar me-2"style="color: #2ba8e2;"></i>Giá *</label>
                                     <input type="number" class="form-control" name="price" value="${product.price || ''}" min="0" step="1000" required>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label"><i class="bi bi-box me-2"></i>Số lượng *</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-box me-2"style="color: #2ba8e2;"></i>Số lượng *</label>
                                     <input type="number" class="form-control" name="stock_quantity" value="${product.stock_quantity || 0}" min="0" required>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label"><i class="bi bi-toggle-on me-2"></i>Trạng thái</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-toggle-on me-2"style="color: #2ba8e2;"></i>Trạng thái</label>
                                     <select class="form-select" name="status">
                                         <option value="available" ${product.status === 'available' ? 'selected' : ''}>Còn hàng</option>
                                         <option value="out_of_stock" ${product.status === 'out_of_stock' ? 'selected' : ''}>Hết hàng</option>
@@ -605,7 +605,7 @@ function showProductForm(isEdit = false, product = {}) {
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label"><i class="bi bi-file-text me-2"></i>Mô tả</label>
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-file-text me-2"style="color: #2ba8e2;"></i>Mô tả</label>
                                     <textarea class="form-control" name="description" rows="5">${escapeHtml(product.description || '')}</textarea>
                                 </div>
                             </div>

@@ -359,7 +359,7 @@ async function viewOrderDetail(orderId) {
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">
-                                <i class="bi bi-receipt me-2"></i>Chi tiết đơn hàng #DH${String(order.order_id).padStart(6, '0')}
+                                <i style="color: #ffffffff;"class="bi bi-receipt me-2"></i>Chi tiết đơn hàng CB_${String(order.order_id).padStart(6, '0')}
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
@@ -367,7 +367,7 @@ async function viewOrderDetail(orderId) {
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                        <i class="bi bi-person me-2"></i>Thông tin khách hàng
+                                        <i style="color: #2ba8e2;" class="bi bi-person me-2"></i>Thông tin khách hàng
                                     </h6>
                                     <div class="bg-light p-3 rounded">
                                         <div class="mb-2">
@@ -394,7 +394,7 @@ async function viewOrderDetail(orderId) {
 
                                 <div class="col-md-6 mb-4">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                        <i class="bi bi-info-circle me-2"></i>Thông tin đơn hàng
+                                        <i style="color: #2ba8e2;" class="bi bi-info-circle me-2"></i>Thông tin đơn hàng
                                     </h6>
                                     <div class="bg-light p-3 rounded">
                                         <div class="mb-2">
@@ -426,16 +426,16 @@ async function viewOrderDetail(orderId) {
 
                                 <div class="col-12">
                                     <h6 style="color: var(--blue-color);" class="fw-bold mb-3">
-                                        <i class="bi bi-cart me-2"></i>Sản phẩm đã đặt
+                                        <i class="bi bi-cart me-2" style="color: #2ba8e2;"></i>Sản phẩm đã đặt
                                     </h6>
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>Sản phẩm</th>
-                                                    <th class="text-center" style="width: 100px;">Số lượng</th>
-                                                    <th class="text-end" style="width: 150px;">Đơn giá</th>
-                                                    <th class="text-end" style="width: 150px;">Thành tiền</th>
+                                                    <th style="color: #2ba8e2;">Sản phẩm</th>
+                                                    <th class="text-center" style="width: 120px; color: #2ba8e2;">Số lượng</th>
+                                                    <th class="text-center" style="width: 150px; color: #2ba8e2;">Đơn giá</th>
+                                                    <th class="text-center" style="width: 150px; color: #2ba8e2;">Thành tiền</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

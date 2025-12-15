@@ -276,12 +276,12 @@ async function viewImageDetail(id) {
         const img = data.data;
 
         const html = `
-            <div class="modal fade" id="imageDetailModal" tabindex="-1">
+            <div class="modal fade" id="imageDetailModal" tabindex="-1" style="font-family: var(--primary-font) !important;">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">
-                                <i class="bi bi-images me-2"></i>Chi tiết ảnh sản phẩm
+                                <i style="color: white;" class="bi bi-images me-2"></i>Chi tiết ảnh sản phẩm
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
@@ -289,13 +289,13 @@ async function viewImageDetail(id) {
                             <div class="row">
                                 <!-- Thông tin sách -->
                                 <div class="col-12 mb-4">
-                                    <h5 class="text-primary">${escapeHtml(img.book_title)}</h5>
-                                    <p class="text-muted">Book ID: ${img.book_id} | Image ID: ${img.image_id}</p>
+                                    <h5 style="color: #2ba8e2 !important; font-weight: bold; font-family: var(--primary-font); " class="text-primary">${escapeHtml(img.book_title)}</h5>
+                                    <p style="font-size: var(--font-sm);" class="text-muted">Book ID: ${img.book_id} | Image ID: ${img.image_id}</p>
                                 </div>
 
                                 <!-- Ảnh chính -->
                                 <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold mb-3">
+                                    <h6 class="fw-bold mb-3" style="color: #2ba8e2;">
                                         <i class="bi bi-star-fill text-warning me-2"></i>Ảnh chính
                                     </h6>
                                     <div class="text-center bg-light p-4 rounded">
@@ -309,13 +309,13 @@ async function viewImageDetail(id) {
 
                                 <!-- Ảnh phụ -->
                                 <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold mb-3">
-                                        <i class="bi bi-images me-2"></i>Ảnh phụ
+                                    <h6 class="fw-bold mb-3" style="color: #2ba8e2;">
+                                        <i class="bi bi-images me-2" style="color: #2ba8e2;"></i>Ảnh phụ
                                     </h6>
                                     <div class="row g-3">
                                         <div class="col-4">
                                             <div class="text-center bg-light p-2 rounded">
-                                                <small class="d-block mb-2 fw-bold">Phụ 1</small>
+                                                <small class="d-block mb-2 fw-bold"style="color: #2ba8e2;">Phụ 1</small>
                                                 ${img.sub_img1 ? `
                                                     <img src="${getImagePath(img.sub_img1)}" 
                                                          class="img-fluid rounded mb-2"
@@ -326,7 +326,7 @@ async function viewImageDetail(id) {
                                         </div>
                                         <div class="col-4">
                                             <div class="text-center bg-light p-2 rounded">
-                                                <small class="d-block mb-2 fw-bold">Phụ 2</small>
+                                                <small class="d-block mb-2 fw-bold" style="color: #2ba8e2;">Phụ 2</small>
                                                 ${img.sub_img2 ? `
                                                     <img src="${getImagePath(img.sub_img2)}" 
                                                          class="img-fluid rounded mb-2"
@@ -337,7 +337,7 @@ async function viewImageDetail(id) {
                                         </div>
                                         <div class="col-4">
                                             <div class="text-center bg-light p-2 rounded">
-                                                <small class="d-block mb-2 fw-bold">Phụ 3</small>
+                                                <small class="d-block mb-2 fw-bold" style="color: #2ba8e2;">Phụ 3</small>
                                                 ${img.sub_img3 ? `
                                                     <img src="${getImagePath(img.sub_img3)}" 
                                                          class="img-fluid rounded mb-2"
@@ -354,13 +354,13 @@ async function viewImageDetail(id) {
                                     <div class="row">
                                         <div class="col-6 text-center">
                                             <small class="text-muted">
-                                                <i class="bi bi-calendar-plus me-1"></i> Ngày tạo
+                                                <i class="bi bi-calendar-plus me-1"style="color: #2ba8e2;"></i> Ngày tạo
                                             </small>
                                             ${formatDate(img.created_at)}
                                         </div>
                                         <div class="col-6 text-center">
                                             <small class="text-muted">
-                                                <i class="bi bi-calendar-check me-1"></i> Cập nhật lần cuối
+                                                <i class="bi bi-calendar-check me-1" style="color: #2ba8e2;"></i> Cập nhật lần cuối
                                             </small>
                                             ${formatDate(img.updated_at)}
                                         </div>
@@ -496,8 +496,8 @@ function showImageForm(image) {
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title">
-                            <i class="bi bi-images me-2"></i>Chỉnh sửa ảnh sản phẩm
+                        <h5 class="modal-title" style="color: white;">
+                            <i class="bi bi-images me-2"style="color: white;"></i>Chỉnh sửa ảnh sản phẩm
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
@@ -516,7 +516,7 @@ function showImageForm(image) {
 
                             <!-- Ảnh chính -->
                             <div class="mb-4">
-                                <label class="form-label">
+                                <label class="form-label" style="color: #2ba8e2;">
                                     <i class="bi bi-star-fill text-warning me-2"></i>Ảnh chính *
                                 </label>
                                 <input type="file" 
@@ -537,8 +537,8 @@ function showImageForm(image) {
                             <!-- Ảnh phụ -->
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    <label class="form-label">
-                                        <i class="bi bi-image me-2"></i>Ảnh phụ 1
+                                    <label class="form-label" style="color: #2ba8e2;">
+                                        <i class="bi bi-image me-2" style="color: #2ba8e2;"></i>Ảnh phụ 1
                                     </label>
                                     <input type="file" 
                                            class="form-control" 
@@ -555,8 +555,8 @@ function showImageForm(image) {
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">
-                                        <i class="bi bi-image me-2"></i>Ảnh phụ 2
+                                    <label class="form-label"style="color: #2ba8e2;">
+                                        <i class="bi bi-image me-2"style="color: #2ba8e2;"></i>Ảnh phụ 2
                                     </label>
                                     <input type="file" 
                                            class="form-control" 
@@ -573,8 +573,8 @@ function showImageForm(image) {
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">
-                                        <i class="bi bi-image me-2"></i>Ảnh phụ 3
+                                    <label class="form-label" style="color: #2ba8e2;">
+                                        <i class="bi bi-image me-2" style="color: #2ba8e2;"></i>Ảnh phụ 3
                                     </label>
                                     <input type="file" 
                                            class="form-control" 

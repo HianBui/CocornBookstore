@@ -489,7 +489,7 @@ function showUserForm(isEdit = false, user = {}) {
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title">
+                        <h5 class="modal-title" style="color: #fff;">
                             <i class="bi bi-person-${isEdit ? 'gear' : 'plus'} me-2"></i>${title}
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
