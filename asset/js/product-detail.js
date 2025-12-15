@@ -261,10 +261,13 @@ function renderReviews(reviews, ratingInfo) {
   const reviewTab = document.getElementById("review");
   if (!reviewTab) return;
 
-  // Cập nhật số lượng đánh giá trong tiêu đề
-  const reviewTitle = reviewTab.querySelector("h3 span");
-  if (reviewTitle) {
-    reviewTitle.textContent = ratingInfo.total;
+  // Cập nhật số lượng đánh giá và hiển thị sao trung bình trong tiêu đề
+  const reviewH3 = reviewTab.querySelector("h3");
+  if (reviewH3) {
+    const total = ratingInfo && typeof ratingInfo.total !== 'undefined' ? ratingInfo.total : 0;
+    const avg = ratingInfo && typeof ratingInfo.average !== 'undefined' ? parseFloat(ratingInfo.average) : 0;
+    // Hiển thị: "<span>TOTAL</span> đánh giá <span class='avg-stars'>[stars]</span>"
+    reviewH3.innerHTML = `<span>${total}</span> đánh giá <span class="avg-stars">${renderStars(avg, true)}</span>`;
   }
 
   // Render danh sách comment
@@ -280,9 +283,7 @@ function renderReviews(reviews, ratingInfo) {
                          onerror="this.src='./asset/image/50x50.svg'">
                 </div>
                 <div class="right">
-                    <p class="user-gmail">${review.user.display_name} (${
-          review.user.email
-        })</p>
+                    <p class="user-gmail">${review.user.display_name}</p>
                     <div class="star">
                         ${renderStars(review.rating, true)}
                     </div>
@@ -582,7 +583,6 @@ function initAddToCart() {
     }
   });
 }
-
 // ===========================
 // INITIALIZATION
 // ===========================
