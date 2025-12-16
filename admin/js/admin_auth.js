@@ -70,7 +70,8 @@ function updateAdminUI(user) {
 
   const userRoleElements = document.querySelectorAll(".user-role");
   userRoleElements.forEach((el) => {
-    if (el) el.textContent = user.role === "admin" ? "Quản trị viên" : "Người dùng";
+    if (el)
+      el.textContent = user.role === "admin" ? "Quản trị viên" : "Người dùng";
   });
 
   // ===== XỬ LÝ AVATAR - PHIÊN BẢN ỔN ĐỊNH =====
@@ -96,7 +97,7 @@ function updateAdminUI(user) {
     // Xác định đường dẫn ảnh đúng
     const avatarUrl = user.avatar.startsWith("http")
       ? user.avatar
-      : "../asset/image/avatars/" + user.avatar;
+      : "../../asset/image/avatars/" + user.avatar;
 
     img.src = avatarUrl + "?t=" + new Date().getTime(); // tránh cache lỗi
 

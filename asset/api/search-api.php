@@ -6,21 +6,20 @@
  * ĐẶT TẠI: asset/api/search-api.php
  * ============================================================
  */
-// Ẩn toàn bộ error hiển thị ra browser (chỉ log nếu cần)
 ini_set('display_errors', 0);
-ini_set('log_errors', 1); // Tùy chọn: log error vào file
-error_reporting(E_ALL);   // Hoặc 0 ở production
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 
 require_once __DIR__ . '/../../model/config/connectdb.php';
-// Kết nối database
-$database = new Database();
-$conn = $database->connect();
 
 try {
+    $database = new Database();
+    $conn = $database->connect();
+    
     // Lấy từ khóa tìm kiếm
     $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
     
@@ -33,7 +32,7 @@ try {
         exit;
     }
 
-    // Chuẩn bị câu truy vấn tìm kiếm
+    // ✅ SỬA QUERY - Lấy view_count từ book_views
     $sql = "SELECT 
                 b.book_id,
                 b.title,
@@ -42,7 +41,7 @@ try {
                 b.published_year,
                 b.price,
                 b.quantity,
-                b.view_count,
+                COUNT(bv.view_id) as view_count,
                 b.description,
                 b.status,
                 c.category_name,
@@ -53,6 +52,7 @@ try {
             FROM books b
             LEFT JOIN categories c ON b.category_id = c.category_id
             LEFT JOIN book_images bi ON b.book_id = bi.book_id
+            LEFT JOIN book_views bv ON b.book_id = bv.book_id
             WHERE (
                 b.title LIKE :search1 OR 
                 b.author LIKE :search2 OR 
@@ -60,13 +60,17 @@ try {
                 b.description LIKE :search4
             )
             AND b.status = 'available'
+            GROUP BY b.book_id, b.title, b.author, b.publisher, 
+                     b.published_year, b.price, b.quantity, b.description, 
+                     b.status, c.category_name, bi.main_img, 
+                     bi.sub_img1, bi.sub_img2, bi.sub_img3
             ORDER BY 
                 CASE 
                     WHEN b.title LIKE :exactMatch THEN 1
                     WHEN b.title LIKE :startsWith THEN 2
                     ELSE 3
                 END,
-                b.view_count DESC
+                view_count DESC
             LIMIT 20";
 
     $stmt = $conn->prepare($sql);

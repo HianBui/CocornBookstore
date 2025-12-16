@@ -1,51 +1,105 @@
 File Tree: CocornBookstore
-Generated on: 12/3/2025, 11:06:54 PM
+Generated on: 12/16/2025, 8:14:09 PM
 Root path: c:\xampp\htdocs\CocornBookstore
 
 ────────────────────────────────────────────────────────────────────────────────
 
 ├── admin/
 │   ├── api/
+│   │   ├── book_images.php
+│   │   ├── carts.php
 │   │   ├── categories.php
 │   │   ├── dashboard_stats.php
+│   │   ├── orders.php
 │   │   ├── products.php
+│   │   ├── reviews.php
+│   │   ├── upload_image.php
 │   │   └── users.php
 │   ├── css/
 │   │   ├── admin.css
 │   │   ├── dashboard.css
+│   │   ├── table-category.css
+│   │   ├── table-user.css
 │   │   └── table.css
 │   ├── js/
 │   │   ├── admin_auth.js
+│   │   ├── book_images.js
+│   │   ├── carts.js
+│   │   ├── categories.js
 │   │   ├── dashboard.js
+│   │   ├── orders.js
 │   │   ├── products.js
+│   │   ├── reviews.js
 │   │   └── users.js
 │   ├── view/
-│   │   ├── components/
-│   │   │   └── modal.html
+│   │   ├── book_images.html
+│   │   ├── carts.html
+│   │   ├── categories.html
+│   │   ├── orders.html
 │   │   ├── products.html
+│   │   ├── reviews.html
 │   │   └── users.html
 │   └── dashboard.html
 ├── asset/
 │   ├── api/
 │   │   ├── admin_check.php
+│   │   ├── book_view_handler.php
 │   │   ├── cart-api.php
 │   │   ├── check_session.php
+│   │   ├── email-template.html
+│   │   ├── get-orders.php
 │   │   ├── get_book_detail.php
 │   │   ├── get_books.php
 │   │   ├── get_categories.php
 │   │   ├── login.php
 │   │   ├── logout.php
-│   │   └── register.php
+│   │   ├── register.php
+│   │   ├── reviews.php
+│   │   ├── search-api.php
+│   │   ├── send-order-email.php
+│   │   ├── update-profile.php
+│   │   ├── upload-avatar.php
+│   │   └── user-api.php
 │   ├── css/
 │   │   ├── allproduct.css
 │   │   ├── app.css
 │   │   ├── cart.css
+│   │   ├── checkout.css
 │   │   ├── custom.css
 │   │   ├── detail.css
 │   │   ├── form.css
+│   │   ├── infor.css
 │   │   ├── reponsive.css
-│   │   └── style.css
+│   │   ├── search.css
+│   │   ├── style.css
+│   │   └── trending_books.css
+│   ├── data/
+│   │   └── vietnam.json
 │   ├── image/
+│   │   ├── avatars/
+│   │   │   ├── 300x300.svg
+│   │   │   ├── avatar_10_1765764965.jpg
+│   │   │   ├── avatar_1_1765617304.jpg
+│   │   │   ├── avatar_6_1765567828.jpg
+│   │   │   ├── avatar_8_1765617008.jpg
+│   │   │   └── avatar_9_1765765516.png
+│   │   ├── books/
+│   │   │   ├── 300x300-1.svg
+│   │   │   ├── 300x300-2.svg
+│   │   │   ├── 300x300-3.svg
+│   │   │   ├── 300x300.svg
+│   │   │   ├── book_1765584658_693caf1271799.jpg
+│   │   │   ├── book_1765584662_693caf16f0737.jpg
+│   │   │   ├── book_1765584667_693caf1bb9e14.jpg
+│   │   │   ├── book_1765584711_693caf47bbabe.jpg
+│   │   │   ├── book_1765584956_693cb03cbce38.jpg
+│   │   │   ├── book_1765617232_693d2e5015463.svg
+│   │   │   ├── book_1765617262_693d2e6eeffe5.svg
+│   │   │   ├── book_1765617270_693d2e7609b89.svg
+│   │   │   ├── book_1765617273_693d2e79a837d.svg
+│   │   │   └── book_1765617278_693d2e7e227d0.svg
+│   │   ├── categories/
+│   │   │   └── 75x100.svg
 │   │   ├── 100x100.svg
 │   │   ├── 100x150.svg
 │   │   ├── 1290x400 (2).svg
@@ -57,9 +111,6 @@ Root path: c:\xampp\htdocs\CocornBookstore
 │   │   ├── 200x300.svg
 │   │   ├── 250x250.svg
 │   │   ├── 300x200.svg
-│   │   ├── 300x300 (1).svg
-│   │   ├── 300x300 (2).svg
-│   │   ├── 300x300 (3).svg
 │   │   ├── 300x300.svg
 │   │   ├── 324x300.svg
 │   │   ├── 500x1000.svg
@@ -81,31 +132,55 @@ Root path: c:\xampp\htdocs\CocornBookstore
 │       ├── all-products.js
 │       ├── app.js
 │       ├── auth.js
+│       ├── book-view.js
 │       ├── cart-handler.js
-│       ├── cart.js
+│       ├── checkout.js
 │       ├── form.js
+│       ├── infor.js
+│       ├── load-province.js
 │       ├── product-detail.js
-│       ├── product-view.js
-│       ├── products.js
-│       └── render-books.js
+│       ├── render-books.js
+│       ├── render-trending.js
+│       ├── reviews.js
+│       ├── search-handler.js
+│       └── sweetAlert-Helper.js
+├── logs/
+│   └── email-log.txt
 ├── model/
 │   ├── config/
 │   │   └── connectdb.php
 │   ├── database/
 │   │   └── cocorn.sql
-│   ├── includes/
-│   │   ├── footer.php
-│   │   ├── header.php
-│   │   ├── t.html
-│   │   └── track-view.php
-│   └── view/
+│   └── includes/
+│       ├── footer.php
+│       ├── header.php
+│       ├── t.html
+│       └── track-view.php
+├── vendor/
+│   ├── composer/
+│   │   ├── ClassLoader.php
+│   │   ├── InstalledVersions.php
+│   │   ├── LICENSE
+│   │   ├── autoload_classmap.php
+│   │   ├── autoload_namespaces.php
+│   │   ├── autoload_psr4.php
+│   │   ├── autoload_real.php
+│   │   ├── autoload_static.php
+│   │   ├── installed.json
+│   │   ├── installed.php
+│   │   └── platform_check.php
+│   ├── phpmailer/
+│   │   └── phpmailer/
+│   └── autoload.php
+├── .htmlhintrc
 ├── README.md
 ├── all-product.html
 ├── cart.html
+├── checkout.html
+├── composer.json
 ├── index.html
-├── index.php
+├── infor.html
 ├── login.html
-├── login.php
 ├── product.html
 └── register.html
 

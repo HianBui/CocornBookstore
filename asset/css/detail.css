@@ -440,29 +440,35 @@ section{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	gap: 30px;
+	margin: 20px 0;
 }
 .item-comment .left{
-	width: 10%;
+	/* width: 10%; */
 	height: max-content;
 	object-fit: cover;
 	border: none;
 }
 .item-comment .left img{
+	width: 80px;
+	height: 80px;
 	border-radius: 50%;
 	overflow: hidden;
+	object-fit: cover;
 }
 .item-comment .right{
 	height: auto;
 	width: 90%;
 	display: grid;
 	grid-template-rows: repeat(3, 1fr);
-	gap: 10px;
+	gap: 2px;
 	place-content: start;
 	background-color: transparent;
 }
-.item-comment .right .user-email{
-	font-size: var(--font-base);
-	font-weight: 700;
+.item-comment .right .user-gmail{
+	font-size: var(--font-lg);
+	font-weight: bold;
+	color: var(--text-color);
 }
 i.active{
 	color: var(--bs-yellow);
@@ -470,10 +476,9 @@ i.active{
 #review{
 	position: relative;
 }
-.your-comment{
+.comment-text{
 	width: 100%;
-	height: auto;
-	padding: 20px;
+	font-size: var(--font-xl);
 }
 .your-rate{
 	margin: 15px 0px;

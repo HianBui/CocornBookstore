@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * FILE: auth.js
- * MÔ TẢ: Xử lý đăng ký và đăng nhập (CẬP NHẬT: Thêm redirect theo role)
+ * MÔ TẢ: Xử lý đăng ký và đăng nhập (CẬP NHẬT: Thêm redirect theo role + SweetAlert2)
  * ĐẶT TẠI: asset/js/auth.js
  * ============================================================
  */
@@ -83,7 +83,12 @@ if (registerForm) {
 
         // Hiển thị lỗi nếu có
         if (errors.length > 0) {
-            showError(errors.join('. '));
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi xác thực',
+                html: errors.map(err => `<div style="text-align: center;"> ${err}</div>`).join(''),
+                confirmButtonText: 'Đóng'
+            });
             return;
         }
 
@@ -114,7 +119,14 @@ if (registerForm) {
 
             if (data.success) {
                 // Hiển thị thông báo thành công
-                showSuccess(data.message);
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng ký thành công!',
+                    text: data.message,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 
                 // ✅ XÓA TẤT CẢ GIÁ TRỊ TRONG FORM
                 registerForm.reset();
@@ -126,17 +138,25 @@ if (registerForm) {
                     if (confirmPassInput) confirmPassInput.type = 'password';
                 }
 
-                // Chuyển hướng sau 2 giây
-                setTimeout(() => {
-                    window.location.href = './login.html';
-                }, 2000);
+                // Chuyển hướng
+                window.location.href = './login.html';
             } else {
-                showError(data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Đăng ký thất bại',
+                    text: data.message,
+                    confirmButtonText: 'Thử lại'
+                });
             }
 
         } catch (error) {
             console.error('Error:', error);
-            showError('Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại sau.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại sau.',
+                confirmButtonText: 'Đóng'
+            });
         } finally {
             // Enable lại nút submit
             submitBtn.disabled = false;
@@ -170,29 +190,48 @@ if (loginForm) {
 
         // ✅ BỎ QUA VALIDATE NẾU LÀ ADMIN
         if (username === 'admin' && password === 'admin') {
-            showSuccess('Đăng nhập thành công (Admin bypass)');
-            setTimeout(() => {
-                window.location.href = './admin/dashboard.html';
-            }, 1000);
-            return; // Dừng xử lý tiếp theo
+            await Swal.fire({
+                icon: 'success',
+                title: 'Đăng nhập thành công!',
+                text: 'Chào mừng Admin!',
+                timer: 1000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+            window.location.href = './admin/dashboard.html';
+            return;
         }
 
         // Validate bình thường cho user khác
         if (!username || !password) {
-            showError('Vui lòng nhập đầy đủ thông tin');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Thiếu thông tin',
+                text: 'Vui lòng nhập đầy đủ thông tin',
+                confirmButtonText: 'Đóng'
+            });
             return;
         }
 
         if (username.length < 6 || username.length > 20) {
-            showError('Tên đăng nhập phải từ 6-20 ký tự');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tên đăng nhập không hợp lệ',
+                text: 'Tên đăng nhập phải từ 6-20 ký tự',
+                confirmButtonText: 'Đóng'
+            });
             return;
         }
 
         if (password.length < 8 || password.length > 30) {
-            showError('Mật khẩu phải từ 8-30 ký tự');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Mật khẩu không hợp lệ',
+                text: 'Mật khẩu phải từ 8-30 ký tự',
+                confirmButtonText: 'Đóng'
+            });
             return;
         }
-
 
         // Disable nút submit
         const submitBtn = loginForm.querySelector('button[type="submit"]');
@@ -217,8 +256,6 @@ if (loginForm) {
             const data = await response.json();
 
             if (data.success) {
-                showSuccess(data.message);
-                
                 // ✅ XÓA TẤT CẢ GIÁ TRỊ TRONG FORM
                 loginForm.reset();
                 
@@ -238,91 +275,48 @@ if (loginForm) {
                     localStorage.setItem('authToken', data.token);
                 }
 
-                // ✅ CHUYỂN HƯỚNG DỰA TRÊN ROLE (TỪ BACKEND)
-                setTimeout(() => {
-                    if (data.redirectUrl) {
-                        // Sử dụng redirectUrl từ backend
-                        window.location.href = data.redirectUrl;
-                    } else {
-                        // Fallback: Tự xác định dựa trên role
-                        if (data.user && data.user.role === 'admin') {
-                            window.location.href = './admin/dashboard.html';
-                        } else {
-                            window.location.href = './index.html';
-                        }
-                    }
-                }, 1500);
+                // Xác định URL chuyển hướng
+                let redirectUrl = './index.html';
+                if (data.redirectUrl) {
+                    redirectUrl = data.redirectUrl;
+                } else if (data.user && data.user.role === 'admin') {
+                    redirectUrl = './admin/dashboard.html';
+                }
+
+                // Hiển thị thông báo và chuyển hướng
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng nhập thành công!',
+                    text: data.message,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+
+                // Chuyển hướng sau khi SweetAlert đóng
+                window.location.href = redirectUrl;
             } else {
-                showError(data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Đăng nhập thất bại',
+                    text: data.message,
+                    confirmButtonText: 'Thử lại'
+                });
             }
 
         } catch (error) {
             console.error('Error:', error);
-            showError('Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại sau.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại sau.',
+                confirmButtonText: 'Đóng'
+            });
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
         }
     });
-}
-
-// ===========================
-// HÀM HIỂN THỊ THÔNG BÁO LỖI
-// ===========================
-function showError(message) {
-    const errorField = document.querySelector('.error-field');
-    const textError = document.querySelector('.text-error');
-    const icon = errorField?.querySelector('i');
-    
-    if (errorField && textError) {
-        // Xóa class success nếu có
-        errorField.classList.remove('success');
-        
-        // Đổi icon về exclamation-circle
-        if (icon) {
-            icon.classList.remove('bi-check-circle');
-            icon.classList.add('bi-exclamation-circle');
-        }
-        
-        // Hiển thị thông báo
-        textError.textContent = message;
-        errorField.style.display = 'flex';
-        
-        // Cuộn đến thông báo lỗi
-        errorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Tự động ẩn sau 5 giây
-        setTimeout(() => {
-            errorField.style.display = 'none';
-        }, 5000);
-    }
-}
-
-// ===========================
-// HÀM HIỂN THỊ THÔNG BÁO THÀNH CÔNG
-// ===========================
-function showSuccess(message) {
-    const errorField = document.querySelector('.error-field');
-    const textError = document.querySelector('.text-error');
-    const icon = errorField?.querySelector('i');
-    
-    if (errorField && textError) {
-        // Thêm class success
-        errorField.classList.add('success');
-        
-        // Đổi icon thành check-circle
-        if (icon) {
-            icon.classList.remove('bi-exclamation-circle');
-            icon.classList.add('bi-check-circle');
-        }
-        
-        // Hiển thị thông báo
-        textError.textContent = message;
-        errorField.style.display = 'flex';
-        
-        // Cuộn đến thông báo
-        errorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
 }
 
 // ===========================
@@ -332,19 +326,17 @@ async function checkLoginStatus() {
     try {
         const response = await fetch('./asset/api/check_session.php', {
             method: 'GET',
-            credentials: 'include' // Gửi cookie cùng request
+            credentials: 'include'
         });
 
         const data = await response.json();
 
         if (data.success && data.logged_in) {
-            // User đã đăng nhập
             return {
                 logged_in: true,
                 user: data.user
             };
         } else {
-            // User chưa đăng nhập
             return {
                 logged_in: false,
                 user: null
@@ -358,22 +350,41 @@ async function checkLoginStatus() {
         };
     }
 }
+
 window.addEventListener('userUpdated', function() {
     const updatedUser = JSON.parse(localStorage.getItem('user') || '{}');
     if (updatedUser.user_id) {
         updateUIForLoggedIn(updatedUser);
     }
 });
+
 // ===========================
 // ĐĂNG XUẤT
 // ===========================
 async function logout() {
-    // Hiển thị loading
-    const logoutBtn = document.querySelector('.log-out a');
-    const originalText = logoutBtn ? logoutBtn.innerHTML : '';
-    if (logoutBtn) {
-        logoutBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>&nbsp;&nbsp; Đang đăng xuất...';
+    const result = await Swal.fire({
+        title: 'Xác nhận đăng xuất',
+        text: 'Bạn có chắc chắn muốn đăng xuất?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Đăng xuất',
+        cancelButtonText: 'Hủy'
+    });
+
+    if (!result.isConfirmed) {
+        return;
     }
+
+    // Hiển thị loading
+    Swal.fire({
+        title: 'Đang đăng xuất...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     try {
         const response = await fetch('./asset/api/logout.php', {
@@ -389,14 +400,25 @@ async function logout() {
             localStorage.removeItem('user');
             sessionStorage.clear();
 
+            await Swal.fire({
+                icon: 'success',
+                title: 'Đăng xuất thành công!',
+                text: 'Hẹn gặp lại bạn sau!',
+                timer: 1000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+
             // Chuyển hướng về trang login
             window.location.href = './login.html';
         } else {
             console.error('Logout error:', data.message);
-            alert('Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại!');
-            if (logoutBtn) {
-                logoutBtn.innerHTML = originalText;
-            }
+            Swal.fire({
+                icon: 'error',
+                title: 'Đăng xuất thất bại',
+                text: 'Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại!',
+                confirmButtonText: 'Đóng'
+            });
         }
     } catch (error) {
         console.error('Logout error:', error);
@@ -404,6 +426,16 @@ async function logout() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         sessionStorage.clear();
+        
+        await Swal.fire({
+            icon: 'info',
+            title: 'Đã đăng xuất',
+            text: 'Phiên làm việc đã kết thúc',
+            timer: 1000,
+            timerProgressBar: true,
+            showConfirmButton: false
+        });
+        
         window.location.href = './login.html';
     }
 }
@@ -424,10 +456,7 @@ function attachLogoutEvents() {
         // Gắn event listener mới
         newBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                logout();
-            }
+            logout();
         });
     });
 }
@@ -447,9 +476,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// ===========================
-// Cập nhật UI CHO USER ĐÃ ĐĂNG NHẬP
-// ===========================
 // ===========================
 // Cập nhật UI CHO USER ĐÃ ĐĂNG NHẬP
 // ===========================

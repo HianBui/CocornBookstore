@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="./asset/css/reponsive.css" />
     <link rel="stylesheet" href="./asset/css/app.css" />
     <link rel="stylesheet" href="./asset/css/form.css" />
+    <link rel="stylesheet" href="./asset/css/search.css" />
     <link rel="stylesheet" href="./asset/css/detail.css" />
   </head>
 
@@ -170,7 +171,9 @@
               >
             </li>
             <li>
-              <a href="./all-product.html"><i class="bi bi-list"></i>&nbsp;Danh mục</a>
+              <a href="./all-product.html"
+                ><i class="bi bi-list"></i>&nbsp;Danh mục</a
+              >
             </li>
             <li>
               <a href="#"><i class="bi bi-cash-stack"></i>&nbsp;Nạp tiền</a>
@@ -541,25 +544,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- ======================= SCRIPT CUSTOM ======================= -->
+    <script src="./asset/js/search-handler.js"></script>
     <script src="./asset/js/app.js"></script>
     <script src="./asset/js/auth.js"></script>
     <script src="./asset/js/reviews.js"></script>
+    <script src="./asset/js/cart-handler.js"></script>
     <script src="./asset/js/product-detail.js"></script>
     <script src="./asset/js/form.js"></script>
-    <script src="./asset/js/cart-handler.js"></script>
-    <script src="./asset/js/search-handler.js"></script>
-
-    <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const bookId = urlParams.get("id");
-
-      document
-        .getElementById("addToCartBtn")
-        .addEventListener("click", function () {
-          const qty = parseInt(document.getElementById("sl").value) || 1;
-          CartHandler.addToCart(bookId, qty);
-        });
-
-    </script>
   </body>
 </html>

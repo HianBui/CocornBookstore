@@ -4,7 +4,7 @@
  * FILE: get_books.php
  * MÔ TẢ: API lấy danh sách sách từ database (CẬP NHẬT)
  * ĐẶT TẠI: asset/api/get_books.php
- * CẬP NHẬT: Lấy lượt xem từ book_views
+ * CẬP NHẬT: Thêm section "most_viewed" cho "Dành cho bạn"
  * ============================================================
  */
 
@@ -51,11 +51,15 @@ try {
     
     // Query dựa trên section
     if ($section === 'featured') {
-        // Sản phẩm nổi bật - sắp xếp theo lượt xem
+        // Sản phẩm nổi bật - sắp xếp theo lượt xem (BÁN CHẠY)
         $query = $baseQuery . " ORDER BY view_count DESC, b.created_at DESC";
     } 
+    elseif ($section === 'most_viewed') {
+        // ✅ NHIỀU LƯỢT XEM - sắp xếp theo view_count
+        $query = $baseQuery . " ORDER BY view_count DESC, b.book_id DESC";
+    }
     elseif ($section === 'hotdeal') {
-        // Hot deal - sách mới trong 7 ngày
+        // XU HƯỚNG - sách mới nhất
         $query = $baseQuery . " ORDER BY b.created_at DESC";
     }
     else {
@@ -113,5 +117,5 @@ try {
     echo json_encode([
         'success' => false,
         'message' => 'Lỗi database: ' . $e->getMessage()
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }

@@ -1,7 +1,7 @@
 /**
  * ============================================================
- * FILE: render-books.js (ĐÃ HỢP NHẤT & SỬA LỖI)
- * MÔ TẢ: Render dữ liệu từ database - HỢP NHẤT products.js
+ * FILE: render-books.js (ĐÃ SỬA LỖI - HOÀN CHỈNH)
+ * MÔ TẢ: Render dữ liệu từ database với event listeners hoàn chỉnh
  * ĐẶT TẠI: asset/js/render-books.js
  * ============================================================
  */
@@ -20,6 +20,7 @@ function getImagePath(imageName) {
     }
     return IMAGE_BASE + imageName;
 }
+
 function getImagePathCate(imageName) {
     if (!imageName) return IMAGE_BASE_CATE + '75x100.svg';
     if (imageName.startsWith('./') || imageName.startsWith('http')) {
@@ -33,6 +34,40 @@ function getImagePathCate(imageName) {
 // ==========================================
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+}
+
+// ==========================================
+// ✅ HÀM THÊM VÀO GIỎ HÀNG (AN TOÀN)
+// ==========================================
+function safeAddToCart(bookId, quantity = 1) {
+    // Kiểm tra CartHandler có sẵn không
+    if (typeof window.CartHandler !== 'undefined' && window.CartHandler.addToCart) {
+        window.CartHandler.addToCart(bookId, quantity);
+    } else {
+        // Nếu chưa load, đợi 500ms rồi thử lại
+        console.warn('⏳ CartHandler chưa sẵn sàng, đang thử lại...');
+        setTimeout(() => {
+            if (typeof window.CartHandler !== 'undefined' && window.CartHandler.addToCart) {
+                window.CartHandler.addToCart(bookId, quantity);
+            } else {
+                console.error('❌ CartHandler không thể load!');
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: 'Không thể thêm vào giỏ hàng. Vui lòng tải lại trang.',
+                        confirmButtonText: 'Tải lại',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                } else {
+                    alert('Lỗi: Không thể thêm vào giỏ hàng. Vui lòng tải lại trang.');
+                }
+            }
+        }, 500);
+    }
 }
 
 // ==========================================
@@ -64,8 +99,9 @@ async function renderFeaturedProducts() {
                             <a href="./product.html?id=${book.book_id}" class="views">Xem chi tiết</a>
                             <a href="javascript:void(0)" 
                                class="add add-to-cart" 
-                               data-book-id="${book.book_id}"
-                               data-quantity="1">Thêm giỏ hàng</a>
+                               onclick="safeAddToCart(${book.book_id}, 1); return false;">
+                               Thêm giỏ hàng
+                            </a>
                         </div>
                     </div>
                     <div class="product-title">${book.title}</div>
@@ -77,10 +113,7 @@ async function renderFeaturedProducts() {
 
         console.log('✅ Đã render', data.books.length, 'sản phẩm nổi bật');
 
-        // ✅ Gắn event listeners CHO CÁC NÚT MỚI RENDER
-        attachAddToCartEvents();
-
-        // ✅ Gọi lại ScrollReveal sau khi render
+        // Gọi lại ScrollReveal sau khi render
         setTimeout(() => {
             if (typeof window.initScrollReveal === 'function') {
                 window.initScrollReveal();
@@ -140,8 +173,7 @@ async function renderHotDeals() {
                             <a href="./product.html?id=${book.book_id}" class="deal-view">Xem chi tiết</a>
                             <a href="javascript:void(0)" 
                                class="add add-to-cart" 
-                               data-book-id="${book.book_id}"
-                               data-quantity="1">
+                               onclick="safeAddToCart(${book.book_id}, 1); return false;">
                                 <button class="deal-btn">Thêm giỏ hàng</button>
                             </a>
                         </div>
@@ -153,10 +185,7 @@ async function renderHotDeals() {
 
         console.log('✅ Đã render', data.books.length, 'hot deal');
 
-        // ✅ Gắn event listeners CHO CÁC NÚT MỚI RENDER
-        attachAddToCartEvents();
-
-        // ✅ Gọi lại ScrollReveal sau khi render
+        // Gọi lại ScrollReveal sau khi render
         setTimeout(() => {
             if (typeof window.initScrollReveal === 'function') {
                 window.initScrollReveal();
@@ -202,11 +231,10 @@ async function renderCategories() {
 
         console.log('✅ Đã render', data.categories.length, 'danh mục');
 
-        // ✅ Gọi lại ScrollReveal SAU KHI render xong
+        // Gọi lại ScrollReveal SAU KHI render xong
         setTimeout(() => {
             if (typeof window.initScrollReveal === 'function') {
                 window.initScrollReveal();
-                console.log('🎬 ScrollReveal đã được khởi tạo lại cho categories');
             }
         }, 100);
 
@@ -223,34 +251,6 @@ async function renderCategories() {
 }
 
 // ==========================================
-// ✅ GẮN EVENT LISTENERS CHO NÚT THÊM GIỎ HÀNG
-// ==========================================
-function attachAddToCartEvents() {
-    // ✅ Chỉ gắn cho các nút CHƯA có event listener
-    document.querySelectorAll('.add-to-cart:not([data-listener-attached])').forEach(btn => {
-        btn.setAttribute('data-listener-attached', 'true'); // Đánh dấu đã gắn
-        
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation(); // Ngăn event bubbling
-            
-            const bookId = this.dataset.bookId;
-            const quantity = parseInt(this.dataset.quantity) || 1;
-            
-            // ✅ Kiểm tra CartHandler có tồn tại không
-            if (typeof window.CartHandler !== 'undefined' && window.CartHandler.addToCart) {
-                window.CartHandler.addToCart(bookId, quantity);
-            } else {
-                console.error('❌ CartHandler chưa được load!');
-                alert('Lỗi: Không thể thêm vào giỏ hàng. Vui lòng tải lại trang.');
-            }
-        });
-    });
-    
-    console.log('✅ Đã gắn event listeners cho', document.querySelectorAll('.add-to-cart[data-listener-attached]').length, 'nút');
-}
-
-// ==========================================
 // KHỞI TẠO KHI TRANG LOAD XONG
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -262,3 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(() => renderHotDeals())
         .catch(error => console.error('❌ Lỗi render:', error));
 });
+
+// Export hàm để có thể gọi từ file khác
+window.safeAddToCart = safeAddToCart;

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coconut - Corn</title>
+    <title>Coconut - Corn Bookstore</title>
 
     <!-- ===================== LINK BOOTSTRAP ===================== -->
     <link
@@ -34,12 +34,18 @@
       href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
     />
 
+    <!-- ===================== SWEETALERT2 CSS ===================== -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+
     <!-- ===================== LINK CSS ===================== -->
     <link rel="stylesheet" href="./asset/css/style.css" />
     <link rel="stylesheet" href="./asset/css/reponsive.css" />
     <link rel="stylesheet" href="./asset/css/app.css" />
     <link rel="stylesheet" href="./asset/css/search.css" />
-    <link rel="stylesheet" href="./asset/css/trending_books.css">
+    <link rel="stylesheet" href="./asset/css/forU_books.css" />
   </head>
   <body>
     <!-- ===================== HEADER ===================== -->
@@ -49,9 +55,8 @@
         <div class="container">
           <!-- LOGO -->
           <a class="home" href="index.html">
-            <img src="./asset/image/Logo.svg" alt="!" />
+            <img src="./asset/image/Logo.svg" alt="Coconut Corn Bookstore" />
           </a>
-          <!-- LOGO END -->
 
           <!-- SEARCH BOX -->
           <div class="search-box">
@@ -63,7 +68,6 @@
             />
             <button type="submit"><i class="bi bi-search"></i></button>
           </div>
-          <!-- SEARCH BOX END -->
 
           <!-- CART -->
           <div class="cart">
@@ -72,7 +76,6 @@
             </a>
             <span class="count-product">0</span>
           </div>
-          <!-- CART END -->
 
           <!-- LOGIN / REGISTER BUTTON -->
           <div class="box-button active" id="button-logreg">
@@ -83,7 +86,6 @@
               <i class="bi bi-person-plus-fill"></i> Đăng ký
             </a>
           </div>
-          <!-- LOGIN / REGISTER BUTTON END -->
 
           <!-- DROPDOWN USER MENU -->
           <div class="dropdown" id="dropdown-user" style="display: none">
@@ -109,81 +111,85 @@
                 <hr class="dropdown-divider" />
               </li>
               <li>
-                <a class="dropdown-item" href="./infor.html"
-                  ><i class="bi bi-person usericonbox"></i> &nbsp;Thông tin cá
-                  nhân</a
-                >
+                <a class="dropdown-item" href="./infor.html">
+                  <i class="bi bi-person usericonbox"></i> &nbsp;Thông tin cá nhân
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="bi bi-cash-coin"></i> &nbsp;Nạp tiền</a
-                >
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-cash-coin"></i> &nbsp;Nạp tiền
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="bi bi-clock-history"></i> &nbsp;Lịch sử nạp tiền</a
-                >
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-clock-history"></i> &nbsp;Lịch sử nạp tiền
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="bi bi-cart3"></i> &nbsp;Giỏ hàng</a
-                >
+                <a class="dropdown-item" href="./cart.html">
+                  <i class="bi bi-cart3"></i> &nbsp;Giỏ hàng
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="bi bi-heart-fill"></i> &nbsp;Yêu thích</a
-                >
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-heart-fill"></i> &nbsp;Yêu thích
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="bi bi-box2-fill"></i> &nbsp;Đơn hàng</a
-                >
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-box2-fill"></i> &nbsp;Đơn hàng
+                </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="bi bi-lightning-fill"></i> &nbsp;Đơn dịch vụ</a
-                >
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-lightning-fill"></i> &nbsp;Đơn dịch vụ
+                </a>
               </li>
               <li class="dropdown-divider-li">
                 <hr class="dropdown-divider" />
               </li>
               <div class="log-out">
-                <a class="dropdown-item" href="#" data-logout
-                  ><i class="bi bi-box-arrow-right"></i>&nbsp;Đăng xuất</a
-                >
+                <a class="dropdown-item" href="#" data-logout>
+                  <i class="bi bi-box-arrow-right"></i>&nbsp;Đăng xuất
+                </a>
               </div>
             </ul>
           </div>
-          <!-- DROPDOWN USER MENU END -->
         </div>
       </div>
-      <!-- ===== ACTION BAR END ===== -->
 
       <!-- ===== NAVIGATION ===== -->
       <div class="navigation" id="nav">
         <div class="container">
           <ul>
             <li class="active">
-              <a href="./index.html"
-                ><i class="bi bi-house-door-fill"></i>&nbsp;Trang chủ</a
-              >
+              <a href="./index.html">
+                <i class="bi bi-house-door-fill"></i>&nbsp;Trang chủ
+              </a>
             </li>
             <li>
-              <a href="#category"><i class="bi bi-list"></i>&nbsp;Danh mục</a>
+              <a href="#category">
+                <i class="bi bi-list"></i>&nbsp;Danh mục
+              </a>
             </li>
             <li>
-              <a href="#"><i class="bi bi-cash-stack"></i>&nbsp;Nạp tiền</a>
+              <a href="#">
+                <i class="bi bi-cash-stack"></i>&nbsp;Nạp tiền
+              </a>
             </li>
             <li>
-              <a href="#"><i class="bi bi-journal-text"></i>&nbsp;Hướng dẫn</a>
+              <a href="#">
+                <i class="bi bi-journal-text"></i>&nbsp;Hướng dẫn
+              </a>
             </li>
             <li>
-              <a href="#"><i class="bi bi-facebook"></i>&nbsp;Liên hệ</a>
+              <a href="#">
+                <i class="bi bi-facebook"></i>&nbsp;Liên hệ
+              </a>
             </li>
           </ul>
         </div>
       </div>
-      <!-- ===== NAVIGATION END ===== -->
     </header>
     <!-- ===================== HEADER END ===================== -->
 
@@ -194,25 +200,25 @@
         <div class="container">
           <div class="slider">
             <div class="item">
-              <img src="./asset/image/1290x400.svg" alt="" />
+              <img src="./asset/image/1290x400.svg" alt="Banner 1" />
             </div>
             <div class="item">
-              <img src="./asset/image/1290x400 (2).svg" alt="" />
+              <img src="./asset/image/1290x400 (2).svg" alt="Banner 2" />
             </div>
             <div class="item">
-              <img src="./asset/image/1290x400 (3).svg" alt="" />
+              <img src="./asset/image/1290x400 (3).svg" alt="Banner 3" />
             </div>
             <div class="item">
-              <img src="./asset/image/1290x400 (4).svg" alt="" />
+              <img src="./asset/image/1290x400 (4).svg" alt="Banner 4" />
             </div>
             <div class="item">
-              <img src="./asset/image/1290x400 (5).svg" alt="" />
+              <img src="./asset/image/1290x400 (5).svg" alt="Banner 5" />
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ===== SALE OFF===== -->
+      <!-- ===== SALE OFF ===== -->
       <section id="sale-off">
         <div class="container">
           <h1 class="title">sale off</h1>
@@ -234,52 +240,15 @@
           </div>
         </div>
       </section>
+
       <!-- ===== CATEGORY ===== -->
       <section id="category">
         <div class="container">
           <h1 class="title">Danh mục sản phẩm</h1>
           <div class="categories">
-            <!-- Category items -->
-            <a class="item catI" href="#"
-              ><div class="item-img">
-                <img src="./asset/image/75x100.svg" alt="" />
-              </div>
-              <p class="des">Miêu tả</p></a
-            >
-            <a class="item catI" href="#"
-              ><div class="item-img">
-                <img src="./asset/image/75x100.svg" alt="" />
-              </div>
-              <p class="des">Miêu tả</p></a
-            >
-            <a class="item catI" href="#"
-              ><div class="item-img">
-                <img src="./asset/image/75x100.svg" alt="" />
-              </div>
-              <p class="des">Miêu tả</p></a
-            >
-            <a class="item catI" href="#"
-              ><div class="item-img">
-                <img src="./asset/image/75x100.svg" alt="" />
-              </div>
-              <p class="des">Miêu tả</p></a
-            >
-            <a class="item catI" href="#"
-              ><div class="item-img">
-                <img src="./asset/image/75x100.svg" alt="" />
-              </div>
-              <p class="des">Miêu tả</p></a
-            >
-            <a class="item catI" href="#"
-              ><div class="item-img">
-                <img src="./asset/image/75x100.svg" alt="" />
-              </div>
-              <p class="des">Miêu tả</p></a
-            >
           </div>
         </div>
       </section>
-      <!-- ===== CATEGORY END ===== -->
     </div>
     <!-- ===================== MAIN CONTENT END ===================== -->
 
@@ -289,71 +258,14 @@
         <h1 class="title">Sản phẩm nổi bật</h1>
         <div class="product-feature">
           <!-- LEFT PRODUCT LIST -->
-          <div class="left">
-            <!-- Product item -->
-            <div class="product-item">
-              <div class="product-image">
-                <a href="#"><img src="./asset/image/324x300.svg" alt="" /></a>
-                <div class="icons">
-                  <a href="./product.html?id=1" class="views">Xem chi tiết</a>
-                  <a href="#" class="add">Mua ngay</a>
-                </div>
-              </div>
-              <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
-              <div class="product-price">
-                999,999đ<span class="product-price-old">999,999đ</span>
-              </div>
-            </div>
-            <!-- Product item -->
-            <div class="product-item">
-              <div class="product-image">
-                <a href="#"><img src="./asset/image/324x300.svg" alt="" /></a>
-                <div class="icons">
-                  <a href="./product.html" class="views">Xem chi tiết</a>
-                  <a href="#" class="add">Mua ngay</a>
-                </div>
-              </div>
-              <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
-              <div class="product-price">
-                999,999đ<span class="product-price-old">999,999đ</span>
-              </div>
-            </div>
-            <!-- Product item -->
-            <div class="product-item">
-              <div class="product-image">
-                <a href="#"><img src="./asset/image/324x300.svg" alt="" /></a>
-                <div class="icons">
-                  <a href="./product.html" class="views">Xem chi tiết</a>
-                  <a href="#" class="add">Mua ngay</a>
-                </div>
-              </div>
-              <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
-              <div class="product-price">
-                999,999đ<span class="product-price-old">999,999đ</span>
-              </div>
-            </div>
-            <!-- Product item -->
-            <div class="product-item">
-              <div class="product-image">
-                <a href="#"><img src="./asset/image/324x300.svg" alt="" /></a>
-                <div class="icons">
-                  <a href="./product.html" class="views">Xem chi tiết</a>
-                  <a href="#" class="add">Mua ngay</a>
-                </div>
-              </div>
-              <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
-              <div class="product-price">
-                999,999đ<span class="product-price-old">999,999đ</span>
-              </div>
-            </div>
+          <div class="left hot-dealing-left">
+            <!-- ✅ Products sẽ được load bởi render-books.js -->
           </div>
-          <!-- LEFT END -->
 
           <!-- RIGHT BANNER -->
-          <div class="right">
-            <a href="#"><img src="./asset/image/500x1000.svg" alt="" /></a>
+          <div class="right hot-dealing-right">
+            <a href="#"><img src="./asset/image/500x1000.svg" alt="Banner" /></a>
           </div>
-          <!-- RIGHT END -->
         </div>
         <div class="viewmore-product">
           <a href="./all-product.html">Xem thêm</a>
@@ -367,57 +279,7 @@
       <div class="container">
         <h1 class="title">DEAL HOT TRONG TUẦN</h1>
         <div class="hot-dealing">
-          <!-- Hot product -->
-          <div class="hot-product">
-            <div class="hot-product-image">
-              <a href="#"><img src="./asset/image/300x300.svg" alt="" /></a>
-              <div class="deal-item">
-                <img src="./asset/image/300x300.svg" alt="" />
-                <img src="./asset/image/300x300 (1).svg" alt="" />
-                <img src="./asset/image/300x300 (2).svg" alt="" />
-                <img src="./asset/image/300x300 (3).svg" alt="" />
-              </div>
-            </div>
-            <div class="deal-content">
-              <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
-              <div class="product-price">
-                999,999đ <span class="product-price-old">999,999đ</span>
-              </div>
-              <div class="deal-bestseller">Hot</div>
-              <div class="deal-auth">
-                <a href="#" class="deal-view">Xem chi tiết</a>
-                <a href="#" class="add"
-                  ><button class="deal-btn">Mua ngay</button></a
-                >
-              </div>
-            </div>
-          </div>
-          <!-- Hot product -->
-          <div class="hot-product">
-            <div class="hot-product-image">
-              <a href="#"><img src="./asset/image/300x300.svg" alt="" /></a>
-              <div class="deal-item">
-                <img src="./asset/image/300x300.svg" alt="" />
-                <img src="./asset/image/300x300 (1).svg" alt="" />
-                <img src="./asset/image/300x300 (2).svg" alt="" />
-                <img src="./asset/image/300x300 (3).svg" alt="" />
-              </div>
-            </div>
-            <div class="deal-content">
-              <div class="product-title">Peter Nimble & Những Đôi Mắt Thần</div>
-              <div class="product-price">
-                999,999đ <span class="product-price-old">999,999đ</span>
-              </div>
-              <div class="deal-bestseller">Hot</div>
-              <div class="deal-auth">
-                <a href="#" class="deal-view">Xem chi tiết</a>
-                <a href="#" class="add"
-                  ><button class="deal-btn">Mua ngay</button></a
-                >
-              </div>
-            </div>
-          </div>
-          <!-- Hot product end -->
+
         </div>
       </div>
       <div class="viewmore-product">
@@ -425,191 +287,43 @@
       </div>
     </section>
     <!-- ===================== HOT DEAL END ===================== -->
-    <!-- ===================== TRENDING BOOKS - SÁCH XEM NHIỀU NHẤT TUẦN ===================== -->
-<section id="trending-books">
-  <div class="container">
-    <h1 class="title">
-      <i class="bi bi-fire"></i> Sách Trending Tuần Này
-    </h1>
-    
-    <div class="trending-subtitle">
-      <p>Top sách được yêu thích nhất trong 7 ngày qua</p>
-    </div>
 
-    <!-- Trending Books Grid -->
-    <div class="trending-grid">
-      
-      <!-- Book Item 1 - Featured (Lớn nhất) -->
-      <div class="trending-item featured">
-        <div class="trending-badge">
-          <i class="bi bi-trophy-fill"></i>
-          <span>#1</span>
-        </div>
-        <div class="trending-image">
-          <a href="#">
-            <img src="./asset/image/324x300.svg" alt="Book title">
-          </a>
-          <div class="trending-stats">
-            <span class="views">
-              <i class="bi bi-eye-fill"></i> 1,234
-            </span>
-            <span class="trend-up">
-              <i class="bi bi-graph-up-arrow"></i> +45%
-            </span>
+    <!-- ===================== DÀNH CHO BẠN ===================== -->
+    <section id="foryou-books">
+      <div class="container">
+        <h1 class="title">Dành cho bạn</h1>
+
+        <div class="foryou-books-grid">
+          <!-- Cột Bán chạy -->
+          <div class="category-column">
+            <div class="category-header">
+              <h3 class="category-title">Bán chạy</h3>
+            </div>
+            <!-- ✅ Books sẽ được load bởi render-foryou-books.js -->
           </div>
-        </div>
-        <div class="trending-content">
-          <h3 class="book-title">Tên sách sẽ hiển thị ở đây</h3>
-          <p class="book-author">Tác giả</p>
-          <div class="book-price">999,999đ</div>
-          <div class="trending-actions">
-            <a href="#" class="btn-view">
-              <i class="bi bi-eye"></i> Xem chi tiết
-            </a>
-            <a href="#" class="btn-cart">
-              <i class="bi bi-cart-plus"></i>
-            </a>
+
+          <!-- Cột Nhiều lượt xem -->
+          <div class="category-column">
+            <div class="category-header">
+              <h3 class="category-title">Nhiều lượt xem</h3>
+            </div>
+            <!-- ✅ Books sẽ được load bởi render-foryou-books.js -->
+          </div>
+
+          <!-- Cột Xu hướng -->
+          <div class="category-column">
+            <div class="category-header">
+              <h3 class="category-title">Xu hướng</h3>
+            </div>
+            <!-- ✅ Books sẽ được load bởi render-foryou-books.js -->
           </div>
         </div>
       </div>
-
-      <!-- Book Items 2-5 (Normal size) -->
-      <div class="trending-item">
-        <div class="trending-badge rank-2">
-          <span>#2</span>
-        </div>
-        <div class="trending-image">
-          <a href="#">
-            <img src="./asset/image/324x300.svg" alt="Book title">
-          </a>
-          <div class="trending-stats">
-            <span class="views">
-              <i class="bi bi-eye-fill"></i> 980
-            </span>
-            <span class="trend-up">
-              <i class="bi bi-graph-up-arrow"></i> +32%
-            </span>
-          </div>
-        </div>
-        <div class="trending-content">
-          <h3 class="book-title">Tên sách</h3>
-          <p class="book-author">Tác giả</p>
-          <div class="book-price">999,999đ</div>
-          <div class="trending-actions">
-            <a href="#" class="btn-view">Xem</a>
-            <a href="#" class="btn-cart">
-              <i class="bi bi-cart-plus"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="trending-item">
-        <div class="trending-badge rank-3">
-          <span>#3</span>
-        </div>
-        <div class="trending-image">
-          <a href="#">
-            <img src="./asset/image/324x300.svg" alt="Book title">
-          </a>
-          <div class="trending-stats">
-            <span class="views">
-              <i class="bi bi-eye-fill"></i> 856
-            </span>
-            <span class="trend-up">
-              <i class="bi bi-graph-up-arrow"></i> +28%
-            </span>
-          </div>
-        </div>
-        <div class="trending-content">
-          <h3 class="book-title">Tên sách</h3>
-          <p class="book-author">Tác giả</p>
-          <div class="book-price">999,999đ</div>
-          <div class="trending-actions">
-            <a href="#" class="btn-view">Xem</a>
-            <a href="#" class="btn-cart">
-              <i class="bi bi-cart-plus"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="trending-item">
-        <div class="trending-badge">
-          <span>#4</span>
-        </div>
-        <div class="trending-image">
-          <a href="#">
-            <img src="./asset/image/324x300.svg" alt="Book title">
-          </a>
-          <div class="trending-stats">
-            <span class="views">
-              <i class="bi bi-eye-fill"></i> 742
-            </span>
-            <span class="trend-up">
-              <i class="bi bi-graph-up-arrow"></i> +19%
-            </span>
-          </div>
-        </div>
-        <div class="trending-content">
-          <h3 class="book-title">Tên sách</h3>
-          <p class="book-author">Tác giả</p>
-          <div class="book-price">999,999đ</div>
-          <div class="trending-actions">
-            <a href="#" class="btn-view">Xem</a>
-            <a href="#" class="btn-cart">
-              <i class="bi bi-cart-plus"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="trending-item">
-        <div class="trending-badge">
-          <span>#5</span>
-        </div>
-        <div class="trending-image">
-          <a href="#">
-            <img src="./asset/image/324x300.svg" alt="Book title">
-          </a>
-          <div class="trending-stats">
-            <span class="views">
-              <i class="bi bi-eye-fill"></i> 698
-            </span>
-            <span class="trend-up">
-              <i class="bi bi-graph-up-arrow"></i> +15%
-            </span>
-          </div>
-        </div>
-        <div class="trending-content">
-          <h3 class="book-title">Tên sách</h3>
-          <p class="book-author">Tác giả</p>
-          <div class="book-price">999,999đ</div>
-          <div class="trending-actions">
-            <a href="#" class="btn-view">Xem</a>
-            <a href="#" class="btn-cart">
-              <i class="bi bi-cart-plus"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- View All Button -->
-    <div class="viewmore-product">
-      <a href="./all-product.html?sort=trending">
-        Xem tất cả sách trending
-        <i class="bi bi-arrow-right"></i>
-      </a>
-    </div>
-
-  </div>
-</section>
-<!-- ===================== TRENDING BOOKS END ===================== -->
+    </section>
+    <!-- ===================== DÀNH CHO BẠN END ===================== -->
 
     <!-- ===================== FOOTER ===================== -->
-    <img class="wave" src="./asset/image/wave.svg" alt="" />
+    <img class="wave" src="./asset/image/wave.svg" alt="Wave" />
     <footer>
       <div class="container">
         <div class="content">
@@ -621,13 +335,12 @@
               <button type="submit"><i class="bi bi-arrow-right"></i></button>
             </div>
           </div>
-          <!-- CONTACT SUPPORT END -->
 
           <!-- FOOTER LAYOUT -->
           <div class="layout-footer">
             <!-- LOGO -->
             <a class="footer-logo" href="#">
-              <img src="./asset/image/Logo.svg" alt="!" />
+              <img src="./asset/image/Logo.svg" alt="Logo" />
               <h3>Dừa và Bắp</h3>
             </a>
 
@@ -635,8 +348,7 @@
             <ul class="info">
               <li>
                 <p>
-                  <i class="bi bi-geo-alt-fill"></i> 180 Cao Lỗ, phường 4, Quận
-                  8, Hồ Chí Minh
+                  <i class="bi bi-geo-alt-fill"></i> 180 Cao Lỗ, phường 4, Quận 8, Hồ Chí Minh
                 </p>
               </li>
               <li>
@@ -672,17 +384,16 @@
                   <div class="payment">
                     <p>Hình thức thanh toán</p>
                     <div class="icon-payment">
-                      <img src="./asset/image/visa.svg" alt="" />
-                      <img src="./asset/image/zalopay-icon.svg" alt="" />
-                      <img src="./asset/image/napas.svg" alt="" />
-                      <img src="./asset/image/Logo MoMo.svg" alt="" />
+                      <img src="./asset/image/visa.svg" alt="Visa" />
+                      <img src="./asset/image/zalopay-icon.svg" alt="ZaloPay" />
+                      <img src="./asset/image/napas.svg" alt="Napas" />
+                      <img src="./asset/image/Logo MoMo.svg" alt="MoMo" />
                     </div>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-          <!-- FOOTER LAYOUT END -->
 
           <br />
           <div class="line"></div>
@@ -694,7 +405,6 @@
         </div>
       </div>
     </footer>
-
     <!-- ===================== FOOTER END ===================== -->
 
     <!-- ===================== SCROLL TO TOP BUTTON ===================== -->
@@ -707,13 +417,11 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
-    <!-- ======================= SWEETALERT2 ======================= -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-    />
+
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!--  ============================== SCROLL REVEAL ==============================  -->
+
+    <!-- Scroll Reveal -->
     <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
 
     <!-- Slick Slider -->
@@ -731,31 +439,35 @@
     ></script>
 
     <!-- Custom Scripts -->
+    <script src="./asset/js/sweetAlert-Helper.js"></script>
     <script src="./asset/js/cart-handler.js"></script>
     <script src="./asset/js/auth.js"></script>
     <script src="./asset/js/form.js"></script>
     <script src="./asset/js/render-books.js"></script>
-    <!-- <script src="./asset/js/render-categories.js"></script> -->
     <script src="./asset/js/app.js"></script>
     <script src="./asset/js/search-handler.js"></script>
-    <!-- Book View Tracking -->
     <script src="./asset/js/book-view.js"></script>
-    <!-- ✅ THÊM DÒNG NÀY -->
-    <script src="./asset/js/render-trending.js"></script>
+    <script src="./asset/js/render-foryou-books.js"></script>
+    
 
+    <!-- Slick Slider & ScrollReveal Init -->
     <script>
+      // Slick Slider
       $(".slider").slick({
         loop: true,
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 2000,
       });
-      ScrollReveal().reveal(".catgories", {
-        duration: 500,
+
+      // ScrollReveal
+      ScrollReveal().reveal(".categories", {
+        duration: 300,
         distance: "100px",
         easing: "ease-in-out",
         reset: true,
       });
+
       ScrollReveal().reveal(".so1", {
         duration: 600,
         origin: "left",
@@ -763,6 +475,7 @@
         easing: "ease-in-out",
         reset: true,
       });
+
       ScrollReveal().reveal(".so2", {
         duration: 600,
         origin: "right",
@@ -770,8 +483,30 @@
         easing: "ease-in-out",
         reset: true,
       });
+      ScrollReveal().reveal(".hot-dealing-left", {
+        duration: 1000,
+        origin: "left",
+        distance: "100px",
+        easing: "ease-in-out",
+        reset: true,
+      });
+
+      ScrollReveal().reveal(".hot-dealing-right", {
+        duration: 800,
+        origin: "right",
+        distance: "100px",
+        easing: "ease-in-out",
+        reset: true,
+      });
+      ScrollReveal().reveal(".slider", {
+        duration: 600,
+        origin: "right",
+        distance: "100px",
+        easing: "ease-in-out",
+        reset: true,
+      });
+
     </script>
-    <!-- JavaScript -->
     <!-- ===================== SCRIPT END ===================== -->
   </body>
 </html>

@@ -16,9 +16,19 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Kết nối database
 require_once '../../model/config/connectdb.php';
 
-// Lấy method và action
+// Lấy method
 $method = $_SERVER['REQUEST_METHOD'];
-$action = $_GET['action'] ?? '';
+
+// ✅ FIX: Xử lý action từ query string cho GET/POST/PUT, nhưng từ body cho DELETE
+$action = '';
+if ($method === 'DELETE') {
+    // Đối với DELETE, lấy action từ body
+    $input = json_decode(file_get_contents('php://input'), true);
+    $action = $input['action'] ?? '';
+} else {
+    // Đối với GET/POST/PUT, lấy action từ query string
+    $action = $_GET['action'] ?? '';
+}
 
 try {
     switch ($method) {
@@ -110,11 +120,12 @@ function handlePut($pdo, $action) {
  * XỬ LÝ DELETE - Xóa product
  */
 function handleDelete($pdo, $action) {
-    $data = json_decode(file_get_contents('php://input'), true);
+    // ✅ FIX: $data đã được đọc trong xử lý action ở trên
+    $input = json_decode(file_get_contents('php://input'), true);
     
     switch ($action) {
         case 'delete':
-            deleteProduct($pdo, $data);
+            deleteProduct($pdo, $input);
             break;
             
         default:
@@ -170,17 +181,17 @@ function getProductsList($pdo) {
         $cstmt->execute();
         $total = (int)$cstmt->fetchColumn();
 
-        // ✅ Sắp xếp - Thay view_count thành COUNT(bv.view_id)
+        //   Sắp xếp - Thay view_count thành COUNT(bv.view_id)
         $orderSql = match ($sort) {
             'newest'     => "ORDER BY b.created_at DESC, b.book_id DESC",
             'oldest'     => "ORDER BY b.created_at ASC, b.book_id ASC",
             'price_asc'  => "ORDER BY b.price ASC",
             'price_desc' => "ORDER BY b.price DESC",
-            'view_desc'  => "ORDER BY view_count DESC", // ✅ Sử dụng alias từ COUNT
+            'view_desc'  => "ORDER BY view_count DESC", //   Sử dụng alias từ COUNT
             default      => "ORDER BY b.created_at DESC, b.book_id DESC"
         };
 
-        // ✅ Query chính - JOIN với book_views để đếm lượt xem
+        //   Query chính - JOIN với book_views để đếm lượt xem
         $sql = "SELECT 
                     b.book_id as product_id,
                     b.title as product_name,
@@ -231,18 +242,14 @@ function getProductsList($pdo) {
             'data' => $products,
             'pagination' => [
                 'totalRecords' => $total,
-                'totalPages' => $totalPages,
-                'currentPage' => $page,
+                'total_pages' => $totalPages,
+                'current_page' => $page,
                 'limit' => $limit
             ]
         ], JSON_UNESCAPED_UNICODE);
-
+        
     } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Lỗi truy vấn: ' . $e->getMessage()
-        ], JSON_UNESCAPED_UNICODE);
+        throw new Exception('Lỗi truy vấn: ' . $e->getMessage());
     }
 }
 
@@ -251,7 +258,6 @@ function getProductsList($pdo) {
  */
 function getProductDetail($pdo, $productId) {
     try {
-        // ✅ JOIN với book_views để đếm lượt xem
         $sql = "SELECT 
                     b.book_id as product_id,
                     b.title as product_name,
@@ -304,14 +310,13 @@ function getProductDetail($pdo, $productId) {
  */
 function getProductsStats($pdo) {
     try {
-        // ✅ Lấy tổng lượt xem từ book_views
         $sql = "SELECT 
                     COUNT(*) as total_products,
                     SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available_products,
                     SUM(CASE WHEN status = 'out_of_stock' THEN 1 ELSE 0 END) as out_of_stock_products,
                     SUM(CASE WHEN status = 'discontinued' THEN 1 ELSE 0 END) as discontinued_products,
                     SUM(quantity) as total_stock,
-                    (SELECT COUNT(*) FROM book_views) as total_views -- ✅ Đếm từ book_views
+                    (SELECT COUNT(*) FROM book_views) as total_views
                 FROM books";
         
         $stmt = $pdo->query($sql);
@@ -350,7 +355,7 @@ function createProduct($pdo, $data) {
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
-        // ✅ Insert vào bảng books - KHÔNG CÓ view_count
+        //   Insert vào bảng books - KHÔNG CÓ view_count
         $sql = "INSERT INTO books 
                 (title, description, price, quantity, author, category_id, status) 
                 VALUES 
@@ -415,7 +420,7 @@ function updateProduct($pdo, $data) {
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
-        // ✅ Update bảng books - KHÔNG CÓ view_count
+        //   Update bảng books - KHÔNG CÓ view_count
         $sql = "UPDATE books SET 
                     title = :title,
                     description = :description,
@@ -467,7 +472,8 @@ function updateProduct($pdo, $data) {
  */
 function deleteProduct($pdo, $data) {
     try {
-        if (empty($data['product_id'])) {
+        // ✅ FIX: Kiểm tra dữ liệu được truyền vào
+        if (empty($data) || empty($data['product_id'])) {
             throw new Exception('Thiếu ID sản phẩm');
         }
         

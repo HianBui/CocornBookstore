@@ -15,7 +15,7 @@ let isLoading = false;
 let searchDebounceTimer = null;
 const SEARCH_DEBOUNCE_MS = 300;
 let categoriesData = [];
-
+'use strict';
 /* ======================= HELPER FUNCTIONS ======================= */
 
 function getImagePath(img) {
@@ -235,7 +235,7 @@ function renderProductsTable(products) {
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-danger" 
-                                onclick="deleteProduct(${product.product_id}, ${safeName})" title="Xóa">
+                                onclick="deleteProduct(${product.product_id}, '${escapeHtml(product.product_name)}')" title="Xóa">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
@@ -678,10 +678,7 @@ async function submitProductForm(isEdit) {
 /* ======================= DELETE PRODUCT ======================= */
 
 async function deleteProduct(id, name) {
-    try {
-        name = JSON.parse(name);
-    } catch {}
-
+    // ✅ Bỏ phần JSON.parse vì name truyền vào đã là string
     const result = await showConfirm(
         'Xác nhận xóa',
         `Bạn có chắc muốn xóa sản phẩm "${name}"?\n\nLưu ý: Không thể xóa nếu đã có đơn hàng!`,
@@ -694,10 +691,13 @@ async function deleteProduct(id, name) {
     try {
         showLoading('Đang xóa...');
 
-        const resp = await fetch(`${API_URL}?action=delete`, {
+        const resp = await fetch(API_URL, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ product_id: id })
+            body: JSON.stringify({ 
+                action: 'delete',
+                product_id: id 
+            })
         });
 
         const text = await resp.text();

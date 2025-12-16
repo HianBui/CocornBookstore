@@ -27,15 +27,6 @@ const CartHandler = {
      * Thiết lập event listeners
      */
     setupEventListeners() {
-        // ❌ XÓA PHẦN NÀY - Đã xử lý trong product-detail.js
-        // Nút Mua ngay (mới)
-        // document.querySelectorAll('.buy-now-btn').forEach(btn => {
-        //     btn.addEventListener('click', (e) => {
-        //         const bookId = e.target.dataset.bookId;
-        //         const quantity = parseInt(document.getElementById('sl')?.value || 1);
-        //         this.buyNow(bookId, quantity);
-        //     });
-        // });
 
         // Cập nhật số lượng
         document.addEventListener('click', (e) => {
@@ -85,7 +76,7 @@ const CartHandler = {
             if (data.success) {
                 // ✅ Toast notification thành công
                 this.showToast('success', data.message);
-                this.loadCartCount(); // ✅ Cập nhật số lượng ngay lập tức
+                this.loadCartCount();
                 
                 // Reload trang giỏ hàng nếu đang ở đó
                 if (window.location.pathname.includes('cart.html')) {

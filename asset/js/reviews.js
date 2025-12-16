@@ -69,7 +69,7 @@
       listComment.innerHTML = reviews
         .map((r) => {
           const user = r.display_name || (r.user && r.user.display_name) ? (r.user ? r.user.display_name : r.display_name) : 'Người dùng';
-          const avatar = r.avatar || (r.user && r.user.avatar) ? (r.user ? r.user.avatar : r.avatar) : '50x50.svg';
+          const avatar = r.avatar || (r.user && r.user.avatar) ? (r.user ? r.user.avatar : r.avatar) : ' 100x100.svg';
           const comment = r.comment || '';
           const created = r.created_at || r.created || '';
 
@@ -79,7 +79,7 @@
             ? `\n              <div class="review-actions">\n                <button class="btn btn-sm btn-outline-primary edit-review" data-review-id="${r.review_id}">Sửa</button>\n                <button class="btn btn-sm btn-outline-danger delete-review" data-review-id="${r.review_id}">Xóa</button>\n              </div>`
             : '';
 
-          return `\n            <div class="item-comment" data-review-id="${r.review_id}">\n              <div class="left">\n                <img src="./asset/image/${escapeHtml(avatar)}" alt="${escapeHtml(user)}" onerror="this.src='./asset/image/50x50.svg'">\n              </div>\n              <div class="right">\n                <p class="user-gmail">${escapeHtml(user)}</p>\n                <div class="star">${renderStars(r.rating, true)}</div>\n                <div class="comment-text">${escapeHtml(comment)}</div>\n                <div class="comment-date">${escapeHtml(created)}</div>\n                ${actions}\n              </div>\n            </div>`;
+          return `\n            <div class="item-comment" data-review-id="${r.review_id}">\n              <div class="left">\n                <img src="./asset/image/avatars/${escapeHtml(avatar)}" alt="${escapeHtml(user)}" onerror="this.src='./asset/image/100x100.svg'">\n              </div>\n              <div class="right">\n                <p class="user-gmail">${escapeHtml(user)}</p>\n                <div class="star">${renderStars(r.rating, true)}</div>\n                <div class="comment-text">${escapeHtml(comment)}</div>\n                <div class="comment-date">${escapeHtml(created)}</div>\n                ${actions}\n              </div>\n            </div>`;
         })
         .join('');
 
