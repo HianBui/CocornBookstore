@@ -28,7 +28,7 @@ function sendOrderConfirmationEmail($orderData) {
         $mail->SMTPAuth = true;
 
         $mail->Username = 'cocornbookstore@gmail.com';     // Gmail 
-        $mail->Password = 'qmce mozf zmdz vsuj';           // App Password 16 ký tự
+        $mail->Password = 'exdj rqtq yujp egua';           // App Password 16 ký tự
         
         // Cấu hình kết nối
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
@@ -102,7 +102,7 @@ function generateEmailHTML($data) {
     $productsHTML = '';
     foreach ($data['products'] as $product) {
         $productPrice = number_format($product['subtotal'], 0, ',', '.') . ' đ';
-        $imgUrl = $data['website_url'] . '/asset/image/' . $product['main_img'];
+        $imgUrl = $data['website_url'] . '/asset/image/books/' . $product['main_img'];
         $fallbackImg = $data['website_url'] . '/asset/image/100x150.svg';
         
         $productsHTML .= sprintf('

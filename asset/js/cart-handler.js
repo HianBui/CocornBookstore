@@ -133,7 +133,7 @@ const CartHandler = {
                 </td>
                 <td>
                     <div class="product-info-cell">
-                        <img src="./asset/image/${item.main_img}" alt="${item.title}">
+                        <img src="./asset/image/books/${item.main_img}" alt="${item.title}">
                         <div>
                             <div class="product-name">${item.title}</div>
                             <small class="text-muted">${item.author}</small>

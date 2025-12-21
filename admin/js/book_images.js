@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * FILE: admin/js/book_images.js
- * MÔ TẢ: Xử lý quản lý ảnh sản phẩm
+ * MÔ TẢ: Xử lý quản lý ảnh sản phẩm với sort
  * ============================================================
  */
 
@@ -10,7 +10,7 @@ const IMAGE_BASE = '../../asset/image/books/';
 
 let currentPage = 1;
 let currentLimit = 10;
-let currentFilters = { search: '' };
+let currentFilters = { search: '', sort: 'newest' };
 let isLoading = false;
 let searchDebounceTimer = null;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -60,7 +60,8 @@ async function loadImages(page = 1) {
             action: 'list',
             page: currentPage,
             limit: currentLimit,
-            search: currentFilters.search || ''
+            search: currentFilters.search || '',
+            sort: currentFilters.sort || 'newest'
         });
 
         const resp = await fetch(`${API_URL}?${params.toString()}`, {
@@ -244,7 +245,7 @@ function renderPagination(pagination) {
     container.innerHTML = html;
 }
 
-/* ======================= SEARCH ======================= */
+/* ======================= SEARCH & FILTER ======================= */
 
 function handleSearch() {
     const searchInput = document.getElementById("searchInput");
@@ -252,10 +253,20 @@ function handleSearch() {
     loadImages(1);
 }
 
+function handleFilter() {
+    const sortFilter = document.getElementById("sortFilter");
+    if (sortFilter) currentFilters.sort = sortFilter.value;
+    loadImages(1);
+}
+
 function handleResetFilter() {
     const searchInput = document.getElementById("searchInput");
+    const sortFilter = document.getElementById("sortFilter");
+    
     if (searchInput) searchInput.value = '';
-    currentFilters = { search: '' };
+    if (sortFilter) sortFilter.value = 'newest';
+    
+    currentFilters = { search: '', sort: 'newest' };
     loadImages(1);
 }
 
@@ -714,6 +725,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
+        const sortFilter = document.getElementById("sortFilter");
+        if (sortFilter) sortFilter.addEventListener("change", handleFilter);
+
         const resetBtn = document.getElementById("resetFilterBtn");
         if (resetBtn) resetBtn.addEventListener("click", handleResetFilter);
     }
@@ -726,5 +740,6 @@ window.viewImageDetail = viewImageDetail;
 window.editImage = editImage;
 window.deleteImage = deleteImage;
 window.handleSearch = handleSearch;
+window.handleFilter = handleFilter;
 window.handleResetFilter = handleResetFilter;
 window.submitImageForm = submitImageForm;

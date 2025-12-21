@@ -84,13 +84,16 @@ section{
 }
 .product-img img{
 	border-radius: var(--border-radius);
+	width: 300px;
+	height: 300px;
+	object-fit: cover;
 }
 .box-sub-img{
 	display: grid;
 	height: max-content;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 15px;
-	/* background-color: #f8f9fa; */
+	padding: 5px;
 	object-fit: cover;
 	width: 100%;
 }
@@ -110,7 +113,6 @@ section{
 	width: 100%;
 	display: grid;
 	grid-template-rows: 1fr 2fr 1fr 1fr 1fr;
-	gap: 20px;
 	height: 100%;
 	padding-left: 20px;
 	background-color: white;
@@ -543,4 +545,25 @@ i.active{
 
 .list-same-cat > .product-price {
     text-align: center !important;
+}
+/* Thông báo cần mua sách trước khi đánh giá */
+.purchase-required-notice {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.purchase-required-notice i {
+  font-size: 48px;
+  color: #ffc107;
+  margin-bottom: 10px;
+}
+
+.purchase-required-notice p {
+  color: #856404;
+  font-size: 16px;
+  margin: 10px 0 0 0;
 }

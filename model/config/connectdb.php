@@ -58,7 +58,7 @@ class Database {
 }
 
 // ===========================
-// TẠO KẾT NỐI TOÀN CỤC (Tương thích code cũ)
+// TẠO KẾT NỐI TOÀN CỤC
 // ===========================
 $database = new Database();
 $pdo = $database->connect();

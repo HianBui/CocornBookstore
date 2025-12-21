@@ -1,6 +1,7 @@
 /**
  * reviews.js
  * Xử lý chức năng đánh giá sách: load, check, add, update, delete
+ * + Kiểm tra người dùng đã mua sách chưa
  * Đặt tại: asset/js/reviews.js
  */
 
@@ -22,12 +23,35 @@
       .replace(/'/g, '&#039;');
   }
 
+  // ✅ Kiểm tra người dùng đã mua sách chưa
+  async function checkIfPurchased(bookId) {
+    try {
+      const res = await fetch(`./asset/api/reviews.php?action=check_purchased&book_id=${encodeURIComponent(bookId)}`, { 
+        credentials: 'include' 
+      });
+      
+      const data = await res.json();
+      
+      if (!data.success) {
+        console.error('checkIfPurchased:', data.message);
+        return { logged_in: false, has_purchased: false };
+      }
+      
+      return {
+        logged_in: data.data.logged_in || false,
+        has_purchased: data.data.has_purchased || false
+      };
+    } catch (err) {
+      console.error('Lỗi checkIfPurchased:', err);
+      return { logged_in: false, has_purchased: false };
+    }
+  }
+
   // Tải danh sách reviews và render vào .list-comment
   async function loadReviews(bookId) {
     try {
       const res = await fetch(`./asset/api/reviews.php?action=get&book_id=${encodeURIComponent(bookId)}`, { credentials: 'include' });
       if (res.status === 401) {
-        // nếu API trả 401 thì redirect login
         return;
       }
       const data = await res.json();
@@ -40,7 +64,7 @@
       const listComment = document.querySelector('.list-comment');
       if (!listComment) return;
 
-      // Cập nhật số lượng đánh giá trong phần header review (nếu tồn tại)
+      // Cập nhật số lượng đánh giá trong phần header review
       try {
         const reviewTab = document.getElementById('review');
         if (reviewTab) {
@@ -50,8 +74,6 @@
       } catch (e) {
         console.warn('Could not update review count in header', e);
       }
-  
-  
 
       if (reviews.length === 0) {
         listComment.innerHTML = `
@@ -62,55 +84,58 @@
         return;
       }
 
-      // Lấy id user hiện tại để hiển thị nút Sửa/Xóa (so sánh với user_id của review)
+      // Lấy id user hiện tại để hiển thị nút Sửa/Xóa
       const currentUserId = window.CURRENT_USER_ID || null;
 
       // Render từng review an toàn
       listComment.innerHTML = reviews
         .map((r) => {
           const user = r.display_name || (r.user && r.user.display_name) ? (r.user ? r.user.display_name : r.display_name) : 'Người dùng';
-          const avatar = r.avatar || (r.user && r.user.avatar) ? (r.user ? r.user.avatar : r.avatar) : ' 100x100.svg';
+          const avatar = r.avatar || (r.user && r.user.avatar) ? (r.user ? r.user.avatar : r.avatar) : '100x100.svg';
           const comment = r.comment || '';
           const created = r.created_at || r.created || '';
 
           // Hiển thị nút Sửa/Xóa nếu review thuộc về user hiện tại
           const reviewOwnerId = (r.user && (r.user.user_id || r.user.userId)) || r.user_id || null;
           const actions = (currentUserId && String(currentUserId) === String(reviewOwnerId))
-            ? `\n              <div class="review-actions">\n                <button class="btn btn-sm btn-outline-primary edit-review" data-review-id="${r.review_id}">Sửa</button>\n                <button class="btn btn-sm btn-outline-danger delete-review" data-review-id="${r.review_id}">Xóa</button>\n              </div>`
+            ? `
+              <div class="review-actions">
+                <button class="btn btn-sm btn-outline-primary edit-review" data-review-id="${r.review_id}">Sửa</button>
+                <button class="btn btn-sm btn-outline-danger delete-review" data-review-id="${r.review_id}">Xóa</button>
+              </div>`
             : '';
 
-          return `\n            <div class="item-comment" data-review-id="${r.review_id}">\n              <div class="left">\n                <img src="./asset/image/avatars/${escapeHtml(avatar)}" alt="${escapeHtml(user)}" onerror="this.src='./asset/image/100x100.svg'">\n              </div>\n              <div class="right">\n                <p class="user-gmail">${escapeHtml(user)}</p>\n                <div class="star">${renderStars(r.rating, true)}</div>\n                <div class="comment-text">${escapeHtml(comment)}</div>\n                <div class="comment-date">${escapeHtml(created)}</div>\n                ${actions}\n              </div>\n            </div>`;
+          return `
+            <div class="item-comment" data-review-id="${r.review_id}">
+              <div class="left">
+                <img src="./asset/image/avatars/${escapeHtml(avatar)}" alt="${escapeHtml(user)}" onerror="this.src='./asset/image/100x100.svg'">
+              </div>
+              <div class="right">
+                <p class="user-gmail">${escapeHtml(user)}</p>
+                <div class="star">${renderStars(r.rating, true)}</div>
+                <div class="comment-text">${escapeHtml(comment)}</div>
+                <div class="comment-date">${escapeHtml(created)}</div>
+                ${actions}
+              </div>
+            </div>`;
         })
         .join('');
 
-      // Gắn event cho Edit/Delete (delegation không dùng vì innerHTML ghi đè)
+      // Gắn event cho Edit/Delete
       listComment.querySelectorAll('.edit-review').forEach((btn) => {
         btn.addEventListener('click', function () {
           const rid = this.getAttribute('data-review-id');
-          // Tìm review data trong list (API trả list, tìm theo id)
           const target = [...reviews].find((x) => String(x.review_id) === String(rid));
           if (!target) return;
 
-          // Đặt biến toàn cục review id để phiên bản cũ biết đang ở chế độ sửa
-          window.MY_REVIEW_ID = target.review_id;
+          // Render form ở chế độ edit với dữ liệu review
+          renderReviewForm(true, target, true, false);
 
-          // Điền dữ liệu vào cấu trúc cũ `.your-comment` nếu có
-          const legacyContainer = document.querySelector('.your-comment');
-          if (legacyContainer) {
-            const inputField = legacyContainer.querySelector('.input-comment-field input, input.commnent, .input-comment-field .commnent');
-            if (inputField) inputField.value = target.comment || '';
-            const legacyRateContainer = legacyContainer.querySelector('.your-rate');
-            if (legacyRateContainer) {
-              const stars = legacyRateContainer.querySelectorAll('.bi-star-fill');
-              const sel = parseInt(target.rating || 0, 10) || 0;
-              legacyRateContainer.dataset.selected = sel;
-              stars.forEach((s, i) => s.classList.toggle('active', i < sel));
-            }
-            legacyContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Scroll đến form
+          const container = document.querySelector('.your-comment');
+          if (container) {
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
-
-          // Đồng thời hiển thị form mới nếu tồn tại
-          renderReviewForm(true, target, true);
         });
       });
 
@@ -121,18 +146,18 @@
         });
       });
 
-        // Đồng bộ lại average + total từ get_book_detail (sửa/ thêm/ xóa cần cập nhật sao trung bình)
-        try {
-          if (bookId) await refreshAverageAndTotal(bookId);
-        } catch (e) {
-          console.warn('Could not refresh average rating', e);
-        }
+      // Đồng bộ lại average + total từ get_book_detail
+      try {
+        if (bookId) await refreshAverageAndTotal(bookId);
+      } catch (e) {
+        console.warn('Could not refresh average rating', e);
+      }
     } catch (err) {
       console.error('Lỗi loadReviews:', err);
     }
   }
 
-  // Helper: lấy average + total từ API chi tiết sách và cập nhật header (top-level)
+  // Helper: lấy average + total từ API chi tiết sách
   async function refreshAverageAndTotal(bookId) {
     try {
       const res = await fetch(`./asset/api/get_book_detail.php?id=${encodeURIComponent(bookId)}`);
@@ -152,33 +177,47 @@
     }
   }
 
-  // Kiểm tra user đã review chưa và hiển thị form phù hợp
+  // ✅ Kiểm tra user đã review chưa VÀ đã mua sách chưa
   async function checkUserReview(bookId) {
     try {
-      // Kiểm tra trạng thái đăng nhập thông qua auth.js
+      // Kiểm tra trạng thái đăng nhập
       let loginStatus = { logged_in: false, user: null };
       if (typeof checkLoginStatus === 'function') {
         loginStatus = await checkLoginStatus();
       }
 
       if (!loginStatus.logged_in) {
-        // Hiển thị thông báo yêu cầu đăng nhập
+        // Chưa đăng nhập - chỉ hiển thị danh sách reviews
         window.IS_LOGGED_IN = false;
         window.CURRENT_USER_ID = null;
+        window.HAS_PURCHASED = false;
         renderReviewForm(false, null, false);
-        // Vẫn load reviews để hiển thị
         await loadReviews(bookId);
         return;
       }
 
-      // Lưu user id hiện tại để so sánh với review.owner khi render
+      // Lưu user id hiện tại
       if (loginStatus.user) {
         window.CURRENT_USER_ID = loginStatus.user.user_id || loginStatus.user.userId || loginStatus.user.id || null;
       } else {
         window.CURRENT_USER_ID = null;
       }
 
-      // Gọi API check
+      // ✅ Kiểm tra đã mua sách chưa
+      const purchaseStatus = await checkIfPurchased(bookId);
+      window.HAS_PURCHASED = purchaseStatus.has_purchased;
+
+      // Nếu chưa mua sách - không hiển thị form đánh giá
+      if (!purchaseStatus.has_purchased) {
+        window.IS_LOGGED_IN = true;
+        window.USER_HAS_REVIEWED = false;
+        window.MY_REVIEW_ID = null;
+        renderReviewForm(false, null, false, true); // truyền needPurchase = true
+        await loadReviews(bookId);
+        return;
+      }
+
+      // Đã mua sách - kiểm tra đã review chưa
       const res = await fetch(`./asset/api/reviews.php?action=check&book_id=${encodeURIComponent(bookId)}`, { credentials: 'include' });
       const data = await res.json();
       if (!data.success) {
@@ -189,12 +228,9 @@
 
       // Nếu đã review
       if (data.data && data.data.has_reviewed) {
-        // User is logged in and has already reviewed this book.
-        // Do NOT enable edit mode automatically. Only allow edit when user clicks "Sửa".
         window.IS_LOGGED_IN = true;
-        window.USER_HAS_REVIEWED = true; // flag to indicate existing review
-        window.MY_REVIEW_ID = null; // do not set edit id until user clicks Edit
-        // show empty form (new-review form) — backend will prevent duplicate adds
+        window.USER_HAS_REVIEWED = true;
+        window.MY_REVIEW_ID = null;
         renderReviewForm(false, null, true);
       } else {
         window.IS_LOGGED_IN = true;
@@ -240,13 +276,17 @@
         return;
       }
 
+      if (res.status === 403) {
+        Swal.fire({ icon: 'error', title: 'Không có quyền', text: data.message || 'Bạn cần mua sách này trước khi đánh giá' });
+        return;
+      }
+
       if (!data.success) {
         Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message || 'Không thể thêm đánh giá' });
         return;
       }
 
       Swal.fire({ icon: 'success', title: 'Thành công', text: 'Đã thêm đánh giá' });
-      // Cập nhật UI
       await checkUserReview(bookId);
       await refreshAverageAndTotal(bookId);
     } catch (err) {
@@ -351,137 +391,70 @@
 
   // Khởi tạo form review: submit + star interaction
   function initReviewForm() {
-    const container = document.querySelector('.review-form-container') || document.querySelector('.your-comment');
+    const container = document.querySelector('.your-comment');
     if (!container) return;
 
-    // Ghi nhận sự kiện submit (xử lý gửi form)
-    container.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const form = e.target.closest('form');
-      if (!form) return;
-      const bookId = getBookIdFromURL();
-      const reviewId = form.getAttribute('data-review-id') || null;
-
-      // Lấy rating
-      const stars = form.querySelectorAll('.your-rate .bi-star-fill.active');
-      const rating = stars ? stars.length : 0;
-      const comment = (form.querySelector('textarea[name="comment"]') || {}).value || '';
-
-      if (reviewId) {
-        updateReview(reviewId, rating, comment);
-      } else {
-        submitReview(bookId, rating, comment);
-      }
-    });
-
-    // Bắt sự kiện click xóa (nút trong form)
-    container.addEventListener('click', function (e) {
-      if (e.target && e.target.matches('.btn-delete-review')) {
-        const form = container.querySelector('form');
-        const reviewId = form ? form.getAttribute('data-review-id') : null;
-        if (reviewId) deleteReview(reviewId);
-      }
-    });
-
-    // Nếu trang dùng cấu trúc cũ (.your-comment) với input + button, xử lý click cho nút gửi
-    // Ví dụ HTML hiện tại trong product.html:
-    // <div class="your-comment">
-    //   <div class="your-rate">...stars...</div>
-    //   <div class="input-comment-field">
-    //     <input type="text" class="commnent" />
-    //     <button type="submit"><i class="bi bi-send-fill"></i></button>
-    //   </div>
-    // </div>
-    if (container.classList.contains('your-comment') || container.querySelector('.input-comment-field')) {
-      // Gắn tương tác sao (có thể khác cấu trúc so với form mới)
-      const legacyStars = container.querySelectorAll('.your-rate .bi-star-fill');
-      if (legacyStars && legacyStars.length) {
-        const legacyRateContainer = container.querySelector('.your-rate');
-        // store selected rating on container
-        legacyRateContainer.dataset.selected = legacyRateContainer.dataset.selected || 0;
-        legacyStars.forEach((star, idx) => {
-          star.style.cursor = 'pointer';
-          star.addEventListener('click', function () {
-            const sel = idx + 1;
-            legacyRateContainer.dataset.selected = sel;
-            legacyStars.forEach((s, i) => s.classList.toggle('active', i < sel));
-          });
-          star.addEventListener('mouseenter', function () {
-            legacyStars.forEach((s, i) => s.classList.toggle('active', i <= idx));
-          });
-        });
-        if (legacyRateContainer) {
-          legacyRateContainer.addEventListener('mouseleave', function () {
-            const sel = parseInt(legacyRateContainer.dataset.selected || 0, 10);
-            legacyStars.forEach((s, i) => s.classList.toggle('active', i < sel));
-          });
-        }
-      }
-
-      // Gắn sự kiện cho nút gửi
-      const inputField = container.querySelector('.input-comment-field input, input.commnent, .input-comment-field .commnent');
-      const sendBtn = container.querySelector('.input-comment-field button, button[type="submit"]');
-      if (sendBtn) {
-        sendBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          const bookId = getBookIdFromURL();
-          // Lấy rating từ các sao active
-          const starsActive = container.querySelectorAll('.your-rate .bi-star-fill.active');
-          const rating = starsActive ? starsActive.length : 0;
-          const comment = inputField ? inputField.value : '';
-          // Nếu user đã có review (đang ở chế độ edit), gọi update thay vì add
-          if (window.MY_REVIEW_ID) {
-            updateReview(window.MY_REVIEW_ID, rating, comment);
-          } else {
-            submitReview(bookId, rating, comment);
-          }
-        });
-      }
-    }
+    // Sự kiện này sẽ được gắn lại mỗi khi renderReviewForm được gọi
+    // Không cần xử lý ở đây nữa vì đã xử lý trong renderReviewForm
   }
 
-  // Hiển thị form (tự tìm container `.review-form-container` hoặc `.your-comment`)
-  // renderReviewForm(isEdit, reviewData, visible, reviewId) —
-  // Nếu isEdit = true và chỉ truyền reviewId (không có reviewData) thì form sẽ ở chế độ sửa
-  // nhưng không tự điền nội dung; người dùng cần bấm "Sửa" để nạp đánh giá cũ.
-  // If reviewId is provided when isEdit=true but reviewData is null, the form will be set to edit mode
-  // (data-review-id attribute) but will NOT pre-fill the comment/rating. This allows showing an empty
-  // form while keeping submit behavior as "update". Clicking "Sửa" will still populate the form.
-  function renderReviewForm(isEdit = false, reviewData = null, visible = true, reviewId = null) {
-    const container = document.querySelector('.review-form-container');
+  // ✅ Render form với kiểm tra đã mua sách
+  function renderReviewForm(isEdit = false, reviewData = null, visible = true, needPurchase = false) {
+    const container = document.querySelector('.your-comment');
     if (!container) return;
 
-    if (!visible) {
-      container.innerHTML = '';
-      return;
-    }
-
-    // Nếu chưa login
+    // Nếu chưa đăng nhập
     if (window.IS_LOGGED_IN === false) {
-      container.innerHTML = '<p>Đăng nhập để đánh giá</p>';
+      container.style.display = 'none';
       return;
     }
 
-    const effectiveReviewId = (isEdit && reviewData && reviewData.review_id) ? reviewData.review_id : (isEdit && reviewId ? reviewId : null);
-    const reviewIdAttr = effectiveReviewId ? `data-review-id="${effectiveReviewId}"` : '';
-    // Only pre-fill text/rating when reviewData is provided. If reviewId is present but reviewData is null,
-    // we intentionally keep the fields empty so user must click Sửa to load their previous review.
+    // ✅ Nếu đã đăng nhập nhưng chưa mua sách
+    if (needPurchase) {
+      container.innerHTML = `
+        <div class="purchase-required-notice">
+          <i class="bi bi-info-circle"></i>
+          <p>Bạn cần mua sách này trước khi có thể đánh giá</p>
+        </div>`;
+      container.style.display = 'block';
+      return;
+    }
+
+    // Đã mua sách - hiển thị form đánh giá
+    if (!visible) {
+      container.style.display = 'none';
+      return;
+    }
+
     const commentText = (isEdit && reviewData && reviewData.comment) ? escapeHtml(reviewData.comment) : '';
     const ratingValue = (isEdit && reviewData && reviewData.rating) ? parseInt(reviewData.rating, 10) : 0;
 
+    container.style.display = 'block';
     container.innerHTML = `
-      <form class="review-form" ${reviewIdAttr}>
-        <div class="your-rate">\n          <i class="bi bi-star-fill"></i>\n          <i class="bi bi-star-fill"></i>\n          <i class="bi bi-star-fill"></i>\n          <i class="bi bi-star-fill"></i>\n          <i class="bi bi-star-fill"></i>\n        </div>
-        <div class="form-group">\n          <textarea name="comment" rows="4" placeholder="Viết đánh giá của bạn...">${commentText}</textarea>\n        </div>
-        <div class="form-actions">\n          <button type="submit" class="btn btn-primary">${isEdit ? 'Cập nhật' : 'Gửi đánh giá'}</button>\n          ${isEdit ? '<button type="button" class="btn btn-danger btn-delete-review">Xóa</button>' : ''}\n        </div>
-      </form>`;
+      <div class="your-rate">
+        Đánh giá của bạn:
+        <span>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+        </span>
+      </div>
+      <div class="input-comment-field">
+        <input type="text" class="commnent" placeholder="Viết đánh giá của bạn..." value="${commentText}" />
+        <button type="submit"><i class="bi bi-send-fill"></i></button>
+      </div>
+      ${isEdit ? '<input type="hidden" class="review-id" value="' + (reviewData.review_id || '') + '" />' : ''}
+    `;
 
-    // Gắn tương tác star (form mới)
-    const stars = container.querySelectorAll('.your-rate .bi-star-fill');
+    // Gắn tương tác sao
+    const stars = container.querySelectorAll('.your-rate span .bi-star-fill');
     const rateContainer = container.querySelector('.your-rate');
     if (rateContainer) {
       rateContainer.dataset.selected = ratingValue || 0;
     }
+    
     stars.forEach((star, idx) => {
       star.style.cursor = 'pointer';
       star.addEventListener('click', function () {
@@ -493,6 +466,7 @@
         stars.forEach((s, i) => s.classList.toggle('active', i <= idx));
       });
     });
+    
     if (rateContainer) {
       rateContainer.addEventListener('mouseleave', function () {
         const sel = parseInt(rateContainer.dataset.selected || 0, 10);
@@ -505,9 +479,31 @@
       stars.forEach((s, i) => s.classList.toggle('active', i < ratingValue));
       if (rateContainer) rateContainer.dataset.selected = ratingValue;
     }
+
+    // Gắn event submit cho button
+    const submitBtn = container.querySelector('button[type="submit"]');
+    const inputField = container.querySelector('.input-comment-field input');
+    const reviewIdInput = container.querySelector('.review-id');
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const bookId = getBookIdFromURL();
+        const starsActive = container.querySelectorAll('.your-rate span .bi-star-fill.active');
+        const rating = starsActive ? starsActive.length : 0;
+        const comment = inputField ? inputField.value.trim() : '';
+        const reviewId = reviewIdInput ? reviewIdInput.value : null;
+
+        if (reviewId) {
+          updateReview(reviewId, rating, comment);
+        } else {
+          submitReview(bookId, rating, comment);
+        }
+      });
+    }
   }
 
-  // Expose functions (only those needed globally)
+  // Expose functions
   window.Reviews = {
     loadReviews,
     checkUserReview,
@@ -515,20 +511,20 @@
     updateReview,
     deleteReview,
     initReviewForm,
-    renderReviewForm
+    renderReviewForm,
+    checkIfPurchased
   };
 
-  // Khi DOM load, init form and load data
+  // Khi DOM load
   document.addEventListener('DOMContentLoaded', function () {
     const bookId = getBookIdFromURL();
     initReviewForm();
     if (bookId) {
-      // Kiểm tra user và load reviews
       checkUserReview(bookId);
     }
   });
 
-  // Hàm renderStars - tái sử dụng từ product-detail nếu có, nếu không dùng phương án dự phòng đơn giản
+  // Hàm renderStars
   function renderStars(rating, filled = true) {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;

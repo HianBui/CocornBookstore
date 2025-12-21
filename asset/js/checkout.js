@@ -1,6 +1,6 @@
 /**
  * ============================================================
- * FILE: checkout.js (DEBUG VERSION)
+ * FILE: checkout.js (FIXED WITH NGROK)
  * MÔ TẢ: Xử lý thanh toán giỏ hàng hoàn chỉnh + Gửi email
  * ĐẶT TẠI: asset/js/checkout.js
  * ============================================================
@@ -91,7 +91,7 @@ const CheckoutHandler = {
 
         container.innerHTML = this.selectedItems.map(item => `
             <div class="product-item">
-                <img src="./asset/image/${item.main_img}" 
+                <img src="./asset/image/books/${item.main_img}" 
                      alt="${item.title}"
                      onerror="this.src='./asset/image/100x150.svg'">
                 <div class="product-details">
@@ -278,8 +278,7 @@ const CheckoutHandler = {
      * Gửi email xác nhận đơn hàng
      */
     async sendOrderEmail(orderData) {
-        console.log('🔵 [DEBUG] sendOrderEmail() được gọi');
-        console.log('🔵 [DEBUG] Order data:', orderData);
+        console.log('📧 [EMAIL] Bắt đầu gửi email...');
         
         try {
             // Chuẩn bị dữ liệu email
@@ -294,6 +293,9 @@ const CheckoutHandler = {
             const districtText = districtSelect.options[districtSelect.selectedIndex]?.text || '';
             
             const fullAddress = `${orderData.address}, ${districtText}, ${cityText}`;
+
+            // ✅ QUAN TRỌNG: Dùng URL ngrok thay vì window.location.origin
+            const websiteUrl = 'https://deana-chordamesodermic-hilariously.ngrok-free.dev/CocornBookstore';
 
             const emailData = {
                 order_id: orderData.order_id,
@@ -313,11 +315,10 @@ const CheckoutHandler = {
                     subtotal: item.subtotal,
                     main_img: item.main_img
                 })),
-                website_url: window.location.origin
+                website_url: websiteUrl  // Dùng URL ngrok
             };
 
-            console.log('🔵 [DEBUG] Email data chuẩn bị gửi:', emailData);
-            console.log('🔵 [DEBUG] API URL:', this.EMAIL_API_URL);
+            console.log('📧 [EMAIL] Email data:', emailData);
 
             // Gửi email
             const response = await fetch(this.EMAIL_API_URL, {
@@ -328,21 +329,50 @@ const CheckoutHandler = {
                 body: JSON.stringify(emailData)
             });
 
-            console.log('🔵 [DEBUG] Response status:', response.status);
-            console.log('🔵 [DEBUG] Response ok:', response.ok);
+            console.log('📧 [EMAIL] Response status:', response.status);
 
-            const result = await response.json();
-            console.log('🔵 [DEBUG] Response data:', result);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ [EMAIL] Server error:', errorText);
+                return { 
+                    success: false, 
+                    message: `Server error (${response.status})` 
+                };
+            }
+
+            const responseText = await response.text();
+            console.log('📧 [EMAIL] Raw response:', responseText);
+
+            if (!responseText || responseText.trim() === '') {
+                console.error('❌ [EMAIL] Response rỗng!');
+                return { 
+                    success: false, 
+                    message: 'Server không trả về dữ liệu' 
+                };
+            }
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+                console.log('📧 [EMAIL] Parsed JSON:', result);
+            } catch (parseError) {
+                console.error('❌ [EMAIL] Không thể parse JSON:', parseError);
+                return { 
+                    success: false, 
+                    message: 'Server trả về dữ liệu không hợp lệ' 
+                };
+            }
             
             if (result.success) {
-                console.log('✅ [SUCCESS] Email sent successfully');
+                console.log('✅ [EMAIL] Email sent successfully');
+                return { success: true };
             } else {
-                console.error('❌ [ERROR] Email sending failed:', result.message);
-                console.error('❌ [ERROR] Full error:', result);
+                console.error('❌ [EMAIL] Email sending failed:', result.message);
+                return { success: false, message: result.message };
             }
         } catch (error) {
-            console.error('❌ [CATCH ERROR] Error sending email:', error);
-            console.error('❌ [CATCH ERROR] Error stack:', error.stack);
+            console.error('❌ [EMAIL ERROR]:', error);
+            return { success: false, message: error.message };
         }
     },
 
@@ -395,7 +425,7 @@ const CheckoutHandler = {
                 notes: document.getElementById('notes')?.value.trim() || ''
             };
 
-            console.log('🔵 [DEBUG] Đang tạo đơn hàng với data:', orderData);
+            console.log('🛒 [ORDER] Đang tạo đơn hàng...');
 
             const response = await fetch(`${this.API_URL}?action=create_order`, {
                 method: 'POST',
@@ -406,32 +436,48 @@ const CheckoutHandler = {
             });
 
             const data = await response.json();
-            console.log('🔵 [DEBUG] Create order response:', data);
+            console.log('🛒 [ORDER] Create order response:', data);
 
             if (data.success) {
                 // Thêm order_id vào orderData để gửi email
                 orderData.order_id = data.data.order_id;
                 
-                console.log('🔵 [DEBUG] Đơn hàng tạo thành công, bắt đầu gửi email...');
+                console.log('✅ [ORDER] Đơn hàng tạo thành công, bắt đầu gửi email...');
                 
-                // Gửi email xác nhận (không đợi kết quả)
-                this.sendOrderEmail(orderData);
+                // Gửi email xác nhận
+                const emailResult = await this.sendOrderEmail(orderData);
                 
                 Swal.close();
                 
-                // Đặt hàng thành công
+                // Hiển thị thông báo thành công
+                let emailMessage = '';
+                if (emailResult.success) {
+                    emailMessage = `
+                        <p style="color: #28a745; margin-top: 15px;">
+                            ✉️ Email xác nhận đã được gửi đến <strong>${orderData.email}</strong>
+                        </p>
+                        <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                            Vui lòng kiểm tra cả thư mục spam nếu không thấy email.
+                        </p>
+                    `;
+                } else {
+                    emailMessage = `
+                        <p style="color: #ffc107; margin-top: 15px;">
+                            ⚠️ Không thể gửi email xác nhận (${emailResult.message || 'Lỗi không xác định'})
+                        </p>
+                        <p style="color: #666; font-size: 14px;">
+                            Đơn hàng đã được tạo thành công, nhưng bạn có thể không nhận được email xác nhận.
+                        </p>
+                    `;
+                }
+                
                 await Swal.fire({
                     icon: 'success',
                     title: 'Đặt hàng thành công!',
                     html: `
                         <p>Mã đơn hàng: <strong>#${data.data.order_id}</strong></p>
                         <p>Cảm ơn bạn đã mua hàng!</p>
-                        <p style="color: #28a745; margin-top: 15px;">
-                            ✉️ Email xác nhận đang được gửi đến <strong>${orderData.email}</strong>
-                        </p>
-                        <p style="color: #666; font-size: 14px; margin-top: 10px;">
-                            Vui lòng kiểm tra cả thư mục spam nếu không thấy email.
-                        </p>
+                        ${emailMessage}
                     `,
                     confirmButtonText: 'Về trang chủ',
                     confirmButtonColor: '#28a745'
@@ -443,7 +489,7 @@ const CheckoutHandler = {
                 throw new Error(data.message || 'Không thể đặt hàng');
             }
         } catch (error) {
-            console.error('❌ [ERROR] Place order error:', error);
+            console.error('❌ [ORDER ERROR]:', error);
             Swal.close();
             Swal.fire({
                 icon: 'error',

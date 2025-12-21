@@ -1,10 +1,10 @@
 /**
- * FILE: admin/js/categories-improved.js
- * Quản lý danh mục với layout cải tiến + SweetAlert2
+ * FILE: admin/js/categories.js
+ * Quản lý danh mục với layout cải tiến + SweetAlert2 + Upload ảnh
  */
 
 const API_URL = '../../admin/api/categories.php';
-const IMAGE_BASE = '../../asset/image/';
+const IMAGE_BASE = '../../asset/image/categories/';
 
 let currentPage = 1;
 let currentLimit = 10;
@@ -16,7 +16,7 @@ const SEARCH_DEBOUNCE_MS = 300;
 /* ======================= HELPER FUNCTIONS ======================= */
 
 function getImagePath(img) {
-    if (!img) return IMAGE_BASE + 'category-default.png';
+    if (!img) return IMAGE_BASE + '75x100.svg';
     if (img.startsWith('http') || img.startsWith('./')) return img;
     return IMAGE_BASE + img;
 }
@@ -123,7 +123,7 @@ function renderCategoriesTable(categories) {
                     <div class="category-image-wrapper">
                         <img src="${getImagePath(cat.category_image)}"
                              alt="${escapeHtml(cat.category_name)}"
-                             onerror="this.src='${IMAGE_BASE}category-default.png'">
+                             onerror="this.src='${IMAGE_BASE}75x100.svg'">
                     </div>
                 </td>
 
@@ -291,7 +291,7 @@ async function viewCategoryDetail(id) {
                             <div class="col-md-4 text-center">
                                 <img src="${getImagePath(cat.category_image)}"
                                      class="category-detail-image"
-                                     onerror="this.src='${IMAGE_BASE}category-default.png'"
+                                     onerror="this.src='${IMAGE_BASE}75x100.svg'"
                                      alt="${escapeHtml(cat.category_name)}">
                             </div>
                             <div class="col-md-8">
@@ -415,13 +415,24 @@ function showCategoryForm(category = null) {
                             <label class="form-label">
                                 <i class="bi bi-image me-2"></i>Hình ảnh
                             </label>
+                            
+                            <input type="file" 
+                                class="form-control mb-2" 
+                                id="categoryImageFile"
+                                accept="image/*"
+                                onchange="handleCategoryImageUpload('categoryImageFile', 'categoryImagePreview', 'category_image')">
+                            <small class="text-muted">Hoặc nhập tên file thủ công:</small>
+                            
                             <input type="text" class="form-control" name="category_image"
                                    value="${isEdit ? (category.category_image || '') : ''}"
-                                   placeholder="VD: category-abc.jpg">
-                            <small class="text-muted">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Ảnh phải được upload vào thư mục asset/image/
-                            </small>
+                                   placeholder="VD: 75x100.svg">
+                            
+                            <div id="categoryImagePreview">
+                                ${isEdit && category.category_image ? `
+                                    <img src="${getImagePath(category.category_image)}" 
+                                        class="img-thumbnail mt-2" style="max-height: 150px;">
+                                ` : ''}
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -538,6 +549,76 @@ async function deleteCategory(id, name) {
     }
 }
 
+/* ======================= UPLOAD IMAGE ======================= */
+
+async function uploadCategoryImage(file) {
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('type', 'category'); // Để phân biệt với product image
+
+        showLoading('Đang upload ảnh...');
+
+        const resp = await fetch('../../admin/api/upload_image.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await resp.json();
+
+        Swal.close();
+
+        if (!data.success) {
+            throw new Error(data.message);
+        }
+
+        showToast('success', 'Thành công', 'Upload ảnh thành công');
+        return data.filename;
+
+    } catch (err) {
+        Swal.close();
+        showToast('error', 'Lỗi', 'Upload thất bại: ' + err.message);
+        return null;
+    }
+}
+
+function handleCategoryImageUpload(inputId, previewId, hiddenInputName) {
+    const input = document.getElementById(inputId);
+    const file = input.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        showToast('error', 'Lỗi', 'Vui lòng chọn file ảnh');
+        input.value = '';
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('error', 'Lỗi', 'Kích thước ảnh không được vượt quá 5MB');
+        input.value = '';
+        return;
+    }
+
+    uploadCategoryImage(file).then(filename => {
+        if (filename) {
+            const textInput = document.querySelector(`input[name="${hiddenInputName}"]`);
+            if (textInput) {
+                textInput.value = filename;
+            }
+
+            const preview = document.getElementById(previewId);
+            if (preview) {
+                preview.innerHTML = `
+                    <img src="${getImagePath(filename)}" 
+                         class="img-thumbnail mt-2" style="max-height: 150px;">
+                    <p class="mt-2 mb-0 small"><code>${filename}</code></p>
+                `;
+            }
+        }
+    });
+}
+
 /* ======================= INIT ======================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -545,10 +626,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.pathname.includes("categories.html") ||
         window.location.pathname.includes("products.html")
     ) {
-        // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        //     showToast('info', 'Khởi động', 'Module quản lý danh mục đã sẵn sàng');
-        // }
-
         loadCategories(1);
 
         const searchInput = document.getElementById("searchInput");
@@ -581,3 +658,4 @@ window.submitCategoryForm = submitCategoryForm;
 window.handleSearch = handleSearch;
 window.handleFilter = handleFilter;
 window.handleResetFilter = handleResetFilter;
+window.handleCategoryImageUpload = handleCategoryImageUpload;

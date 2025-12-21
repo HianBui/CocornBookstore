@@ -1,7 +1,7 @@
 <!-- 
  * ============================================================
  * FILE: admin/view/book_images.html
- * MÔ TẢ: Trang quản lý ảnh sản phẩm
+ * MÔ TẢ: Trang quản lý ảnh sản phẩm với sort
  * ============================================================ 
 -->
 <!DOCTYPE html>
@@ -30,7 +30,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <img src="../../asset/image/Logo.svg" alt="">
-            <h2 class="admin-name">Bùi Khắc Hiếu</h2>
+            <h2 class="admin-name">Admin</h2>
             <div class="role user-role">Quản trị viên</div>
         </div>
         
@@ -52,10 +52,10 @@
         <div class="top-bar">
             <h1>Quản lý ảnh sản phẩm</h1>
             <div class="user-info">
-                <div class="avatar">B</div>
+                <div class="avatar">A</div>
                 <div>
-                    <strong class="admin-name">Bùi Khắc Hiếu</strong>
-                    <div style="font-size: 12px; color: #7f8c8d;" class="admin-email">buikhachieu2574@gmail.com</div>
+                    <strong class="admin-name">Admin</strong>
+                    <div style="font-size: 12px; color: #7f8c8d;" class="admin-email">admin@example.com</div>
                 </div>
                 <button class="logout-btn" data-admin-logout>
                     <i class="bi bi-box-arrow-right"></i> Đăng xuất
@@ -72,6 +72,26 @@
             <button class="btn btn-secondary" onclick="window.location.href='products.html'" style="padding: 10px 20px; border-radius: 8px;">
                 <i class="bi bi-arrow-left me-2"></i>Quay lại Sản phẩm
             </button>
+        </div>
+
+        <!-- Bộ lọc và Sắp xếp -->
+        <div class="filter-section" style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <label style="margin-right: 8px; font-weight: 600;">Sắp xếp:</label>
+                    <select id="sortFilter" style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="newest">Cập nhật mới nhất</option>
+                        <option value="oldest">Cập nhật cũ nhất</option>
+                        <option value="book_name_asc">Tên sách A-Z</option>
+                        <option value="book_name_desc">Tên sách Z-A</option>
+                        <option value="book_id_asc">Book ID tăng dần</option>
+                        <option value="book_id_desc">Book ID giảm dần</option>
+                    </select>
+                </div>
+                <button id="resetFilterBtn" onclick="handleResetFilter()" style="padding: 8px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="bi bi-x-circle"></i> Đặt lại
+                </button>
+            </div>
         </div>
 
         <!-- Hướng dẫn -->

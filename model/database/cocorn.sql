@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 16, 2025 at 10:46 PM
+-- Generation Time: Dec 21, 2025 at 04:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,12 +53,12 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 (5, 'Sapiens: Lược Sử Loài Người', 'Yuval Noah Harari', 'NXB Trẻ', '2018', 189000.00, 100, 'Từ khi xuất hiện đến nay...', 'available', 2, '2025-10-25 01:53:02'),
 (6, 'Homo Deus', 'Yuval Noah Harari', 'NXB Trẻ', '2019', 199000.00, 80, 'Lịch sử của tương lai...', 'available', 2, '2025-10-25 01:53:02'),
 (7, 'Vũ Trụ Trong Vỏ Hạt Dẻ', 'Stephen Hawking', 'NXB Trẻ', '2017', 145000.00, 60, 'Khám phá bí mật vũ trụ...', 'available', 2, '2025-10-25 01:53:02'),
-(8, 'Dám Nghĩ Lớn', 'David J. Schwartz', 'NXB Lao Động', '2020', 99000.00, 140, 'Phương pháp thành công...', 'available', 3, '2025-10-25 01:53:02'),
-(9, 'Tư Duy Nhanh Và Chậm', 'Daniel Kahneman', 'NXB Thế Giới', '2019', 169000.00, 90, 'Hai hệ thống tư duy...', 'available', 3, '2025-10-25 01:53:02'),
-(10, '7 Thói Quen Hiệu Quả', 'Stephen Covey', 'NXB Tổng Hợp', '2018', 125000.00, 160, 'Thay đổi cuộc sống...', 'available', 3, '2025-10-25 01:53:02'),
+(8, 'Dám Nghĩ Lớn (Tái Bản)', 'David J Schwartz, PH D', 'NXB Tổng Hợp TPHCM', '2021', 99000.00, 140, 'Phương pháp thành công...', 'available', 3, '2025-10-25 01:53:02'),
+(9, 'Tư Duy Nhanh Và Chậm (Tái Bản 2021)', 'Daniel Kahneman', 'NXB Thế Giới', '2021', 169000.00, 90, 'Hai hệ thống tư duy...', 'available', 3, '2025-10-25 01:53:02'),
+(10, '7 Thói Quen Hiệu Quả - The 7 Habits Of Highly Effective People - Bìa Cứng (Tái Bản 2022)', 'Stephen Covey', 'NXB Tổng Hợp', '2022', 125000.00, 160, 'Thay đổi cuộc sống...', 'available', 3, '2025-10-25 01:53:02'),
 (11, 'Đời Ngắn Đừng Ngủ Dài', 'Robin Sharma', 'NXB Thanh Niên', '2021', 88000.00, 190, 'Sống có ý nghĩa hơn...', 'available', 4, '2025-10-25 01:53:02'),
-(12, 'Nghĩ Giàu Làm Giàu', 'Napoleon Hill', 'NXB Lao Động', '2019', 115000.00, 170, 'Bí quyết làm giàu...', 'available', 4, '2025-10-25 01:53:02'),
-(13, 'Không Diệt Không Sinh', 'Thích Nhất Hạnh', 'NXB Tôn Giáo', '2020', 95000.00, 110, 'Đừng sợ hãi...', 'available', 4, '2025-10-25 01:53:02'),
+(12, 'Nghĩ Giàu & Làm Giàu ', 'Napoleon Hill', 'NXB Lao Động', '2019', 115000.00, 170, 'Bí quyết làm giàu...', 'available', 4, '2025-10-25 01:53:02'),
+(13, 'Không sinh không diệt đừng sợ hãi', 'Thích Nhất Hạnh', 'NXB Tôn Giáo', '2020', 95000.00, 110, 'Đừng sợ hãi...', 'available', 4, '2025-10-25 01:53:02'),
 (14, 'Harry Potter và Hòn đá Phù thủy', 'J.K. Rowling', 'NXB Trẻ', '2017', 120000.00, 200, 'Harry khám phá thế giới phù thủy và bí mật Hòn đá Phù thủy.', 'available', 1, '2025-10-28 03:14:28'),
 (15, 'Harry Potter và Phòng chứa Bí mật', 'J.K. Rowling', 'NXB Trẻ', '2017', 125000.00, 180, 'Phòng chứa Bí mật mở ra, bí ẩn đen tối đe dọa Hogwarts.', 'available', 1, '2025-10-28 03:14:28'),
 (16, 'Harry Potter và Tên tù nhân ngục Azkaban', 'J.K. Rowling', 'NXB Trẻ', '2017', 135000.00, 170, 'Sirius Black trốn tù, sự thật về quá khứ dần hé lộ.', 'available', 1, '2025-10-28 03:14:28'),
@@ -66,37 +66,29 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 (18, 'Harry Potter và Hội Phượng Hoàng', 'J.K. Rowling', 'NXB Trẻ', '2017', 220000.00, 140, 'Thành lập Hội Phượng Hoàng chống lại Voldemort.', 'available', 1, '2025-10-28 03:14:28'),
 (19, 'Harry Potter và Hoàng tử Lai', 'J.K. Rowling', 'NXB Trẻ', '2017', 190000.00, 130, 'Khám phá quá khứ Voldemort, chuẩn bị trận chiến cuối.', 'available', 1, '2025-10-28 03:14:28'),
 (20, 'Harry Potter và Bảo bối Tử thần', 'J.K. Rowling', 'NXB Trẻ', '2017', 250000.00, 160, 'Trận chiến cuối cùng, tiêu diệt Trường Sinh Linh Giá.', 'available', 1, '2025-10-28 03:14:28'),
-(21, 'Nhà Giả Kim - Phiên Bản Thiếu Nhi', 'Paulo Coelho', 'NXB Kim Đồng', '2022', 68000.00, 200, 'Phiên bản dành cho thiếu nhi của Nhà Giả Kim với ngôn ngữ dễ hiểu hơn.', 'available', 5, '2025-10-28 19:28:59'),
-(22, 'Dế Mèn Phiêu Lưu Ký', 'Tô Hoài', 'NXB Kim Đồng', '2020', 45000.00, 250, 'Câu chuyện cổ tích nổi tiếng về chú Dế Mèn và cuộc phiêu lưu của mình.', 'available', 5, '2025-10-28 19:28:59'),
-(23, 'Những Cuộc Phiêu Lưu Của Tom Sawyer', 'Mark Twain', 'NXB Trẻ', '2019', 89000.00, 180, 'Những cuộc phiêu lưu đầy thú vị của cậu bé Tom Sawyer.', 'available', 5, '2025-10-28 19:28:59'),
-(24, 'Harry Potter và Hòn Đá Phù Thủy - Bản Màu', 'J.K. Rowling', 'NXB Trẻ', '2021', 350000.00, 100, 'Phiên bản có hình ảnh minh họa đầy màu sắc cho thiếu nhi.', 'available', 5, '2025-10-28 19:28:59'),
-(25, 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh', 'Nguyễn Nhật Ánh', 'NXB Trẻ', '2018', 95000.00, 220, 'Câu chuyện về tuổi thơ dữ dội và đẹp đẽ ở miền quê Việt Nam.', 'available', 5, '2025-10-28 19:28:59'),
-(26, 'Doraemon - Tập 1', 'Fujiko F. Fujio', 'NXB Kim Đồng', '2020', 22000.00, 500, 'Tập truyện tranh đầu tiên của bộ Doraemon.', 'available', 5, '2025-10-28 19:28:59'),
-(27, 'Thám Tử Lừng Danh Conan - Tập 1', 'Aoyama Gosho', 'NXB Kim Đồng', '2019', 22000.00, 450, 'Tập đầu tiên của thám tử nhí Conan Edogawa.', 'available', 5, '2025-10-28 19:28:59'),
-(28, 'Lịch Sử Việt Nam Bằng Tranh', 'Trần Bạch Đằng', 'NXB Trẻ', '2020', 125000.00, 150, 'Lịch sử Việt Nam được kể qua hình ảnh sinh động và dễ hiểu.', 'available', 6, '2025-10-28 19:28:59'),
-(29, 'Sapiens: Lược Sử Loài Người', 'Yuval Noah Harari', 'NXB Trẻ', '2018', 189000.00, 100, 'Từ khi xuất hiện đến nay, con người đã tiến hóa như thế nào.', 'available', 6, '2025-10-28 19:28:59'),
-(30, 'Việt Nam Sử Lược', 'Trần Trọng Kim', 'NXB Văn Học', '2019', 145000.00, 120, 'Tác phẩm kinh điển về lịch sử Việt Nam từ xa xưa đến cận đại.', 'available', 6, '2025-10-28 19:28:59'),
-(31, 'Đại Việt Sử Ký Toàn Thư', 'Ngô Sĩ Liên', 'NXB Khoa Học Xã Hội', '2020', 280000.00, 80, 'Bộ sử đầy đủ nhất về lịch sử Việt Nam thời phong kiến.', 'available', 6, '2025-10-28 19:28:59'),
-(32, 'Chiến Tranh Thế Giới Thứ Hai', 'Antony Beevor', 'NXB Tri Thức', '2021', 299000.00, 90, 'Cái nhìn toàn diện về cuộc chiến tranh lớn nhất lịch sử nhân loại.', 'available', 6, '2025-10-28 19:28:59'),
-(33, 'Hồ Chí Minh - Một Hành Trình', 'Pierre Brocheux', 'NXB Chính Trị Quốc Gia', '2019', 165000.00, 110, 'Cuộc đời và sự nghiệp của Chủ tịch Hồ Chí Minh.', 'available', 6, '2025-10-28 19:28:59'),
-(34, 'English Grammar In Use', 'Raymond Murphy', 'NXB Tổng Hợp', '2020', 189000.00, 200, 'Sách ngữ pháp tiếng Anh phổ biến nhất thế giới.', 'available', 8, '2025-10-28 19:28:59'),
+(22, 'Dế Mèn Phiêu Lưu Ký', 'Tô Hoài', 'NXB Kim Đồng', '2019', 45000.00, 250, 'Câu chuyện cổ tích nổi tiếng về chú Dế Mèn và cuộc phiêu lưu của mình.', 'available', 5, '2025-10-28 19:28:59'),
+(23, 'Những Cuộc Phiêu Lưu Của Tom Sawyer (Tái Bản 2023)', 'Mark Twain', 'NXB Trẻ', '2023', 89000.00, 180, 'Những cuộc phiêu lưu đầy thú vị của cậu bé Tom Sawyer.', 'available', 5, '2025-10-28 19:28:59'),
+(25, 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh (Tái Bản 2023)', 'Nguyễn Nhật Ánh', 'NXB Trẻ', '2023', 95000.00, 220, 'Câu chuyện về tuổi thơ dữ dội và đẹp đẽ ở miền quê Việt Nam.', 'available', 5, '2025-10-28 19:28:59'),
+(26, 'Doraemon Plus - Tập 1 (Tái Bản 2023)', 'Fujiko F. Fujio', 'NXB Kim Đồng', '2020', 22000.00, 500, 'Tập truyện tranh đầu tiên của bộ Doraemon.', 'available', 5, '2025-10-28 19:28:59'),
+(27, 'Thám Tử Lừng Danh Conan - Tập 1 (Tái Bản 2023)', 'Aoyama Gosho', 'NXB Kim Đồng', '2019', 22000.00, 450, 'Tập đầu tiên của thám tử nhí Conan Edogawa.', 'available', 5, '2025-10-28 19:28:59'),
+(28, 'Lịch Sử Việt Nam Bằng Tranh: Trần Hưng Đạo (Bản Màu)', '	 Nguyễn Quang Cảnh, Tôn Nữ Quỳnh Trân, Nguyễn Thùy Linh, Trần Bạch Đằng', 'NXB Trẻ', '2021', 125000.00, 150, 'Lịch sử Việt Nam được kể qua hình ảnh sinh động và dễ hiểu.', 'available', 6, '2025-10-28 19:28:59'),
+(30, 'Việt Nam Sử Lược (Tái Bản 2025)', 'Trần Trọng Kim', 'NXB Văn Học', '2025', 145000.00, 120, 'Tác phẩm kinh điển về lịch sử Việt Nam từ xa xưa đến cận đại.', 'available', 6, '2025-10-28 19:28:59'),
+(31, 'Đại Việt Sử Ký Toàn Thư - Trọn Bộ - Bìa Cứng (Tái Bản 2025)', 'Cao Huy Giu', 'Hồng Đức', '2025', 280000.00, 80, 'Bộ sử đầy đủ nhất về lịch sử Việt Nam thời phong kiến.', 'available', 6, '2025-10-28 19:28:59'),
+(32, 'Hiệu Sách Cuối Cùng Ở London - Tiểu Thuyết Về Chiến Tranh Thế Giới Thứ Hai', 'Madeline Martin', 'Văn Học', '2022', 117000.00, 90, 'Cái nhìn toàn diện về cuộc chiến tranh lớn nhất lịch sử nhân loại.', 'available', 6, '2025-10-28 19:28:59'),
+(33, 'Hồ Chí Minh - Hành Trình 79 Mùa Xuân', 'Đỗ Hoàng Linh', 'Văn Học', '2025', 180000.00, 110, 'Cuộc đời và sự nghiệp của Chủ tịch Hồ Chí Minh.', 'available', 6, '2025-10-28 19:28:59'),
+(34, 'English Grammar In Use', 'Raymond Murphy', 'Cambridge University', '2017', 189000.00, 200, 'Sách ngữ pháp tiếng Anh phổ biến nhất thế giới.', 'available', 8, '2025-10-28 19:28:59'),
 (35, 'Hackers IELTS Reading', 'Hackers Academia', 'NXB Tổng Hợp', '2021', 245000.00, 150, 'Giáo trình luyện thi IELTS Reading hiệu quả.', 'available', 8, '2025-10-28 19:28:59'),
-(36, 'Minna No Nihongo - Sơ Cấp 1', 'Tập Thể Tác Giả', 'NXB Trẻ', '2019', 125000.00, 180, 'Giáo trình tiếng Nhật phổ biến cho người mới bắt đầu.', 'available', 8, '2025-10-28 19:28:59'),
+(36, 'Tsunagu Nihongo - Tiếng Nhật Kết Nối - Sơ Cấp 1 - Tiếng Nhật Giao Tiếp Cơ Bản', 'Tsuji Azuko, Ozama Ai, Katsura Miho', 'NXB Trẻ', '2024', 212000.00, 180, 'Giáo trình tiếng Nhật phổ biến cho người mới bắt đầu.', 'available', 8, '2025-10-28 19:28:59'),
 (37, 'Tiếng Hàn Tổng Hợp - Sơ Cấp 1', 'Đại Học Yonsei', 'NXB Tổng Hợp', '2020', 135000.00, 170, 'Giáo trình tiếng Hàn chuẩn từ Đại học Yonsei.', 'available', 8, '2025-10-28 19:28:59'),
-(38, 'HSK Standard Course 1', 'Jiang Liping', 'NXB Thế Giới', '2021', 155000.00, 140, 'Giáo trình luyện thi HSK tiếng Trung cấp độ 1.', 'available', 8, '2025-10-28 19:28:59'),
-(39, 'Tiếng Anh Giao Tiếp Hằng Ngày', 'Giáo Hoàng', 'NXB Thanh Niên', '2020', 79000.00, 220, 'Học tiếng Anh giao tiếp qua các tình huống thực tế.', 'available', 8, '2025-10-28 19:28:59'),
+(38, 'Giáo Trình Chuẩn HSK 1', 'Khương Lệ Bình, Vương Phương, Vương Phong, Lưu Lệ Bình', 'Tổng Hợp Thành Phố Hồ Chí Minh', '2023', 155000.00, 140, 'Giáo trình luyện thi HSK tiếng Trung cấp độ 1.', 'available', 8, '2025-10-28 19:28:59'),
+(39, 'Tự Học Đàm Thoại Tiếng Anh - Cuộc Sống Hằng Ngày (Tái Bản)', 'Tri Thức Việt', 'NXB Thanh Niên', '2021', 66000.00, 220, 'Đây là cuốn sách dành cho những ai yêu thích tiếng Anh.', 'available', 8, '2025-10-28 19:28:59'),
 (40, '600 Essential Words For TOEIC', 'Lin Lougheed', 'NXB Tổng Hợp', '2019', 165000.00, 160, 'Từ vựng thiết yếu cho kỳ thi TOEIC.', 'available', 8, '2025-10-28 19:28:59'),
-(41, 'Lập Trình Python Cho Người Mới Bắt Đầu', 'Đỗ Thanh Nghị', 'NXB Bách Khoa', '2021', 159000.00, 180, 'Hướng dẫn lập trình Python từ cơ bản đến nâng cao.', 'available', 7, '2025-10-28 19:28:59'),
-(42, 'Thiết Kế Website Với HTML, CSS, JavaScript', 'Trần Đình Nam', 'NXB Lao Động', '2020', 145000.00, 200, 'Xây dựng website từ đầu với HTML, CSS và JavaScript.', 'available', 7, '2025-10-28 19:28:59'),
-(43, 'Học Machine Learning Qua Ví Dụ', 'Nguyễn Thanh Tuấn', 'NXB Thông Tin và Truyền Thông', '2022', 299000.00, 120, 'Tìm hiểu Machine Learning qua các bài toán thực tế.', 'available', 7, '2025-10-28 19:28:59'),
-(44, 'Lập Trình Java Core', 'Phạm Hữu Khang', 'NXB Khoa Học và Kỹ Thuật', '2020', 189000.00, 150, 'Giáo trình lập trình Java từ cơ bản đến chuyên sâu.', 'available', 7, '2025-10-28 19:28:59'),
-(45, 'React - The Complete Guide', 'Maximilian Schwarzmüller', 'NXB Trẻ', '2021', 245000.00, 100, 'Hướng dẫn toàn diện về React.js để xây dựng ứng dụng web.', 'available', 7, '2025-10-28 19:28:59'),
-(46, 'Data Science Cho Người Mới Bắt Đầu', 'Lê Minh Hoàng', 'NXB Thống Kê', '2022', 275000.00, 90, 'Khám phá thế giới Data Science với Python và R.', 'available', 7, '2025-10-28 19:28:59'),
-(47, 'Học SQL Qua Bài Tập', 'Nguyễn Văn Hùng', 'NXB Bách Khoa', '2020', 135000.00, 170, 'Thành thạo SQL qua 100+ bài tập thực hành.', 'available', 7, '2025-10-28 19:28:59'),
-(48, 'Nhà Đầu Tư Thông Minh', 'Benjamin Graham', 'NXB Lao Động', '2020', 299000.00, 150, 'Cuốn sách kinh điển về đầu tư giá trị từ người thầy của Warren Buffett.', 'available', 3, '2025-12-16 01:14:31'),
-(49, 'Phân Tích Chứng Khoán', 'Benjamin Graham', 'NXB Tổng Hợp', '2019', 350000.00, 120, 'Hướng dẫn chi tiết về phân tích và đầu tư chứng khoán.', 'available', 3, '2025-12-16 01:14:31'),
-(50, 'Cha Giàu Cha Nghèo', 'Robert Kiyosaki', 'NXB Lao Động', '2021', 89000.00, 200, 'Bài học về tài chính và đầu tư từ hai người cha.', 'available', 3, '2025-12-16 01:14:31'),
-(51, 'Đắc Nhân Tâm Trong Thời Đại Số', 'Dale Carnegie', 'NXB Tổng Hợp', '2022', 99000.00, 180, 'Phiên bản hiện đại của Đắc Nhân Tâm cho thời đại công nghệ.', 'available', 4, '2025-12-16 01:14:31'),
+(46, 'Data Science and Big Data Analytics: Discovering, Analyzing, Visualizing and Presenting Data', 'David Dietrich, Barry Heller và Beibei Yang', 'Wiley', '2015', 275000.00, 90, 'Khám phá thế giới Data Science với Python và R.', 'available', 7, '2025-10-28 19:28:59'),
+(47, 'Learning SQL', 'ALan Beaulieu', 'NXB Bách Khoa', '2020', 135000.00, 170, 'Thành thạo SQL qua 100+ bài tập thực hành.', 'available', 7, '2025-10-28 19:28:59'),
+(48, 'Nhà Đầu Tư Thông Minh - Stock Market 101', 'Michele Cagan', 'NXB Tài Chính', '2025', 299000.00, 150, 'Cuốn sách kinh điển về đầu tư giá trị từ người thầy của Warren Buffett.', 'available', 3, '2025-12-16 01:14:31'),
+(49, 'Phân Tích Chứng Khoán (Security Analysis)', 'Benjamin Graham - David L Dodd', 'NXB Lao Động', '2018', 399000.00, 120, 'Hướng dẫn chi tiết về phân tích và đầu tư chứng khoán.', 'available', 3, '2025-12-16 01:14:31'),
+(50, 'Thế Giới Giàu - Thế Giới Nghèo - Đấu Tranh Để Thoát Nghèo', 'Ali A.Allawi', 'NXB Chính Trị Quốc Gia Sự Thật', '2025', 332000.00, 200, 'Thế Giới Giàu - Thế Giới Nghèo - Đấu Tranh Để Thoát Nghèo.', 'available', 3, '2025-12-16 01:14:31'),
+(51, 'Đắc Nhân Tâm Trong Thời Đại Số', 'Dale Carnegie, Cộng sự', 'NXB Tổng Hợp TPHCM', '2019', 188000.00, 180, 'Phiên bản hiện đại của Đắc Nhân Tâm cho thời đại công nghệ.', 'available', 4, '2025-12-16 01:14:31'),
 (52, 'Sức Mạnh Của Thói Quen', 'Charles Duhigg', 'NXB Thế Giới', '2020', 125000.00, 160, 'Khám phá cách thói quen hoạt động và cách thay đổi chúng.', 'available', 4, '2025-12-16 01:14:31');
 
 -- --------------------------------------------------------
@@ -121,58 +113,50 @@ CREATE TABLE `book_images` (
 --
 
 INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_img2`, `sub_img3`, `created_at`, `updated_at`) VALUES
-(1, 1, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(2, 2, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(3, 3, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(4, 4, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(5, 5, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(6, 6, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(7, 7, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(8, 8, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(9, 9, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(10, 10, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(11, 11, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(12, 12, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(13, 13, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-25 01:53:02', '2025-12-16 01:14:31'),
-(14, 14, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(15, 15, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(16, 16, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(17, 17, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(18, 18, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(19, 19, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(20, 20, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 03:14:28', '2025-12-16 01:14:31'),
-(21, 21, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(22, 22, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(23, 23, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(24, 24, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(25, 25, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(26, 26, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(27, 27, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(28, 28, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(29, 29, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(30, 30, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(31, 31, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(32, 32, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(33, 33, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(34, 34, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(35, 35, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(36, 36, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(37, 37, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(38, 38, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(39, 39, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(40, 40, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(41, 41, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(42, 42, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(43, 43, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(44, 44, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(45, 45, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(46, 46, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(47, 47, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-10-28 19:28:59', '2025-12-16 01:14:31'),
-(48, 48, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-12-16 01:14:31', '2025-12-16 01:14:31'),
-(49, 49, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-12-16 01:14:31', '2025-12-16 01:14:31'),
-(50, 50, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-12-16 01:14:31', '2025-12-16 01:14:31'),
-(51, 51, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-12-16 01:14:31', '2025-12-16 01:14:31'),
-(52, 52, '300x300.svg', '300x300-1.svg', '300x300-2.svg', '300x300-3.svg', '2025-12-16 01:14:31', '2025-12-16 01:14:31');
+(1, 1, 'book_1766252871_6946e1477dd83.webp', 'book_1766252877_6946e14d1a5aa.webp', 'book_1766252881_6946e1517dff0.webp', 'book_1766252885_6946e1555b2bf.webp', '2025-10-25 01:53:02', '2025-12-21 00:48:07'),
+(2, 2, 'book_1766265917_6947143d32991.webp', 'book_1766265921_69471441330e5.webp', 'book_1766265924_69471444d8e9f.webp', 'book_1766265928_6947144827938.webp', '2025-10-25 01:53:02', '2025-12-21 04:25:30'),
+(3, 3, 'book_1766253060_6946e204afd18.webp', 'book_1766253068_6946e20c0c348.webp', 'book_1766253072_6946e21071e8a.webp', 'book_1766253076_6946e214356d3.webp', '2025-10-25 01:53:02', '2025-12-21 00:51:17'),
+(4, 4, 'book_1766253284_6946e2e450846.webp', 'book_1766253288_6946e2e87e714.webp', 'book_1766253292_6946e2ecd6df0.webp', 'book_1766253296_6946e2f0e6492.webp', '2025-10-25 01:53:02', '2025-12-21 00:54:58'),
+(5, 5, 'book_1766253371_6946e33b19351.webp', 'book_1766253375_6946e33f888f0.webp', 'book_1766253379_6946e34371df7.webp', 'book_1766253383_6946e3475f29a.webp', '2025-10-25 01:53:02', '2025-12-21 00:56:25'),
+(6, 6, 'book_1766253526_6946e3d671f25.jpg', 'book_1766253534_6946e3de4c21d.webp', 'book_1766253541_6946e3e5d32d8.webp', 'book_1766253546_6946e3ea26e3d.webp', '2025-10-25 01:53:02', '2025-12-21 00:59:07'),
+(7, 7, 'book_1766254235_6946e69b683db.jpg', 'book_1766254240_6946e6a0e1127.webp', 'book_1766254244_6946e6a4d988a.webp', 'book_1766254249_6946e6a99160d.webp', '2025-10-25 01:53:02', '2025-12-21 01:10:51'),
+(8, 8, 'book_1766269786_6947235acf382.webp', 'book_1766269789_6947235dec562.webp', 'book_1766269792_69472360d9d8a.webp', 'book_1766269795_69472363b1120.webp', '2025-10-25 01:53:02', '2025-12-21 05:29:56'),
+(9, 9, 'book_1766269676_694722ec6f873.webp', 'book_1766269679_694722efba63b.webp', 'book_1766269682_694722f266a3b.webp', 'book_1766269685_694722f51efee.webp', '2025-10-25 01:53:02', '2025-12-21 05:28:06'),
+(10, 10, 'book_1766269575_6947228790757.webp', 'book_1766269578_6947228ac4e06.webp', 'book_1766269582_6947228e46319.webp', 'book_1766269585_694722915a4a0.webp', '2025-10-25 01:53:02', '2025-12-21 05:26:26'),
+(11, 11, 'book_1766266843_694717db2dd54.webp', 'book_1766266786_694717a2611e6.webp', 'book_1766266789_694717a5be4b2.webp', 'book_1766266793_694717a916743.webp', '2025-10-25 01:53:02', '2025-12-21 04:40:45'),
+(12, 12, 'book_1766266535_694716a72dd31.jpg', 'book_1766266538_694716aac42b3.webp', 'book_1766266542_694716ae252b3.webp', 'book_1766266545_694716b1c7f0c.jpg', '2025-10-25 01:53:02', '2025-12-21 04:35:47'),
+(13, 13, 'book_1766266449_694716518fba3.webp', 'book_1766266453_6947165544054.webp', 'book_1766266457_6947165923b5c.webp', 'book_1766266460_6947165c5c9fa.webp', '2025-10-25 01:53:02', '2025-12-21 04:34:21'),
+(14, 14, 'book_1766265721_69471379a1d42.webp', 'book_1766265726_6947137e2a5c0.webp', 'book_1766265730_694713829e269.webp', 'book_1766265734_694713861bde8.webp', '2025-10-28 03:14:28', '2025-12-21 04:22:15'),
+(15, 15, 'book_1766265653_694713355ef21.webp', 'book_1766265657_69471339271c2.webp', 'book_1766265660_6947133c79265.webp', 'book_1766265663_6947133fb3a32.webp', '2025-10-28 03:14:28', '2025-12-21 04:21:04'),
+(16, 16, 'book_1766265587_694712f332671.webp', 'book_1766265590_694712f6c6711.webp', 'book_1766265594_694712fa9dfd4.webp', 'book_1766265598_694712fe02d14.webp', '2025-10-28 03:14:28', '2025-12-21 04:19:59'),
+(17, 17, 'book_1766265044_694710d46b113.webp', 'book_1766265048_694710d8b793a.webp', 'book_1766265052_694710dc53bc4.webp', 'book_1766265056_694710e094b18.webp', '2025-10-28 03:14:28', '2025-12-21 04:10:57'),
+(18, 18, 'book_1766265491_694712937bb06.webp', 'book_1766265496_694712982eb20.webp', 'book_1766265499_6947129b9b302.webp', 'book_1766265503_6947129f81a40.webp', '2025-10-28 03:14:28', '2025-12-21 04:18:24'),
+(19, 19, 'book_1766265377_69471221a5e6a.webp', 'book_1766265381_694712256ff38.webp', 'book_1766265385_6947122911f06.webp', 'book_1766265388_6947122c3cbc0.webp', '2025-10-28 03:14:28', '2025-12-21 04:16:29'),
+(20, 20, 'book_1766265141_69471135e2266.jpg', 'book_1766265146_6947113ac0578.webp', 'book_1766265150_6947113e72007.webp', 'book_1766265154_6947114242b00.webp', '2025-10-28 03:14:28', '2025-12-21 04:12:36'),
+(22, 22, 'book_1766268252_69471d5c3c821.webp', 'book_1766268255_69471d5f96988.webp', 'book_1766268258_69471d62c780e.webp', 'book_1766268261_69471d65e3860.webp', '2025-10-28 19:28:59', '2025-12-21 05:04:22'),
+(23, 23, 'book_1766268163_69471d035ee0c.webp', 'book_1766268166_69471d06a0783.webp', 'book_1766268169_69471d0958a91.webp', 'book_1766268172_69471d0c09fa9.webp', '2025-10-28 19:28:59', '2025-12-21 05:02:53'),
+(25, 25, 'book_1766268067_69471ca3d6e48.webp', 'book_1766268070_69471ca6de05e.webp', 'book_1766268073_69471ca97b89b.webp', 'book_1766268076_69471cac55ead.webp', '2025-10-28 19:28:59', '2025-12-21 05:01:17'),
+(26, 26, 'book_1766267866_69471bda35a16.jpg', 'book_1766267869_69471bdd46abb.webp', 'book_1766267871_69471bdfe2374.webp', 'book_1766267874_69471be2d9e1e.webp', '2025-10-28 19:28:59', '2025-12-21 04:57:55'),
+(27, 27, 'book_1766267951_69471c2fddadd.webp', 'book_1766267954_69471c32bc479.webp', 'book_1766267957_69471c3550a16.webp', 'book_1766267959_69471c37c7745.webp', '2025-10-28 19:28:59', '2025-12-21 04:59:20'),
+(28, 28, 'book_1766269087_6947209f20ab9.webp', 'book_1766269090_694720a23cc5c.webp', 'book_1766269094_694720a6a6a13.webp', 'book_1766269097_694720a9d50eb.webp', '2025-10-28 19:28:59', '2025-12-21 05:18:19'),
+(30, 30, 'book_1766268888_69471fd855ad7.webp', 'book_1766268891_69471fdb50649.webp', 'book_1766268894_69471fde0bd87.jpg', 'book_1766268896_69471fe09bad7.webp', '2025-10-28 19:28:59', '2025-12-21 05:14:57'),
+(31, 31, 'book_1766268782_69471f6ed3e80.webp', 'book_1766268785_69471f71d72b1.webp', 'book_1766268788_69471f74865df.webp', 'book_1766268791_69471f7709e7d.webp', '2025-10-28 19:28:59', '2025-12-21 05:13:11'),
+(32, 32, 'book_1766268661_69471ef5ca856.webp', 'book_1766268667_69471efb9e752.webp', 'book_1766268670_69471efeae05c.webp', 'book_1766268673_69471f01632bb.webp', '2025-10-28 19:28:59', '2025-12-21 05:11:14'),
+(33, 33, 'book_1766268462_69471e2eb1b4c.webp', 'book_1766268466_69471e32ea115.webp', 'book_1766268470_69471e364f440.webp', 'book_1766268473_69471e391ae6b.webp', '2025-10-28 19:28:59', '2025-12-21 05:07:54'),
+(34, 34, 'book_1766264785_69470fd10bfc9.webp', 'book_1766264789_69470fd5b999b.webp', 'book_1766264793_69470fd97dce9.webp', 'book_1766264797_69470fdd21fc1.webp', '2025-10-28 19:28:59', '2025-12-21 04:06:38'),
+(35, 35, 'book_1766254609_6946e81105e36.webp', 'book_1766254613_6946e8150aaa5.webp', 'book_1766254616_6946e818d6bab.webp', 'book_1766254620_6946e81c3bdd7.webp', '2025-10-28 19:28:59', '2025-12-21 01:17:01'),
+(36, 36, 'book_1766264655_69470f4f0a3af.webp', 'book_1766264659_69470f533ebfa.webp', 'book_1766264664_69470f58adc66.webp', 'book_1766264669_69470f5d5c09e.webp', '2025-10-28 19:28:59', '2025-12-21 04:04:32'),
+(37, 37, 'book_1766254937_6946e9594fd00.webp', 'book_1766254941_6946e95d14e15.webp', 'book_1766254945_6946e96162849.webp', 'book_1766254948_6946e964e799b.webp', '2025-10-28 19:28:59', '2025-12-21 01:22:30'),
+(38, 38, 'book_1766264091_69470d1becd12.webp', 'book_1766264096_69470d2051dcf.webp', 'book_1766264100_69470d2422308.webp', 'book_1766264103_69470d27bb697.webp', '2025-10-28 19:28:59', '2025-12-21 03:55:05'),
+(39, 39, 'book_1766255564_6946ebccc99b7.webp', 'book_1766255569_6946ebd12e804.webp', 'book_1766255573_6946ebd5626cf.webp', 'book_1766255577_6946ebd98806d.webp', '2025-10-28 19:28:59', '2025-12-21 01:33:00'),
+(40, 40, 'book_1766254442_6946e76a8afdc.webp', 'book_1766254447_6946e76f734f7.webp', 'book_1766254452_6946e77440775.webp', 'book_1766254456_6946e7783f4fb.webp', '2025-10-28 19:28:59', '2025-12-21 01:14:17'),
+(46, 46, 'book_1766270573_6947266dd8fcf.jpg', 'book_1766270577_6947267181c50.jpg', 'book_1766270580_694726747b4b5.jpg', 'book_1766270582_69472676e955c.jpg', '2025-10-28 19:28:59', '2025-12-21 05:43:04'),
+(47, 47, 'book_1766270150_694724c6b578d.png', 'book_1766270153_694724c9eea08.png', 'book_1766270156_694724cca3613.png', 'book_1766270159_694724cf3ee6f.png', '2025-10-28 19:28:59', '2025-12-21 05:36:00'),
+(48, 48, 'book_1766269469_6947221d841c3.webp', 'book_1766269473_69472221dc2f5.webp', 'book_1766269476_69472224dbf09.webp', 'book_1766269480_6947222801179.webp', '2025-12-16 01:14:31', '2025-12-21 05:24:41'),
+(49, 49, 'book_1766269345_694721a132730.webp', 'book_1766269348_694721a4337ad.webp', 'book_1766269351_694721a728119.webp', 'book_1766269354_694721aa03cc1.webp', '2025-12-16 01:14:31', '2025-12-21 05:22:35'),
+(50, 50, 'book_1766269235_69472133ab842.webp', 'book_1766269238_69472136e66c0.webp', 'book_1766269242_6947213a3611e.webp', 'book_1766269245_6947213d0732c.webp', '2025-12-16 01:14:31', '2025-12-21 05:20:45'),
+(51, 51, 'book_1766266070_694714d620523.webp', 'book_1766266073_694714d9d5003.webp', 'book_1766266077_694714dd5c6a0.webp', 'book_1766266080_694714e0955e1.webp', '2025-12-16 01:14:31', '2025-12-21 04:28:05'),
+(52, 52, 'book_1766266321_694715d10c8ad.webp', 'book_1766266324_694715d4ad697.jpg', 'book_1766266328_694715d8d5587.jpg', 'book_1766266333_694715dd199b7.webp', '2025-12-16 01:14:31', '2025-12-21 04:32:17');
 
 -- --------------------------------------------------------
 
@@ -197,20 +181,13 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (1, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 03:21:39'),
 (2, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 03:56:10'),
 (3, 15, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 03:56:15'),
-(4, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 03:56:43'),
-(5, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 04:03:15'),
 (6, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 04:05:22'),
 (7, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 04:14:11'),
 (8, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 04:14:33'),
 (9, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 04:15:09'),
 (10, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 04:16:51'),
-(11, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 21:27:35'),
 (12, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 21:28:20'),
 (13, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-09 21:28:25'),
-(14, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 22:42:13'),
-(15, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 23:16:24'),
-(16, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 23:18:39'),
-(17, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 23:34:57'),
 (18, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 23:37:44'),
 (19, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 23:38:04'),
 (20, 22, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-10 23:38:21'),
@@ -219,11 +196,6 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (23, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:13:33'),
 (24, 17, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:13:38'),
 (25, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:13:57'),
-(26, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:48:49'),
-(27, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:56:30'),
-(28, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:56:34'),
-(29, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:56:35'),
-(30, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:56:35'),
 (31, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:57:48'),
 (32, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 00:59:33'),
 (33, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:00:43'),
@@ -255,23 +227,6 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (59, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:35:22'),
 (60, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:35:25'),
 (61, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:35:29'),
-(62, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:35:37'),
-(63, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:43:30'),
-(64, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:43:40'),
-(65, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:43:40'),
-(66, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:43:41'),
-(67, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:44:38'),
-(68, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:49:14'),
-(69, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:49:25'),
-(70, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:50:24'),
-(71, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:51:04'),
-(72, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:51:05'),
-(73, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:52:37'),
-(74, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 01:53:43'),
-(75, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:05:37'),
-(76, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:06:29'),
-(77, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:06:31'),
-(78, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:06:31'),
 (79, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:27:45'),
 (80, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:28:08'),
 (81, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:32:29'),
@@ -290,20 +245,14 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (94, 1, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:44:59'),
 (95, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:45:30'),
 (96, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:45:31'),
-(97, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:54:36'),
-(98, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-11 02:54:43'),
 (99, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-12 05:37:17'),
-(100, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-12 05:37:25'),
 (101, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-12 05:37:27'),
-(102, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-12 05:37:28'),
 (103, 5, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-12 05:44:29'),
 (104, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-12 05:53:47'),
 (105, 5, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:52:10'),
 (106, 6, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:52:30'),
 (107, 23, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:52:49'),
 (108, 14, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:55:42'),
-(109, 21, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:56:01'),
-(110, 21, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:58:30'),
 (111, 14, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 02:58:36'),
 (112, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 06:27:08'),
 (113, 23, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 06:27:13'),
@@ -326,7 +275,6 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (130, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 16:56:33'),
 (131, 22, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 16:56:56'),
 (132, 22, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-13 16:57:10'),
-(133, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-14 03:01:16'),
 (134, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-14 03:01:23'),
 (135, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-14 03:01:42'),
 (136, 48, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:14:31'),
@@ -430,46 +378,30 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (234, 35, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
 (235, 35, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
 (236, 35, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(237, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(238, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(239, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(240, 41, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(241, 41, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(242, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(243, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(244, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(245, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(246, 41, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(247, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(248, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(249, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(250, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(251, 41, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(252, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(253, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(254, 43, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(255, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(256, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(257, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(258, 43, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(259, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(260, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(261, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(262, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
-(263, 43, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2025-12-16 01:26:07'),
 (264, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-16 02:07:34'),
 (265, 51, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-16 18:50:39'),
 (266, 49, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-16 18:50:41'),
 (267, 52, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-12-16 18:50:46'),
 (268, 22, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 00:53:32'),
 (269, 14, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 00:54:37'),
-(270, 21, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 03:02:47'),
 (271, 5, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 03:02:50'),
 (272, 49, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 03:08:09'),
 (273, 7, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 03:39:22'),
 (274, 6, 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 03:39:28'),
 (275, 49, 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 04:39:45'),
-(276, 49, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 04:41:51');
+(276, 49, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-17 04:41:51'),
+(277, 14, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 00:23:57'),
+(278, 5, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 00:59:26'),
+(279, 3, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 01:07:11'),
+(280, 7, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 01:08:20'),
+(281, 40, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 01:12:04'),
+(282, 35, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 01:14:56'),
+(283, 37, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 01:17:15'),
+(284, 39, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 01:23:05'),
+(285, 38, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 03:40:20'),
+(286, 12, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 04:36:01'),
+(287, 26, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 04:43:07'),
+(288, 49, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 05:22:41');
 
 -- --------------------------------------------------------
 
@@ -484,19 +416,6 @@ CREATE TABLE `carts` (
   `quantity` int(11) DEFAULT 1,
   `added_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `carts`
---
-
-INSERT INTO `carts` (`cart_id`, `user_id`, `book_id`, `quantity`, `added_at`) VALUES
-(134, 8, 14, 3, '2025-12-17 04:21:10'),
-(135, 8, 21, 3, '2025-12-17 04:21:32'),
-(136, 8, 34, 1, '2025-12-17 04:21:33'),
-(137, 8, 49, 4, '2025-12-17 04:21:35'),
-(138, 8, 52, 1, '2025-12-17 04:21:41'),
-(139, 8, 50, 1, '2025-12-17 04:21:41'),
-(140, 8, 5, 2, '2025-12-17 04:21:42');
 
 -- --------------------------------------------------------
 
@@ -518,14 +437,14 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`category_id`, `category_name`, `description`, `image`, `created_at`, `update_at`) VALUES
-(1, 'Văn học', 'Sách văn học trong và ngoài nước', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(2, 'Khoa học', 'Sách khoa học, công nghệ', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(3, 'Kinh tế', 'Sách về kinh doanh và tài chính', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(4, 'Kỹ năng sống', 'Sách phát triển bản thân', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', '75x100.svg', '2025-12-08 22:47:40', NULL),
-(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', '75x100.svg', '2025-12-08 22:47:40', '2025-12-14 03:15:05');
+(1, 'Văn học', 'Sách văn học trong và ngoài nước', 'category_1766275151_6947384fcdcd2.jpg', '2025-12-08 22:47:40', '2025-12-21 06:59:13'),
+(2, 'Khoa học', 'Sách khoa học, công nghệ', 'category_1766275140_69473844b6d1b.jpg', '2025-12-08 22:47:40', '2025-12-21 06:59:01'),
+(3, 'Kinh tế', 'Sách về kinh doanh và tài chính', 'category_1766275130_6947383a5a32a.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:51'),
+(4, 'Kỹ năng sống', 'Sách phát triển bản thân', 'category_1766275117_6947382dbca88.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:39'),
+(5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', 'category_1766275106_69473822f341e.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:28'),
+(6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', 'category_1766275096_69473818e73ca.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:18'),
+(7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', 'category_1766275085_6947380d9e47a.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:07'),
+(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', 'category_1766275072_69473800daefa.jpg', '2025-12-08 22:47:40', '2025-12-21 06:57:54');
 
 -- --------------------------------------------------------
 
@@ -604,7 +523,31 @@ INSERT INTO `orders` (`order_id`, `user_id`, `full_name`, `phone`, `email`, `add
 (23, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 120000.00, 'pending', '2025-12-13 18:43:28', NULL),
 (24, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', '2025-12-13 18:46:40', NULL),
 (25, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 120000.00, 'pending', '2025-12-13 19:01:08', NULL),
-(26, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '773', 'cod', 240000.00, 'pending', '2025-12-14 03:02:32', NULL);
+(26, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '773', 'cod', 240000.00, 'pending', '2025-12-14 03:02:32', NULL),
+(27, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo.claude01@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'bank', 120000.00, 'delivered', '2025-12-21 00:24:34', NULL),
+(28, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 2145000.00, 'pending', '2025-12-21 07:05:58', NULL),
+(29, 8, 'Khắc Hiếu', '0349020984', 'myhuyenkhachieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 835000.00, 'pending', '2025-12-21 07:08:54', NULL),
+(30, 8, 'Khắc Hiếu', '0349020984', 'buihieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 309000.00, 'pending', '2025-12-21 07:11:30', NULL),
+(31, 8, 'Khắc Hiếu', '0349020984', 'buihieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 1030000.00, 'pending', '2025-12-21 07:12:17', NULL),
+(32, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 07:17:29', NULL),
+(33, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 332000.00, 'pending', '2025-12-21 07:21:56', NULL),
+(34, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 95000.00, 'pending', '2025-12-21 07:48:08', NULL),
+(35, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 125000.00, 'pending', '2025-12-21 07:52:02', NULL),
+(36, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:21:38', NULL),
+(37, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', '2025-12-21 08:25:46', NULL),
+(38, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:30:42', NULL),
+(39, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:37:18', NULL),
+(40, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', '2025-12-21 08:39:19', NULL),
+(41, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:49:44', NULL),
+(42, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', '2025-12-21 08:51:51', NULL),
+(43, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 378000.00, 'pending', '2025-12-21 09:10:49', NULL),
+(44, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 488000.00, 'pending', '2025-12-21 09:17:50', NULL),
+(45, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 250000.00, 'pending', '2025-12-21 09:19:35', NULL),
+(46, 1, 'Bùi Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5, quận 8, Hồ Chí Minh', '72', '710', 'cod', 378000.00, 'pending', '2025-12-21 09:28:36', NULL),
+(47, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 498000.00, 'pending', '2025-12-21 09:32:12', NULL),
+(48, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 613000.00, 'pending', '2025-12-21 09:34:07', NULL),
+(49, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '770', 'cod', 488000.00, 'pending', '2025-12-21 09:41:59', NULL),
+(50, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '777', 'cod', 188000.00, 'pending', '2025-12-21 09:45:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -651,7 +594,44 @@ INSERT INTO `order_details` (`order_detail_id`, `order_id`, `book_id`, `quantity
 (58, 24, 15, 1, 125000.00),
 (59, 24, 14, 1, 120000.00),
 (60, 25, 14, 1, 120000.00),
-(61, 26, 14, 2, 120000.00);
+(61, 26, 14, 2, 120000.00),
+(62, 27, 14, 1, 120000.00),
+(63, 28, 49, 4, 399000.00),
+(64, 28, 34, 1, 189000.00),
+(65, 28, 14, 3, 120000.00),
+(66, 29, 5, 2, 189000.00),
+(67, 29, 52, 1, 125000.00),
+(68, 29, 50, 1, 332000.00),
+(69, 30, 14, 1, 120000.00),
+(70, 30, 5, 1, 189000.00),
+(71, 31, 50, 1, 332000.00),
+(72, 31, 49, 1, 399000.00),
+(73, 31, 48, 1, 299000.00),
+(74, 32, 14, 1, 120000.00),
+(75, 33, 50, 1, 332000.00),
+(76, 34, 25, 1, 95000.00),
+(77, 35, 52, 1, 125000.00),
+(78, 36, 14, 1, 120000.00),
+(79, 37, 5, 1, 189000.00),
+(80, 38, 14, 1, 120000.00),
+(81, 39, 14, 1, 120000.00),
+(82, 40, 5, 1, 189000.00),
+(83, 41, 14, 1, 120000.00),
+(84, 42, 5, 1, 189000.00),
+(85, 43, 34, 2, 189000.00),
+(86, 44, 48, 1, 299000.00),
+(87, 44, 5, 1, 189000.00),
+(88, 45, 52, 2, 125000.00),
+(89, 46, 5, 2, 189000.00),
+(90, 47, 34, 1, 189000.00),
+(91, 47, 14, 1, 120000.00),
+(92, 47, 5, 1, 189000.00),
+(93, 48, 52, 1, 125000.00),
+(94, 48, 48, 1, 299000.00),
+(95, 48, 5, 1, 189000.00),
+(96, 49, 34, 1, 189000.00),
+(97, 49, 48, 1, 299000.00),
+(98, 50, 51, 1, 188000.00);
 
 -- --------------------------------------------------------
 
@@ -688,7 +668,8 @@ INSERT INTO `reviews` (`review_id`, `book_id`, `user_id`, `rating`, `comment`, `
 (14, 52, 8, 5, 'Giải thích thói quen rất dễ hiểu và khoa học.', '2025-12-15 19:10:00'),
 (15, 49, 8, 5, 'sách hay lắm', '2025-12-17 04:22:26'),
 (16, 49, 6, 1, 'Có hay ho gì đâu má !!!!!!', '2025-12-17 04:40:02'),
-(17, 49, 10, 5, 'có 2 tỉ vào hdpe thì ngon luônnn', '2025-12-17 04:42:33');
+(17, 49, 10, 5, 'có 2 tỉ vào hdpe thì ngon luônnn', '2025-12-17 04:42:33'),
+(18, 14, 10, 4, 'cũng tạm được cho 4 seo', '2025-12-21 00:26:03');
 
 -- --------------------------------------------------------
 
@@ -722,7 +703,7 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `display_name`,
 (7, 'admin123', 'admin@gmail.com', '3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', 'Admin', NULL, '', '', 'admin', 'active', 0, '2025-10-30 04:31:16', '2025-10-30 04:31:46'),
 (8, 'KhacHieu', 'buihieu@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Khắc Hiếu', 'avatar_8_1765617008.jpg', '', '', 'user', 'active', 1, '2025-11-23 18:15:56', '2025-12-14 03:01:03'),
 (9, 'hieu123', 'vuchau6800@gmail.com', '46b8a8b1f655e8f92e5a24599e043324046b4c9ed2eb3cb9a55a12b335fe02b8', 'Trung Hiếu', NULL, '', '', 'admin', 'active', 1, '2025-12-08 20:18:39', '2025-12-13 03:42:24'),
-(10, 'HieuNghia', 'hiandozo.claude01@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Hiếu Nghĩa', NULL, NULL, NULL, 'user', 'active', 1, '2025-12-17 03:45:36', '2025-12-17 03:45:36');
+(10, 'HieuNghia', 'hiandozo.claude01@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Hiếu Nghĩa', 'avatar_10_1766252431.jpeg', NULL, NULL, 'user', 'active', 1, '2025-12-17 03:45:36', '2025-12-21 00:40:31');
 
 -- --------------------------------------------------------
 
@@ -851,13 +832,13 @@ ALTER TABLE `book_images`
 -- AUTO_INCREMENT for table `book_views`
 --
 ALTER TABLE `book_views`
-  MODIFY `view_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
+  MODIFY `view_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=289;
 
 --
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -881,19 +862,19 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `users`

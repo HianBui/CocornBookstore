@@ -2,7 +2,7 @@
 /**
  * ============================================================
  * FILE: admin/api/upload_image.php
- * MÔ TẢ: API upload ảnh sản phẩm
+ * MÔ TẢ: API upload ảnh sản phẩm và danh mục
  * ============================================================
  */
 
@@ -10,14 +10,6 @@ header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
-
-// Thư mục lưu ảnh
-$uploadDir = '../../asset/image/books/';
-
-// Kiểm tra thư mục tồn tại, không thì tạo mới
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
 
 try {
     // Kiểm tra có file upload không
@@ -48,11 +40,28 @@ try {
         throw new Exception('Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WEBP, SVG)');
     }
 
+    // Xác định loại upload (product hoặc category)
+    $type = $_POST['type'] ?? 'product'; // Mặc định là product
+    
+    // Xác định thư mục đích và prefix
+    if ($type === 'category') {
+        $uploadDir = '../../asset/image/categories/';
+        $prefix = 'category';
+    } else {
+        $uploadDir = '../../asset/image/books/';
+        $prefix = 'book';
+    }
+    
+    // Kiểm tra thư mục tồn tại, không thì tạo mới
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
     // Lấy extension
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     
-    // Tạo tên file duy nhất
-    $fileName = 'book_' . time() . '_' . uniqid() . '.' . $extension;
+    // Tạo tên file duy nhất với prefix tương ứng
+    $fileName = $prefix . '_' . time() . '_' . uniqid() . '.' . $extension;
     $filePath = $uploadDir . $fileName;
 
     // Di chuyển file
@@ -65,6 +74,7 @@ try {
         'success' => true,
         'message' => 'Upload ảnh thành công',
         'filename' => $fileName,
+        'type' => $type,
         'url' => $filePath
     ], JSON_UNESCAPED_UNICODE);
 

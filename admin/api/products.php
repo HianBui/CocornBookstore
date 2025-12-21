@@ -191,35 +191,37 @@ function getProductsList($pdo) {
             default      => "ORDER BY b.created_at DESC, b.book_id DESC"
         };
 
-        //   Query chính - JOIN với book_views để đếm lượt xem
-        $sql = "SELECT 
-                    b.book_id as product_id,
-                    b.title as product_name,
-                    b.description,
-                    b.price,
-                    b.quantity as stock_quantity,
-                    bi.main_img as image_url,
-                    b.author,
-                    b.status,
-                    COUNT(bv.view_id) as view_count,
-                    b.category_id,
-                    b.created_at,
-                    c.category_name,
-                    COALESCE(
-                        (SELECT SUM(od.quantity) 
-                         FROM order_details od 
-                         WHERE od.book_id = b.book_id), 0
-                    ) as sold_count
-                FROM books b
-                LEFT JOIN categories c ON b.category_id = c.category_id
-                LEFT JOIN book_images bi ON b.book_id = bi.book_id
-                LEFT JOIN book_views bv ON b.book_id = bv.book_id
-                WHERE $where
-                GROUP BY b.book_id, b.title, b.description, b.price, b.quantity,
-                         bi.main_img, b.author, b.status, b.category_id, 
-                         b.created_at, c.category_name
-                $orderSql
-                LIMIT :limit OFFSET :offset";
+        // Query chính - JOIN với book_views để đếm lượt xem - THÊM publisher
+$sql = "SELECT 
+            b.book_id as product_id,
+            b.title as product_name,
+            b.description,
+            b.price,
+            b.quantity as stock_quantity,
+            bi.main_img as image_url,
+            b.author,
+            b.publisher,
+            b.published_year,
+            b.status,
+            COUNT(bv.view_id) as view_count,
+            b.category_id,
+            b.created_at,
+            c.category_name,
+            COALESCE(
+                (SELECT SUM(od.quantity) 
+                 FROM order_details od 
+                 WHERE od.book_id = b.book_id), 0
+            ) as sold_count
+        FROM books b
+        LEFT JOIN categories c ON b.category_id = c.category_id
+        LEFT JOIN book_images bi ON b.book_id = bi.book_id
+        LEFT JOIN book_views bv ON b.book_id = bv.book_id
+        WHERE $where
+        GROUP BY b.book_id, b.title, b.description, b.price, b.quantity,
+                 bi.main_img, b.author, b.publisher, b.published_year, b.status, b.category_id, 
+                 b.created_at, c.category_name
+        $orderSql
+        LIMIT :limit OFFSET :offset";
 
         $stmt = $pdo->prepare($sql);
         
@@ -266,6 +268,8 @@ function getProductDetail($pdo, $productId) {
                     b.quantity as stock_quantity,
                     bi.main_img as image_url,
                     b.author,
+                    b.publisher,
+                    b.published_year,
                     b.status,
                     COUNT(bv.view_id) as view_count,
                     b.category_id,
@@ -282,7 +286,7 @@ function getProductDetail($pdo, $productId) {
                 LEFT JOIN book_views bv ON b.book_id = bv.book_id
                 WHERE b.book_id = :product_id
                 GROUP BY b.book_id, b.title, b.description, b.price, b.quantity, 
-                         bi.main_img, b.author, b.status, b.category_id, 
+                         bi.main_img, b.author, b.publisher, b.published_year, b.status, b.category_id, 
                          b.created_at, c.category_name";
         
         $stmt = $pdo->prepare($sql);
@@ -355,11 +359,11 @@ function createProduct($pdo, $data) {
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
-        //   Insert vào bảng books - KHÔNG CÓ view_count
+        // Insert vào bảng books - THÊM publisher
         $sql = "INSERT INTO books 
-                (title, description, price, quantity, author, category_id, status) 
+                (title, description, price, quantity, author, publisher, published_year, category_id, status) 
                 VALUES 
-                (:title, :description, :price, :quantity, :author, :category_id, :status)";
+                (:title, :description, :price, :quantity, :author, :publisher, :published_year, :category_id, :status)";
         
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':title', $data['product_name']);
@@ -367,6 +371,8 @@ function createProduct($pdo, $data) {
         $stmt->bindValue(':price', $data['price']);
         $stmt->bindValue(':quantity', $data['stock_quantity'] ?? 0);
         $stmt->bindValue(':author', $data['author'] ?? null);
+        $stmt->bindValue(':publisher', $data['publisher'] ?? null);
+        $stmt->bindValue(':published_year', $data['published_year'] ?? null);
         $stmt->bindValue(':category_id', $data['category_id']);
         $stmt->bindValue(':status', $data['status'] ?? 'available');
         
@@ -420,13 +426,15 @@ function updateProduct($pdo, $data) {
         // Bắt đầu transaction
         $pdo->beginTransaction();
         
-        //   Update bảng books - KHÔNG CÓ view_count
+        // Update bảng books - THÊM published_year VÀ publisher
         $sql = "UPDATE books SET 
                     title = :title,
                     description = :description,
                     price = :price,
                     quantity = :quantity,
                     author = :author,
+                    publisher = :publisher,
+                    published_year = :published_year,
                     category_id = :category_id,
                     status = :status
                 WHERE book_id = :product_id";
@@ -438,6 +446,8 @@ function updateProduct($pdo, $data) {
         $stmt->bindValue(':price', $data['price']);
         $stmt->bindValue(':quantity', $data['stock_quantity']);
         $stmt->bindValue(':author', $data['author'] ?? null);
+        $stmt->bindValue(':publisher', $data['publisher'] ?? null);
+        $stmt->bindValue(':published_year', $data['published_year'] ?? null);
         $stmt->bindValue(':category_id', $data['category_id']);
         $stmt->bindValue(':status', $data['status']);
         

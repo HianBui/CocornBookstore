@@ -210,7 +210,7 @@ function renderBookImages(images) {
   // Cập nhật ảnh chính
   const mainImg = document.querySelector(".main-img");
   if (mainImg) {
-    mainImg.src = `./asset/image/${images.main}`;
+    mainImg.src = `./asset/image/books/${images.main}`;
     mainImg.alt = "Book cover";
     mainImg.onerror = function () {
       this.src = "./asset/image/300x300.svg";
@@ -225,7 +225,7 @@ function renderBookImages(images) {
 
   subImages.forEach((imgElement, index) => {
     if (imageList[index]) {
-      imgElement.src = `./asset/image/${imageList[index]}`;
+      imgElement.src = `./asset/image/books/${imageList[index]}`;
       imgElement.alt = `Sub image ${index + 1}`;
       imgElement.style.cursor = "pointer";
       imgElement.style.display = "block";

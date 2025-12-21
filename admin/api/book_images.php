@@ -3,6 +3,7 @@
  * ============================================================
  * FILE: admin/api/book_images.php
  * MÔ TẢ: API quản lý ảnh sản phẩm (book_images)
+ * CẬP NHẬT: Thêm chức năng sắp xếp
  * ============================================================
  */
 
@@ -119,13 +120,14 @@ function handleDelete($pdo, $action) {
 // ============================================================
 
 /**
- * Lấy danh sách ảnh với phân trang
+ * Lấy danh sách ảnh với phân trang và sắp xếp
  */
 function getImagesList($pdo) {
     try {
         $page = max(1, (int)($_GET['page'] ?? 1));
         $limit = max(1, (int)($_GET['limit'] ?? 10));
         $search = trim($_GET['search'] ?? '');
+        $sort = $_GET['sort'] ?? 'newest';
         $offset = ($page - 1) * $limit;
 
         $where = '1=1';
@@ -147,6 +149,17 @@ function getImagesList($pdo) {
         $cstmt->execute();
         $total = (int)$cstmt->fetchColumn();
 
+        // Sắp xếp
+        $orderSql = match ($sort) {
+            'newest'     => "ORDER BY bi.updated_at DESC, bi.image_id DESC",
+            'oldest'     => "ORDER BY bi.updated_at ASC, bi.image_id ASC",
+            'book_name_asc'  => "ORDER BY b.title ASC",
+            'book_name_desc' => "ORDER BY b.title DESC",
+            'book_id_asc'    => "ORDER BY bi.book_id ASC",
+            'book_id_desc'   => "ORDER BY bi.book_id DESC",
+            default      => "ORDER BY bi.updated_at DESC, bi.image_id DESC"
+        };
+
         // Query chính
         $sql = "SELECT 
                     bi.image_id,
@@ -163,7 +176,7 @@ function getImagesList($pdo) {
                 FROM book_images bi
                 JOIN books b ON bi.book_id = b.book_id
                 WHERE $where
-                ORDER BY bi.updated_at DESC, bi.image_id DESC
+                $orderSql
                 LIMIT :limit OFFSET :offset";
 
         $stmt = $pdo->prepare($sql);

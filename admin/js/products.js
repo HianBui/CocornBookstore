@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * FILE: admin/js/products.js
- * MÔ TẢ: Xử lý quản lý sản phẩm - load, thêm, sửa, xóa
+ * MÔ TẢ: Xử lý quản lý sản phẩm - FIXED PAGINATION
  * ============================================================
  */
 
@@ -16,12 +16,12 @@ let searchDebounceTimer = null;
 const SEARCH_DEBOUNCE_MS = 300;
 let categoriesData = [];
 'use strict';
+
 /* ======================= HELPER FUNCTIONS ======================= */
 
 function getImagePath(img) {
     if (!img) return IMAGE_BASE + '300x300.svg';
     if (img.startsWith('http') || img.startsWith('./')) return img;
-    // Ảnh từ database books đã là đường dẫn đầy đủ từ book_images
     return IMAGE_BASE + img;
 }
 
@@ -162,17 +162,15 @@ function renderProductsTable(products) {
     }
 
     tbody.innerHTML = products.map(product => {
-        const safeName = JSON.stringify(product.product_name);
+        const safeName = escapeHtml(product.product_name).replace(/"/g, '&quot;');
         const productImage = product.image_url || '300x300.svg';
         
         return `
             <tr data-product-id="${product.product_id}">
-                <!-- Cột 1: ID -->
                 <td style="text-align: center;">
                     <strong>#${product.product_id}</strong>
                 </td>
                 
-                <!-- Cột 2: Ảnh -->
                 <td>
                     <div style="text-align: center;">
                         <img src="${getImagePath(productImage)}" 
@@ -182,50 +180,42 @@ function renderProductsTable(products) {
                     </div>
                 </td>
                 
-                <!-- Cột 3: Tên sản phẩm -->
                 <td>
                     <strong>${escapeHtml(product.product_name)}</strong>
                 </td>
                 
-                <!-- Cột 4: Tác giả -->
                 <td>
                     ${escapeHtml(product.author || 'Chưa có')}
                 </td>
                 
-                <!-- Cột 5: Giá -->
                 <td style="text-align: right;">
                     <strong style="color: #e74c3c; font-size: 17px;">${formatPrice(product.price)}</strong>
                 </td>
                 
-                <!-- Cột 6: Số lượng -->
                 <td style="text-align: center;">
                     <span class="badge ${product.stock_quantity > 10 ? 'bg-success' : product.stock_quantity > 0 ? 'bg-warning' : 'bg-danger'}">
                         ${product.stock_quantity}
                     </span>
                 </td>
                 
-                <!-- Cột 7: Lượt xem -->
                 <td style="text-align: center;">
                     <small style="color: #666;">
                         <i class="bi bi-eye"></i> ${product.view_count || 0}
                     </small>
                 </td>
                 
-                <!-- Cột 8: Danh mục -->
                 <td style="text-align: center;">
                     <span class="badge bg-info">
                         ${escapeHtml(product.category_name || 'N/A')}
                     </span>
                 </td>
                 
-                <!-- Cột 9: Trạng thái -->
                 <td style="text-align: center;">
                     <span class="badge ${getStatusBadgeClass(product.status)}">
                         ${getStatusText(product.status)}
                     </span>
                 </td>
                 
-                <!-- Cột 10: Thao tác -->
                 <td>
                     <div style="display: flex; gap: 5px; justify-content: center;">
                         <button class="btn btn-sm btn-info" onclick="viewProductDetail(${product.product_id})" title="Xem chi tiết">
@@ -235,7 +225,7 @@ function renderProductsTable(products) {
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-danger" 
-                                onclick="deleteProduct(${product.product_id}, '${escapeHtml(product.product_name)}')" title="Xóa">
+                                onclick="deleteProduct(${product.product_id}, '${safeName}')" title="Xóa">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
@@ -244,49 +234,53 @@ function renderProductsTable(products) {
     }).join("");
 }
 
-/* ======================= PAGINATION ======================= */
+/* ======================= PAGINATION - FIXED ======================= */
 
 function renderPagination(pagination) {
     const container = document.getElementById("pagination");
     if (!container) return;
 
-    if (pagination.totalPages <= 1) {
+    // Nếu chỉ có 1 trang thì không hiển thị
+    if (pagination.total_pages <= 1) {
         container.innerHTML = '';
         return;
     }
 
     let html = '<nav><ul class="pagination justify-content-center">';
 
+    // Nút Previous
     html += `
-        <li class="page-item ${pagination.currentPage === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="loadProducts(${pagination.currentPage - 1}); return false;">
+        <li class="page-item ${pagination.current_page === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="loadProducts(${pagination.current_page - 1}); return false;">
                 <i class="bi bi-chevron-left"></i>
             </a>
         </li>
     `;
 
-    for (let i = 1; i <= pagination.totalPages; i++) {
+    // Các số trang
+    for (let i = 1; i <= pagination.total_pages; i++) {
         if (
             i === 1 || 
-            i === pagination.totalPages || 
-            (i >= pagination.currentPage - 2 && i <= pagination.currentPage + 2)
+            i === pagination.total_pages || 
+            (i >= pagination.current_page - 2 && i <= pagination.current_page + 2)
         ) {
             html += `
-                <li class="page-item ${i === pagination.currentPage ? 'active' : ''}">
+                <li class="page-item ${i === pagination.current_page ? 'active' : ''}">
                     <a class="page-link" href="#" onclick="loadProducts(${i}); return false;">${i}</a>
                 </li>
             `;
         } else if (
-            (i === pagination.currentPage - 3 && pagination.currentPage > 3) ||
-            (i === pagination.currentPage + 3 && pagination.currentPage < pagination.totalPages - 2)
+            (i === pagination.current_page - 3 && pagination.current_page > 4) ||
+            (i === pagination.current_page + 3 && pagination.current_page < pagination.total_pages - 3)
         ) {
             html += '<li class="page-item disabled"><a class="page-link">...</a></li>';
         }
     }
 
+    // Nút Next
     html += `
-        <li class="page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="loadProducts(${pagination.currentPage + 1}); return false;">
+        <li class="page-item ${pagination.current_page === pagination.total_pages ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="loadProducts(${pagination.current_page + 1}); return false;">
                 <i class="bi bi-chevron-right"></i>
             </a>
         </li>
@@ -389,6 +383,16 @@ async function viewProductDetail(id) {
                                                 <div class="mb-3">
                                                     <strong class="text-muted">Tác giả:</strong>
                                                     <p class="mb-0">${escapeHtml(product.author || 'Chưa có')}</p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong class="text-muted">Nhà xuất bản:</strong>
+                                                    <p class="mb-0">${escapeHtml(product.publisher || 'Chưa có')}</p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong class="text-muted">Năm xuất bản:</strong>
+                                                    <p class="mb-0">
+                                                        <span class="badge bg-secondary">${product.published_year || 'Chưa có'}</span>
+                                                    </p>
                                                 </div>
                                                 <div class="mb-3">
                                                     <strong class="text-muted">Danh mục:</strong>
@@ -519,7 +523,6 @@ function showProductForm(isEdit = false, product = {}) {
     const title = isEdit ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới';
     const btnText = isEdit ? 'Cập nhật' : 'Tạo mới';
 
-    // Tạo options cho categories
     let categoryOptions = '<option value="">-- Chọn danh mục --</option>';
     categoriesData.forEach(cat => {
         const selected = cat.category_id == product.category_id ? 'selected' : '';
@@ -559,9 +562,18 @@ function showProductForm(isEdit = false, product = {}) {
                                 </div>
 
                                 <div class="col-md-6">
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-building me-2"style="color: #2ba8e2;"></i>Nhà xuất bản</label>
+                                    <input type="text" class="form-control" name="publisher" value="${escapeHtml(product.publisher || '')}" placeholder="VD: NXB Trẻ">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-calendar-event me-2"style="color: #2ba8e2;"></i>Năm xuất bản</label>
+                                    <input type="number" class="form-control" name="published_year" value="${product.published_year || ''}" min="1900" max="2100" placeholder="VD: 2024">
+                                </div>
+
+                                <div class="col-md-4">
                                     <label class="form-label"style="color: #2ba8e2;"><i class="bi bi-link-45deg me-2"style="color: #2ba8e2;"></i>Ảnh sản phẩm</label>
                                     
-                                    <!-- Nút chọn file -->
                                     <input type="file" 
                                         class="form-control mb-2" 
                                         id="productImageFile"
@@ -569,14 +581,12 @@ function showProductForm(isEdit = false, product = {}) {
                                         onchange="handleProductImageUpload('productImageFile', 'productImagePreview', 'image_url')">
                                     <small class="text-muted">Hoặc nhập tên file thủ công:</small>
                                     
-                                    <!-- Input text (fallback) -->
                                     <input type="text" 
                                         class="form-control" 
                                         name="image_url" 
                                         value="${escapeHtml(product.image_url || '')}" 
                                         placeholder="vd: 300x300.svg">
                                     
-                                    <!-- Preview -->
                                     <div id="productImagePreview">
                                         ${product.image_url ? `
                                             <img src="${getImagePath(product.image_url)}" 
@@ -678,7 +688,6 @@ async function submitProductForm(isEdit) {
 /* ======================= DELETE PRODUCT ======================= */
 
 async function deleteProduct(id, name) {
-    // ✅ Bỏ phần JSON.parse vì name truyền vào đã là string
     const result = await showConfirm(
         'Xác nhận xóa',
         `Bạn có chắc muốn xóa sản phẩm "${name}"?\n\nLưu ý: Không thể xóa nếu đã có đơn hàng!`,
@@ -715,7 +724,9 @@ async function deleteProduct(id, name) {
         showToast('error', 'Lỗi', 'Không thể xóa: ' + err.message);
     }
 }
-// Thêm hàm upload (giống book_images.js)
+
+/* ======================= UPLOAD IMAGE ======================= */
+
 async function uploadProductImage(file) {
     try {
         const formData = new FormData();
@@ -766,13 +777,11 @@ function handleProductImageUpload(inputId, previewId, hiddenInputName) {
 
     uploadProductImage(file).then(filename => {
         if (filename) {
-            // Cập nhật input text
             const textInput = document.querySelector(`input[name="${hiddenInputName}"]`);
             if (textInput) {
                 textInput.value = filename;
             }
 
-            // Hiển thị preview
             const preview = document.getElementById(previewId);
             if (preview) {
                 preview.innerHTML = `
@@ -789,9 +798,7 @@ function handleProductImageUpload(inputId, previewId, hiddenInputName) {
 
 document.addEventListener("DOMContentLoaded", () => {
     if (window.location.pathname.includes("products.html")) {
-        // Load categories trước
         loadCategories().then(() => {
-            // Sau đó load products
             loadProducts(1);
         });
 
@@ -834,3 +841,4 @@ window.submitProductForm = submitProductForm;
 window.handleSearch = handleSearch;
 window.handleFilter = handleFilter;
 window.handleResetFilter = handleResetFilter;
+window.handleProductImageUpload = handleProductImageUpload;

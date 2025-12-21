@@ -46,52 +46,91 @@ function sendResponse($success, $message = '', $data = null, $httpCode = 200) {
 }
 
 // Router: điều hướng request theo action
-// Các hàm sử dụng biến $pdo (PDO) từ connectdb.php
 switch ($action) {
     case 'get':
-        // Chỉ cho phép GET
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') sendResponse(false, 'Method Not Allowed', null, 405);
         getReviews($pdo);
         break;
 
     case 'add':
-        // Chỉ cho phép POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') sendResponse(false, 'Method Not Allowed', null, 405);
         addReview($pdo);
         break;
 
     case 'update':
-        // Chỉ cho phép PUT
         if ($_SERVER['REQUEST_METHOD'] !== 'PUT') sendResponse(false, 'Method Not Allowed', null, 405);
         updateReview($pdo);
         break;
 
     case 'delete':
-        // Chỉ cho phép DELETE
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') sendResponse(false, 'Method Not Allowed', null, 405);
         deleteReview($pdo);
         break;
 
     case 'check':
-        // Chỉ cho phép GET
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') sendResponse(false, 'Method Not Allowed', null, 405);
         checkReview($pdo);
         break;
 
+    case 'check_purchased':
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') sendResponse(false, 'Method Not Allowed', null, 405);
+        checkPurchased($pdo);
+        break;
+
     default:
-        // Action không hợp lệ
         sendResponse(false, 'Action không hợp lệ', null, 400);
+}
+
+// =======================
+// KIỂM TRA ĐÃ MUA SÁCH
+// =======================
+function checkPurchased($pdo) {
+    // Kiểm tra đăng nhập
+    if (empty($_SESSION['user_id'])) {
+        sendResponse(true, 'Chưa đăng nhập', [
+            'has_purchased' => false,
+            'logged_in' => false
+        ], 200);
+    }
+
+    $user_id = intval($_SESSION['user_id']);
+    $book_id = isset($_GET['book_id']) ? intval($_GET['book_id']) : 0;
+    
+    if ($book_id <= 0) sendResponse(false, 'book_id không hợp lệ', null, 400);
+
+    try {
+        // Kiểm tra user đã mua sách này chưa (đơn hàng đã delivered)
+        $sql = "SELECT COUNT(*) as count 
+                FROM order_details od
+                INNER JOIN orders o ON od.order_id = o.order_id
+                WHERE o.user_id = ? 
+                AND od.book_id = ? 
+                AND o.status = 'delivered'
+                LIMIT 1";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$user_id, $book_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $hasPurchased = ($result && $result['count'] > 0);
+        
+        sendResponse(true, $hasPurchased ? 'Đã mua sách' : 'Chưa mua sách', [
+            'has_purchased' => $hasPurchased,
+            'logged_in' => true
+        ], 200);
+    } catch (PDOException $e) {
+        error_log('checkPurchased error: ' . $e->getMessage());
+        sendResponse(false, 'Lỗi khi kiểm tra đơn hàng', null, 500);
+    }
 }
 
 // =======================
 // LẤY DANH SÁCH REVIEW
 // =======================
 function getReviews($pdo) {
-    // Lấy book_id từ query string
     $book_id = isset($_GET['book_id']) ? intval($_GET['book_id']) : 0;
     if ($book_id <= 0) sendResponse(false, 'book_id không hợp lệ', null, 400);
 
-    // Lấy danh sách review kèm thông tin user
     $sql = "SELECT r.review_id, r.book_id, r.user_id, r.rating, r.comment, r.created_at,
                    u.display_name, u.email, u.avatar
             FROM reviews r
@@ -106,7 +145,6 @@ function getReviews($pdo) {
 
         $reviews = [];
         foreach ($rows as $row) {
-            // Gom thông tin user vào key `user` cho frontend dễ xử lý
             $row['user'] = [
                 'display_name' => $row['display_name'] ?? null,
                 'email' => $row['email'] ?? null,
@@ -134,7 +172,6 @@ function addReview($pdo) {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!is_array($input)) sendResponse(false, 'Dữ liệu không hợp lệ (JSON)', null, 400);
 
-    // Lấy dữ liệu đầu vào
     $book_id = isset($input['book_id']) ? intval($input['book_id']) : 0;
     $rating  = isset($input['rating']) ? intval($input['rating']) : 0;
     $comment = isset($input['comment']) ? trim($input['comment']) : '';
@@ -157,6 +194,21 @@ function addReview($pdo) {
         $stmt = $pdo->prepare($bookCheckSql);
         $stmt->execute([$book_id]);
         if (!$stmt->fetch()) sendResponse(false, 'Sách không tồn tại', null, 404);
+
+        // ✅ KIỂM TRA ĐÃ MUA SÁCH CHƯA
+        $purchaseCheckSql = "SELECT COUNT(*) as count 
+                            FROM order_details od
+                            INNER JOIN orders o ON od.order_id = o.order_id
+                            WHERE o.user_id = ? 
+                            AND od.book_id = ? 
+                            AND o.status = 'delivered'";
+        $stmt = $pdo->prepare($purchaseCheckSql);
+        $stmt->execute([$user_id, $book_id]);
+        $purchaseResult = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$purchaseResult || $purchaseResult['count'] == 0) {
+            sendResponse(false, 'Bạn cần mua sách này trước khi đánh giá', null, 403);
+        }
 
         // Kiểm tra user đã review sách này chưa
         $checkSql = "SELECT COUNT(*) as cnt FROM reviews WHERE book_id = ? AND user_id = ?";
