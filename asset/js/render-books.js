@@ -156,7 +156,7 @@ async function renderHotDeals() {
             ).join('');
 
             const hotDealHTML = `
-                <div class="hot-product">
+                <div class="hot-product hp">
                     <div class="hot-product-image">
                         <a href="./product.html?id=${book.book_id}">
                             <img src="${getImagePath(book.main_img)}" alt="${book.title}">

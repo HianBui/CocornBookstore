@@ -101,7 +101,7 @@
               <i class="bi bi-chevron-down usericonbox"></i>
             </button>
 
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" style="z-index: 9999;">
               <div class="infor-user">
                 <div class="user-name-show">Username</div>
                 <div class="balance">Số dư</div>
@@ -161,7 +161,7 @@
       <!-- ===== NAVIGATION ===== -->
       <div class="navigation" id="nav">
         <div class="container">
-          <ul>
+          <ul class="nav-list">
             <li class="active">
               <a href="./index.html">
                 <i class="bi bi-house-door-fill"></i>&nbsp;Trang chủ
@@ -295,7 +295,7 @@
 
         <div class="foryou-books-grid">
           <!-- Cột Bán chạy -->
-          <div class="category-column">
+          <div class="category-column cc1">
             <div class="category-header">
               <h3 class="category-title">Bán chạy</h3>
             </div>
@@ -303,7 +303,7 @@
           </div>
 
           <!-- Cột Nhiều lượt xem -->
-          <div class="category-column">
+          <div class="category-column cc2">
             <div class="category-header">
               <h3 class="category-title">Nhiều lượt xem</h3>
             </div>
@@ -311,7 +311,7 @@
           </div>
 
           <!-- Cột Xu hướng -->
-          <div class="category-column">
+          <div class="category-column cc3">
             <div class="category-header">
               <h3 class="category-title">Xu hướng</h3>
             </div>
@@ -420,9 +420,9 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <!-- Scroll Reveal -->
     <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <!-- Slick Slider -->
     <script
@@ -443,10 +443,10 @@
     <script src="./asset/js/cart-handler.js"></script>
     <script src="./asset/js/auth.js"></script>
     <script src="./asset/js/form.js"></script>
-    <script src="./asset/js/render-books.js"></script>
     <script src="./asset/js/app.js"></script>
     <script src="./asset/js/search-handler.js"></script>
     <script src="./asset/js/book-view.js"></script>
+    <script src="./asset/js/render-books.js"></script>
     <script src="./asset/js/render-foryou-books.js"></script>
     
 
@@ -460,44 +460,35 @@
         autoplaySpeed: 2000,
       });
 
-      ScrollReveal().reveal(".so1", {
-        duration: 600,
-        origin: "left",
-        distance: "100px",
-        easing: "ease-in-out",
-        reset: true,
-      });
+      let tl = gsap.timeline();
 
-      ScrollReveal().reveal(".so2", {
-        duration: 600,
-        origin: "right",
-        distance: "100px",
-        easing: "ease-in-out",
-        reset: true,
-      });
-      ScrollReveal().reveal(".hot-dealing-left", {
-        duration: 1000,
-        origin: "left",
-        distance: "100px",
-        easing: "ease-in-out",
-        reset: true,
-      });
-
-      ScrollReveal().reveal(".hot-dealing-right", {
-        duration: 800,
-        origin: "right",
-        distance: "100px",
-        easing: "ease-in-out",
-        reset: true,
-      });
-      ScrollReveal().reveal(".slider", {
-        duration: 600,
-        origin: "right",
-        distance: "100px",
-        easing: "ease-in-out",
-        reset: true,
-      });
-
+      tl.from(".action-bar", {
+        y: -500,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out",
+      })
+      .fromTo(
+        ".cart, .home, .box-button a, .search-box, .dropdown",
+        { y: -300, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.3,
+          stagger: 0.2,
+          ease: "power2.out"
+        }).fromTo(".nav-list", {
+        y: -50,
+        opacity: 0,
+      }, {
+        y: 0,
+        opacity: 1,
+        duration: 0.3,
+        stagger: 0.2,
+        ease: "power2.out",
+      }
+    );
+    
     </script>
     <!-- ===================== SCRIPT END ===================== -->
   </body>

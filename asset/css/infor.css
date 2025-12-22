@@ -99,6 +99,7 @@
   margin-right: 10px;
   width: 20px;
   text-align: center;
+  color: var(--blue-color);
 }
 
 .profile-content {
@@ -115,8 +116,12 @@
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 2px solid var(--blue-color);
+  color: var(--blue-color);
 }
-
+.section-title i {
+  margin-right: 10px;
+  color: var(--blue-color);
+}
 .info-group {
   margin-bottom: 20px;
 }

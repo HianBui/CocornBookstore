@@ -1,6 +1,6 @@
 /**
  * FILE: admin/js/categories.js
- * Quản lý danh mục với layout cải tiến + SweetAlert2 + Upload ảnh
+ * Quản lý danh mục với upload ảnh TỰ ĐỘNG NÉN
  */
 
 const API_URL = '../../admin/api/categories.php';
@@ -421,17 +421,31 @@ function showCategoryForm(category = null) {
                                 id="categoryImageFile"
                                 accept="image/*"
                                 onchange="handleCategoryImageUpload('categoryImageFile', 'categoryImagePreview', 'category_image')">
+                            
+                            <div class="alert alert-info py-2 px-3 mb-2" style="font-size: 0.85em;">
+                                <i class="bi bi-info-circle me-1"></i>
+                                <strong>Tự động nén:</strong> Ảnh sẽ được resize về 200x200px, chất lượng 80%
+                            </div>
+
                             <small class="text-muted">Hoặc nhập tên file thủ công:</small>
                             
                             <input type="text" class="form-control" name="category_image"
                                    value="${isEdit ? (category.category_image || '') : ''}"
-                                   placeholder="VD: 75x100.svg">
+                                   placeholder="VD: category_1234567890.jpg">
                             
                             <div id="categoryImagePreview">
                                 ${isEdit && category.category_image ? `
                                     <img src="${getImagePath(category.category_image)}" 
                                         class="img-thumbnail mt-2" style="max-height: 150px;">
                                 ` : ''}
+                            </div>
+
+                            <!-- Thông tin nén ảnh -->
+                            <div id="compressionInfo" style="display:none;" class="mt-2 p-2 bg-success text-white rounded">
+                                <small>
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    <span id="compressionText"></span>
+                                </small>
                             </div>
                         </div>
                     </form>
@@ -549,15 +563,15 @@ async function deleteCategory(id, name) {
     }
 }
 
-/* ======================= UPLOAD IMAGE ======================= */
+/* ======================= UPLOAD IMAGE VỚI NÉN TỰ ĐỘNG ======================= */
 
 async function uploadCategoryImage(file) {
     try {
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('type', 'category'); // Để phân biệt với product image
+        formData.append('type', 'category');
 
-        showLoading('Đang upload ảnh...');
+        showLoading('Đang upload và nén ảnh...');
 
         const resp = await fetch('../../admin/api/upload_image.php', {
             method: 'POST',
@@ -572,7 +586,28 @@ async function uploadCategoryImage(file) {
             throw new Error(data.message);
         }
 
-        showToast('success', 'Thành công', 'Upload ảnh thành công');
+        // ✅ Hiển thị thông tin nén ảnh
+        if (data.compression) {
+            const compressionInfo = document.getElementById('compressionInfo');
+            const compressionText = document.getElementById('compressionText');
+            
+            if (compressionInfo && compressionText) {
+                compressionText.innerHTML = `
+                    <strong>Đã nén thành công!</strong><br>
+                    Gốc: ${data.compression.original_size} (${data.compression.original_dimensions})<br>
+                    Sau: ${data.compression.compressed_size} (${data.compression.new_dimensions})<br>
+                    Tiết kiệm: ${data.compression.saved} (${data.compression.saved_percent})
+                `;
+                compressionInfo.style.display = 'block';
+                
+                // Tự động ẩn sau 5s
+                setTimeout(() => {
+                    compressionInfo.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        showToast('success', 'Thành công', `Upload thành công! Tiết kiệm ${data.compression?.saved_percent || 'N/A'}`);
         return data.filename;
 
     } catch (err) {
@@ -594,8 +629,8 @@ function handleCategoryImageUpload(inputId, previewId, hiddenInputName) {
         return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-        showToast('error', 'Lỗi', 'Kích thước ảnh không được vượt quá 5MB');
+    if (file.size > 10 * 1024 * 1024) {
+        showToast('error', 'Lỗi', 'Kích thước ảnh không được vượt quá 10MB');
         input.value = '';
         return;
     }

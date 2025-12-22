@@ -323,7 +323,7 @@ function renderRelatedBooks(books) {
         <div class="product-item">
             <div class="product-image">
                 <a href="product.html?id=${book.book_id}">
-                    <img src="./asset/image/${book.main_img}" 
+                    <img src="./asset/image/books/${book.main_img}" 
                          alt="${book.title}"
                          onerror="this.src='./asset/image/324x300.svg'">
                 </a>

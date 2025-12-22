@@ -1,0 +1,40 @@
+[21-Dec-2025 20:04:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:88
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(269): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 88
+[21-Dec-2025 20:05:16 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:88
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(269): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 88
+[21-Dec-2025 20:09:53 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:91
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(272): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 91
+[21-Dec-2025 20:12:29 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:91
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(272): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 91
+[21-Dec-2025 20:12:57 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:91
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(272): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 91
+[21-Dec-2025 20:21:13 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:89
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(270): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 89
+[21-Dec-2025 20:21:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:89
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(270): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 89
+[21-Dec-2025 20:21:46 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function imagecreatefromjpeg() in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php:89
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php(270): compressImage('C:\\xampp\\tmp\\ph...', '../../asset/ima...', 200, 200, 80)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\admin\api\upload_image.php on line 89

@@ -27,6 +27,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--blue-color);
 }
 
 .section-title i {
@@ -223,6 +224,10 @@
   transition: var(--transition);
   margin-top: 20px;
 }
+.place-order-btn i{
+  color: white;
+  margin-right: 8px;
+}
 
 .place-order-btn:hover {
   background-color: var(--dark-blue-color);
@@ -244,7 +249,10 @@
   display: block;
   text-align: center;
 }
-
+.back-to-cart i{
+  color: var(--blue-color);
+  margin-right: 8px;
+}
 .back-to-cart:hover {
   background-color: var(--background-color);
 }

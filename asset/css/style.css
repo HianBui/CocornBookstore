@@ -185,7 +185,7 @@ table img {
     height: auto;
     /* background-color: var(--background-color); */
     position: relative;
-    z-index: 1000;
+    z-index: 99;
     transition: all .1s !important;
 
 }
@@ -195,7 +195,8 @@ table img {
     left: 0;
     z-index: 1000;
     box-shadow: var(--box-shadow);
-    background-color: var(--blue-color);
+    background-color: rgba(255, 255, 255, 0.201);
+	backdrop-filter: blur(10px);
 }
 .navigation ul{
     display: flex;
@@ -212,7 +213,7 @@ table img {
 .navigation.fixed ul li:hover a,
 .navigation.fixed ul li:hover a i
 {
-    color: var(--background-color-3);
+    color: var(--blue-color);
 }
 .navigation ul li a,
 .navigation ul li i
@@ -223,13 +224,19 @@ table img {
 .navigation.fixed ul li a,
 .navigation.fixed ul li i
 {
-    color: white;
+    color: var(--text-color);
+    text-decoration: none;
+}
+.navigation.fixed ul li:hover a,
+.navigation.fixed ul li:hover i
+{
+    color: var(--blue-3);
     text-decoration: none;
 }
 .navigation ul li:hover a,
 .navigation ul li:hover i
 {
-    color: var(--blue-color);
+    color: var(--blue-3);
 }
 /* Navigation end*/
 
@@ -244,6 +251,9 @@ table img {
     /* box-shadow: var(--box-shadow); */
     padding: 10px 0;
     background-color: var(--background-color);
+	z-index: 999;
+	position: relative;
+	overflow: visible;
 }
 header.login-false .action-bar > .container {
     display: grid;
@@ -424,6 +434,10 @@ header .action-bar > .container {
 .dropdown .dropdown-toggle.show {
 	background-color: white !important;
 	border: var(--border-nor) !important;
+}
+.user-dropdown{
+	z-index: 99999 !important;
+	position: absolute !important;
 }
 
 .user-box {

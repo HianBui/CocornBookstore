@@ -175,7 +175,7 @@ async function loadOrders() {
                               .map(
                                 (item) => `
                                 <div class="order-product">
-                                    <img src="./asset/image/${
+                                    <img src="./asset/image/books/${
                                       item.main_img
                                     }" alt="${item.title}">
                                     <div class="order-product-info">
