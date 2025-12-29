@@ -59,17 +59,21 @@
 #banner > .container .slider{
     background-color: #2ba8e2;
     /* height: 400px; */
+    width: 1290px;
+    height: 485px;
     overflow: hidden;
     border-radius: 10px;
+    object-fit: cover;
 }
 #banner > .container .slider img{
     width: 100%;
     height: 100%;
+    object-fit: contain;
 }
 #banner > .container{
     position: relative;
 }
-#banner > .container::after{
+/* #banner > .container::after{
     content: '';
     position: absolute;
     left: 0;
@@ -77,7 +81,7 @@
     height: 100px;
     width: 100%;
     background: linear-gradient(to top, rgb(255, 255, 255), transparent);
-}
+} */
 .slick-prev,
 .slick-next{
     display: none !important;
@@ -94,9 +98,19 @@
     gap: 10px;
     /* background-color: #2ba8e2; */
 }
-.item-saleoff{
+.item-saleoff.so1{
     height: 100%;
-    background: url(../image/650x250.svg);
+    background: url(../image/so1.svg);
+
+    overflow: hidden;
+    object-fit: cover;
+    position: relative;
+    border-radius: var(--border-radius);
+}
+.item-saleoff.so2{
+    height: 100%;
+    background: url(../image/so2.svg);
+
     overflow: hidden;
     object-fit: cover;
     position: relative;

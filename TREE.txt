@@ -1,188 +1,366 @@
-File Tree: CocornBookstore
-Generated on: 12/16/2025, 8:14:09 PM
-Root path: c:\xampp\htdocs\CocornBookstore
-
-────────────────────────────────────────────────────────────────────────────────
-
-├── admin/
-│   ├── api/
-│   │   ├── book_images.php
-│   │   ├── carts.php
-│   │   ├── categories.php
-│   │   ├── dashboard_stats.php
-│   │   ├── orders.php
-│   │   ├── products.php
-│   │   ├── reviews.php
-│   │   ├── upload_image.php
-│   │   └── users.php
-│   ├── css/
-│   │   ├── admin.css
-│   │   ├── dashboard.css
-│   │   ├── table-category.css
-│   │   ├── table-user.css
-│   │   └── table.css
-│   ├── js/
-│   │   ├── admin_auth.js
-│   │   ├── book_images.js
-│   │   ├── carts.js
-│   │   ├── categories.js
-│   │   ├── dashboard.js
-│   │   ├── orders.js
-│   │   ├── products.js
-│   │   ├── reviews.js
-│   │   └── users.js
-│   ├── view/
-│   │   ├── book_images.html
-│   │   ├── carts.html
-│   │   ├── categories.html
-│   │   ├── orders.html
-│   │   ├── products.html
-│   │   ├── reviews.html
-│   │   └── users.html
-│   └── dashboard.html
-├── asset/
-│   ├── api/
-│   │   ├── admin_check.php
-│   │   ├── book_view_handler.php
-│   │   ├── cart-api.php
-│   │   ├── check_session.php
-│   │   ├── email-template.html
-│   │   ├── get-orders.php
-│   │   ├── get_book_detail.php
-│   │   ├── get_books.php
-│   │   ├── get_categories.php
-│   │   ├── login.php
-│   │   ├── logout.php
-│   │   ├── register.php
-│   │   ├── reviews.php
-│   │   ├── search-api.php
-│   │   ├── send-order-email.php
-│   │   ├── update-profile.php
-│   │   ├── upload-avatar.php
-│   │   └── user-api.php
-│   ├── css/
-│   │   ├── allproduct.css
-│   │   ├── app.css
-│   │   ├── cart.css
-│   │   ├── checkout.css
-│   │   ├── custom.css
-│   │   ├── detail.css
-│   │   ├── form.css
-│   │   ├── infor.css
-│   │   ├── reponsive.css
-│   │   ├── search.css
-│   │   ├── style.css
-│   │   └── trending_books.css
-│   ├── data/
-│   │   └── vietnam.json
-│   ├── image/
-│   │   ├── avatars/
-│   │   │   ├── 300x300.svg
-│   │   │   ├── avatar_10_1765764965.jpg
-│   │   │   ├── avatar_1_1765617304.jpg
-│   │   │   ├── avatar_6_1765567828.jpg
-│   │   │   ├── avatar_8_1765617008.jpg
-│   │   │   └── avatar_9_1765765516.png
-│   │   ├── books/
-│   │   │   ├── 300x300-1.svg
-│   │   │   ├── 300x300-2.svg
-│   │   │   ├── 300x300-3.svg
-│   │   │   ├── 300x300.svg
-│   │   │   ├── book_1765584658_693caf1271799.jpg
-│   │   │   ├── book_1765584662_693caf16f0737.jpg
-│   │   │   ├── book_1765584667_693caf1bb9e14.jpg
-│   │   │   ├── book_1765584711_693caf47bbabe.jpg
-│   │   │   ├── book_1765584956_693cb03cbce38.jpg
-│   │   │   ├── book_1765617232_693d2e5015463.svg
-│   │   │   ├── book_1765617262_693d2e6eeffe5.svg
-│   │   │   ├── book_1765617270_693d2e7609b89.svg
-│   │   │   ├── book_1765617273_693d2e79a837d.svg
-│   │   │   └── book_1765617278_693d2e7e227d0.svg
-│   │   ├── categories/
-│   │   │   └── 75x100.svg
-│   │   ├── 100x100.svg
-│   │   ├── 100x150.svg
-│   │   ├── 1290x400 (2).svg
-│   │   ├── 1290x400 (3).svg
-│   │   ├── 1290x400 (4).svg
-│   │   ├── 1290x400 (5).svg
-│   │   ├── 1290x400.svg
-│   │   ├── 200x250.svg
-│   │   ├── 200x300.svg
-│   │   ├── 250x250.svg
-│   │   ├── 300x200.svg
-│   │   ├── 300x300.svg
-│   │   ├── 324x300.svg
-│   │   ├── 500x1000.svg
-│   │   ├── 500x600.svg
-│   │   ├── 50x50.svg
-│   │   ├── 600x1000.svg
-│   │   ├── 600x700.svg
-│   │   ├── 650x250.svg
-│   │   ├── 75x100.svg
-│   │   ├── Logo MoMo.svg
-│   │   ├── Logo.svg
-│   │   ├── bank.svg
-│   │   ├── emptyCart.png
-│   │   ├── napas.svg
-│   │   ├── visa.svg
-│   │   ├── wave.svg
-│   │   └── zalopay-icon.svg
-│   └── js/
-│       ├── all-products.js
-│       ├── app.js
-│       ├── auth.js
-│       ├── book-view.js
-│       ├── cart-handler.js
-│       ├── checkout.js
-│       ├── form.js
-│       ├── infor.js
-│       ├── load-province.js
-│       ├── product-detail.js
-│       ├── render-books.js
-│       ├── render-trending.js
-│       ├── reviews.js
-│       ├── search-handler.js
-│       └── sweetAlert-Helper.js
-├── logs/
-│   └── email-log.txt
-├── model/
-│   ├── config/
-│   │   └── connectdb.php
-│   ├── database/
-│   │   └── cocorn.sql
-│   └── includes/
-│       ├── footer.php
-│       ├── header.php
-│       ├── t.html
-│       └── track-view.php
-├── vendor/
-│   ├── composer/
-│   │   ├── ClassLoader.php
-│   │   ├── InstalledVersions.php
-│   │   ├── LICENSE
-│   │   ├── autoload_classmap.php
-│   │   ├── autoload_namespaces.php
-│   │   ├── autoload_psr4.php
-│   │   ├── autoload_real.php
-│   │   ├── autoload_static.php
-│   │   ├── installed.json
-│   │   ├── installed.php
-│   │   └── platform_check.php
-│   ├── phpmailer/
-│   │   └── phpmailer/
-│   └── autoload.php
-├── .htmlhintrc
-├── README.md
-├── all-product.html
-├── cart.html
-├── checkout.html
-├── composer.json
-├── index.html
-├── infor.html
-├── login.html
-├── product.html
-└── register.html
-
-────────────────────────────────────────────────────────────────────────────────
-Generated by FileTree Pro Extension
+CocornBookstore/
+├─ .vscode/
+│  └─ settings.json
+├─ admin/
+│  ├─ api/
+│  │  ├─ banners.php
+│  │  ├─ book_images.php
+│  │  ├─ carts.php
+│  │  ├─ categories.php
+│  │  ├─ dashboard_stats.php
+│  │  ├─ orders.php
+│  │  ├─ products.php
+│  │  ├─ reviews.php
+│  │  ├─ upload_banner.php
+│  │  ├─ upload_image.php
+│  │  └─ users.php
+│  ├─ css/
+│  │  ├─ admin.css
+│  │  ├─ dashboard.css
+│  │  ├─ table-category.css
+│  │  ├─ table-user.css
+│  │  └─ table.css
+│  ├─ js/
+│  │  ├─ admin_auth.js
+│  │  ├─ banners.js
+│  │  ├─ book_images.js
+│  │  ├─ carts.js
+│  │  ├─ categories.js
+│  │  ├─ dashboard.js
+│  │  ├─ orders.js
+│  │  ├─ products.js
+│  │  ├─ reviews.js
+│  │  └─ users.js
+│  ├─ view/
+│  │  ├─ banners.html
+│  │  ├─ book_images.html
+│  │  ├─ carts.html
+│  │  ├─ categories.html
+│  │  ├─ orders.html
+│  │  ├─ products.html
+│  │  ├─ reviews.html
+│  │  └─ users.html
+│  └─ dashboard.html
+├─ asset/
+│  ├─ api/
+│  │  ├─ admin_check.php
+│  │  ├─ banners.php
+│  │  ├─ book_view_handler.php
+│  │  ├─ cart-api.php
+│  │  ├─ check_session.php
+│  │  ├─ email-template.html
+│  │  ├─ get_book_detail.php
+│  │  ├─ get_books.php
+│  │  ├─ get_categories.php
+│  │  ├─ get-orders.php
+│  │  ├─ login.php
+│  │  ├─ logout.php
+│  │  ├─ register.php
+│  │  ├─ reviews.php
+│  │  ├─ search-api.php
+│  │  ├─ send-order-email.php
+│  │  ├─ update-profile.php
+│  │  ├─ upload-avatar.php
+│  │  └─ user-api.php
+│  ├─ css/
+│  │  ├─ allproduct.css
+│  │  ├─ app.css
+│  │  ├─ cart.css
+│  │  ├─ checkout.css
+│  │  ├─ custom.css
+│  │  ├─ detail.css
+│  │  ├─ form.css
+│  │  ├─ forU_books.css
+│  │  ├─ infor.css
+│  │  ├─ reponsive.css
+│  │  ├─ search.css
+│  │  └─ style.css
+│  ├─ data/
+│  │  └─ vietnam.json
+│  ├─ image/
+│  │  ├─ avatars/
+│  │  │  ├─ 300x300.svg
+│  │  │  ├─ avatar_1_1765617304.jpg
+│  │  │  ├─ avatar_10_1765764965.jpg
+│  │  │  ├─ avatar_10_1766252431.jpeg
+│  │  │  ├─ avatar_6_1765567828.jpg
+│  │  │  ├─ avatar_8_1765617008.jpg
+│  │  │  └─ avatar_9_1765765516.png
+│  │  ├─ banners/
+│  │  │  ├─ 1290x400-2.svg
+│  │  │  ├─ 1290x400-3.svg
+│  │  │  ├─ 1290x400-4.svg
+│  │  │  ├─ 1290x400-5.svg
+│  │  │  └─ 1290x400.svg
+│  │  ├─ books/
+│  │  │  ├─ 300x300-1.svg
+│  │  │  ├─ 300x300-2.svg
+│  │  │  ├─ 300x300-3.svg
+│  │  │  ├─ 300x300.svg
+│  │  │  ├─ book_1765584658_693caf1271799.jpg
+│  │  │  ├─ book_1765584662_693caf16f0737.jpg
+│  │  │  ├─ book_1765584667_693caf1bb9e14.jpg
+│  │  │  ├─ book_1766252871_6946e1477dd83.webp
+│  │  │  ├─ book_1766252877_6946e14d1a5aa.webp
+│  │  │  ├─ book_1766252881_6946e1517dff0.webp
+│  │  │  ├─ book_1766252885_6946e1555b2bf.webp
+│  │  │  ├─ book_1766253060_6946e204afd18.webp
+│  │  │  ├─ book_1766253068_6946e20c0c348.webp
+│  │  │  ├─ book_1766253072_6946e21071e8a.webp
+│  │  │  ├─ book_1766253076_6946e214356d3.webp
+│  │  │  ├─ book_1766253284_6946e2e450846.webp
+│  │  │  ├─ book_1766253288_6946e2e87e714.webp
+│  │  │  ├─ book_1766253292_6946e2ecd6df0.webp
+│  │  │  ├─ book_1766253296_6946e2f0e6492.webp
+│  │  │  ├─ book_1766253371_6946e33b19351.webp
+│  │  │  ├─ book_1766253375_6946e33f888f0.webp
+│  │  │  ├─ book_1766253379_6946e34371df7.webp
+│  │  │  ├─ book_1766253383_6946e3475f29a.webp
+│  │  │  ├─ book_1766253526_6946e3d671f25.jpg
+│  │  │  ├─ book_1766253534_6946e3de4c21d.webp
+│  │  │  ├─ book_1766253541_6946e3e5d32d8.webp
+│  │  │  ├─ book_1766253546_6946e3ea26e3d.webp
+│  │  │  ├─ book_1766254235_6946e69b683db.jpg
+│  │  │  ├─ book_1766254240_6946e6a0e1127.webp
+│  │  │  ├─ book_1766254244_6946e6a4d988a.webp
+│  │  │  ├─ book_1766254249_6946e6a99160d.webp
+│  │  │  ├─ book_1766254442_6946e76a8afdc.webp
+│  │  │  ├─ book_1766254447_6946e76f734f7.webp
+│  │  │  ├─ book_1766254452_6946e77440775.webp
+│  │  │  ├─ book_1766254456_6946e7783f4fb.webp
+│  │  │  ├─ book_1766254609_6946e81105e36.webp
+│  │  │  ├─ book_1766254613_6946e8150aaa5.webp
+│  │  │  ├─ book_1766254616_6946e818d6bab.webp
+│  │  │  ├─ book_1766254620_6946e81c3bdd7.webp
+│  │  │  ├─ book_1766254937_6946e9594fd00.webp
+│  │  │  ├─ book_1766254941_6946e95d14e15.webp
+│  │  │  ├─ book_1766254945_6946e96162849.webp
+│  │  │  ├─ book_1766254948_6946e964e799b.webp
+│  │  │  ├─ book_1766255564_6946ebccc99b7.webp
+│  │  │  ├─ book_1766255569_6946ebd12e804.webp
+│  │  │  ├─ book_1766255573_6946ebd5626cf.webp
+│  │  │  ├─ book_1766255577_6946ebd98806d.webp
+│  │  │  ├─ book_1766264091_69470d1becd12.webp
+│  │  │  ├─ book_1766264096_69470d2051dcf.webp
+│  │  │  ├─ book_1766264100_69470d2422308.webp
+│  │  │  ├─ book_1766264103_69470d27bb697.webp
+│  │  │  ├─ book_1766264655_69470f4f0a3af.webp
+│  │  │  ├─ book_1766264659_69470f533ebfa.webp
+│  │  │  ├─ book_1766264664_69470f58adc66.webp
+│  │  │  ├─ book_1766264669_69470f5d5c09e.webp
+│  │  │  ├─ book_1766264785_69470fd10bfc9.webp
+│  │  │  ├─ book_1766264789_69470fd5b999b.webp
+│  │  │  ├─ book_1766264793_69470fd97dce9.webp
+│  │  │  ├─ book_1766264797_69470fdd21fc1.webp
+│  │  │  ├─ book_1766265044_694710d46b113.webp
+│  │  │  ├─ book_1766265048_694710d8b793a.webp
+│  │  │  ├─ book_1766265052_694710dc53bc4.webp
+│  │  │  ├─ book_1766265056_694710e094b18.webp
+│  │  │  ├─ book_1766265141_69471135e2266.jpg
+│  │  │  ├─ book_1766265146_6947113ac0578.webp
+│  │  │  ├─ book_1766265150_6947113e72007.webp
+│  │  │  ├─ book_1766265154_6947114242b00.webp
+│  │  │  ├─ book_1766265377_69471221a5e6a.webp
+│  │  │  ├─ book_1766265381_694712256ff38.webp
+│  │  │  ├─ book_1766265385_6947122911f06.webp
+│  │  │  ├─ book_1766265388_6947122c3cbc0.webp
+│  │  │  ├─ book_1766265491_694712937bb06.webp
+│  │  │  ├─ book_1766265496_694712982eb20.webp
+│  │  │  ├─ book_1766265499_6947129b9b302.webp
+│  │  │  ├─ book_1766265503_6947129f81a40.webp
+│  │  │  ├─ book_1766265587_694712f332671.webp
+│  │  │  ├─ book_1766265590_694712f6c6711.webp
+│  │  │  ├─ book_1766265594_694712fa9dfd4.webp
+│  │  │  ├─ book_1766265598_694712fe02d14.webp
+│  │  │  ├─ book_1766265653_694713355ef21.webp
+│  │  │  ├─ book_1766265657_69471339271c2.webp
+│  │  │  ├─ book_1766265660_6947133c79265.webp
+│  │  │  ├─ book_1766265663_6947133fb3a32.webp
+│  │  │  ├─ book_1766265721_69471379a1d42.webp
+│  │  │  ├─ book_1766265726_6947137e2a5c0.webp
+│  │  │  ├─ book_1766265730_694713829e269.webp
+│  │  │  ├─ book_1766265734_694713861bde8.webp
+│  │  │  ├─ book_1766265917_6947143d32991.webp
+│  │  │  ├─ book_1766265921_69471441330e5.webp
+│  │  │  ├─ book_1766265924_69471444d8e9f.webp
+│  │  │  ├─ book_1766265928_6947144827938.webp
+│  │  │  ├─ book_1766266070_694714d620523.webp
+│  │  │  ├─ book_1766266073_694714d9d5003.webp
+│  │  │  ├─ book_1766266077_694714dd5c6a0.webp
+│  │  │  ├─ book_1766266080_694714e0955e1.webp
+│  │  │  ├─ book_1766266321_694715d10c8ad.webp
+│  │  │  ├─ book_1766266324_694715d4ad697.jpg
+│  │  │  ├─ book_1766266328_694715d8d5587.jpg
+│  │  │  ├─ book_1766266333_694715dd199b7.webp
+│  │  │  ├─ book_1766266449_694716518fba3.webp
+│  │  │  ├─ book_1766266453_6947165544054.webp
+│  │  │  ├─ book_1766266457_6947165923b5c.webp
+│  │  │  ├─ book_1766266460_6947165c5c9fa.webp
+│  │  │  ├─ book_1766266535_694716a72dd31.jpg
+│  │  │  ├─ book_1766266538_694716aac42b3.webp
+│  │  │  ├─ book_1766266542_694716ae252b3.webp
+│  │  │  ├─ book_1766266545_694716b1c7f0c.jpg
+│  │  │  ├─ book_1766266786_694717a2611e6.webp
+│  │  │  ├─ book_1766266789_694717a5be4b2.webp
+│  │  │  ├─ book_1766266793_694717a916743.webp
+│  │  │  ├─ book_1766266843_694717db2dd54.webp
+│  │  │  ├─ book_1766267866_69471bda35a16.jpg
+│  │  │  ├─ book_1766267869_69471bdd46abb.webp
+│  │  │  ├─ book_1766267871_69471bdfe2374.webp
+│  │  │  ├─ book_1766267874_69471be2d9e1e.webp
+│  │  │  ├─ book_1766267951_69471c2fddadd.webp
+│  │  │  ├─ book_1766267954_69471c32bc479.webp
+│  │  │  ├─ book_1766267957_69471c3550a16.webp
+│  │  │  ├─ book_1766267959_69471c37c7745.webp
+│  │  │  ├─ book_1766268067_69471ca3d6e48.webp
+│  │  │  ├─ book_1766268070_69471ca6de05e.webp
+│  │  │  ├─ book_1766268073_69471ca97b89b.webp
+│  │  │  ├─ book_1766268076_69471cac55ead.webp
+│  │  │  ├─ book_1766268163_69471d035ee0c.webp
+│  │  │  ├─ book_1766268166_69471d06a0783.webp
+│  │  │  ├─ book_1766268169_69471d0958a91.webp
+│  │  │  ├─ book_1766268172_69471d0c09fa9.webp
+│  │  │  ├─ book_1766268252_69471d5c3c821.webp
+│  │  │  ├─ book_1766268255_69471d5f96988.webp
+│  │  │  ├─ book_1766268258_69471d62c780e.webp
+│  │  │  ├─ book_1766268261_69471d65e3860.webp
+│  │  │  ├─ book_1766268462_69471e2eb1b4c.webp
+│  │  │  ├─ book_1766268466_69471e32ea115.webp
+│  │  │  ├─ book_1766268470_69471e364f440.webp
+│  │  │  ├─ book_1766268473_69471e391ae6b.webp
+│  │  │  ├─ book_1766268661_69471ef5ca856.webp
+│  │  │  ├─ book_1766268667_69471efb9e752.webp
+│  │  │  ├─ book_1766268670_69471efeae05c.webp
+│  │  │  ├─ book_1766268673_69471f01632bb.webp
+│  │  │  ├─ book_1766268782_69471f6ed3e80.webp
+│  │  │  ├─ book_1766268785_69471f71d72b1.webp
+│  │  │  ├─ book_1766268788_69471f74865df.webp
+│  │  │  ├─ book_1766268791_69471f7709e7d.webp
+│  │  │  ├─ book_1766268888_69471fd855ad7.webp
+│  │  │  ├─ book_1766268891_69471fdb50649.webp
+│  │  │  ├─ book_1766268894_69471fde0bd87.jpg
+│  │  │  ├─ book_1766268896_69471fe09bad7.webp
+│  │  │  ├─ book_1766269087_6947209f20ab9.webp
+│  │  │  ├─ book_1766269090_694720a23cc5c.webp
+│  │  │  ├─ book_1766269094_694720a6a6a13.webp
+│  │  │  ├─ book_1766269097_694720a9d50eb.webp
+│  │  │  ├─ book_1766269235_69472133ab842.webp
+│  │  │  ├─ book_1766269238_69472136e66c0.webp
+│  │  │  ├─ book_1766269242_6947213a3611e.webp
+│  │  │  ├─ book_1766269245_6947213d0732c.webp
+│  │  │  ├─ book_1766269345_694721a132730.webp
+│  │  │  ├─ book_1766269348_694721a4337ad.webp
+│  │  │  ├─ book_1766269351_694721a728119.webp
+│  │  │  ├─ book_1766269354_694721aa03cc1.webp
+│  │  │  ├─ book_1766269469_6947221d841c3.webp
+│  │  │  ├─ book_1766269473_69472221dc2f5.webp
+│  │  │  ├─ book_1766269476_69472224dbf09.webp
+│  │  │  ├─ book_1766269480_6947222801179.webp
+│  │  │  ├─ book_1766269575_6947228790757.webp
+│  │  │  ├─ book_1766269578_6947228ac4e06.webp
+│  │  │  ├─ book_1766269582_6947228e46319.webp
+│  │  │  ├─ book_1766269585_694722915a4a0.webp
+│  │  │  ├─ book_1766269676_694722ec6f873.webp
+│  │  │  ├─ book_1766269679_694722efba63b.webp
+│  │  │  ├─ book_1766269682_694722f266a3b.webp
+│  │  │  ├─ book_1766269685_694722f51efee.webp
+│  │  │  ├─ book_1766269786_6947235acf382.webp
+│  │  │  ├─ book_1766269789_6947235dec562.webp
+│  │  │  ├─ book_1766269792_69472360d9d8a.webp
+│  │  │  ├─ book_1766269795_69472363b1120.webp
+│  │  │  ├─ book_1766270150_694724c6b578d.png
+│  │  │  ├─ book_1766270153_694724c9eea08.png
+│  │  │  ├─ book_1766270156_694724cca3613.png
+│  │  │  ├─ book_1766270159_694724cf3ee6f.png
+│  │  │  ├─ book_1766270573_6947266dd8fcf.jpg
+│  │  │  ├─ book_1766270577_6947267181c50.jpg
+│  │  │  ├─ book_1766270580_694726747b4b5.jpg
+│  │  │  └─ book_1766270582_69472676e955c.jpg
+│  │  ├─ categories/
+│  │  │  ├─ 75x100.svg
+│  │  │  ├─ category_1766345936_69484cd021b5d.jpg
+│  │  │  ├─ category_1766345954_69484ce27c317.jpg
+│  │  │  ├─ category_1766345971_69484cf3dbd2c.jpg
+│  │  │  ├─ category_1766345987_69484d0356579.jpg
+│  │  │  ├─ category_1766346001_69484d1159b4f.jpg
+│  │  │  ├─ category_1766346010_69484d1aa5eb2.jpg
+│  │  │  ├─ category_1766346086_69484d666fa4e.jpg
+│  │  │  └─ category_1766346096_69484d70a06a2.jpg
+│  │  ├─ 100x100.svg
+│  │  ├─ 100x150.svg
+│  │  ├─ 150x200.svg
+│  │  ├─ 200x250.svg
+│  │  ├─ 200x300.svg
+│  │  ├─ 250x250.svg
+│  │  ├─ 300x200.svg
+│  │  ├─ 324x300.svg
+│  │  ├─ 500x1000.svg
+│  │  ├─ 500x600.svg
+│  │  ├─ 50x50.svg
+│  │  ├─ 600x1000.svg
+│  │  ├─ 600x700.svg
+│  │  ├─ 650x250.svg
+│  │  ├─ bank.svg
+│  │  ├─ emptyCart.png
+│  │  ├─ Logo MoMo.svg
+│  │  ├─ Logo.svg
+│  │  ├─ napas.svg
+│  │  ├─ visa.svg
+│  │  ├─ wave.svg
+│  │  └─ zalopay-icon.svg
+│  └─ js/
+│     ├─ all-products.js
+│     ├─ app.js
+│     ├─ auth.js
+│     ├─ book-view.js
+│     ├─ cart-handler.js
+│     ├─ checkout.js
+│     ├─ form.js
+│     ├─ infor.js
+│     ├─ load-province.js
+│     ├─ product-detail.js
+│     ├─ render-books.js
+│     ├─ render-foryou-books.js
+│     ├─ reviews.js
+│     ├─ search-handler.js
+│     └─ sweetAlert-Helper.js
+├─ logs/
+│  └─ email-log.txt
+├─ model/
+│  ├─ config/
+│  │  └─ connectdb.php
+│  ├─ database/
+│  │  └─ cocorn.sql
+│  └─ includes/
+│     ├─ footer.php
+│     ├─ header.php
+│     ├─ t.html
+│     └─ track-view.php
+├─ vendor/
+│  ├─ composer/
+│  │  ├─ autoload_classmap.php
+│  │  ├─ autoload_namespaces.php
+│  │  ├─ autoload_psr4.php
+│  │  ├─ autoload_real.php
+│  │  ├─ autoload_static.php
+│  │  ├─ ClassLoader.php
+│  │  ├─ installed.json
+│  │  ├─ installed.php
+│  │  ├─ InstalledVersions.php
+│  │  ├─ LICENSE
+│  │  └─ platform_check.php
+│  ├─ phpmailer/
+│  │  └─ phpmailer/
+│  └─ autoload.php
+├─ all-product.html
+├─ cart.html
+├─ checkout.html
+├─ composer.json
+├─ composer.lock
+├─ debug-email.php
+├─ index.html
+├─ infor.html
+├─ login.html
+├─ product.html
+├─ README.md
+└─ register.html

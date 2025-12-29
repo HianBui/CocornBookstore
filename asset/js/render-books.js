@@ -9,6 +9,7 @@
 const API_BASE = './asset/api';
 const IMAGE_BASE = './asset/image/books/';
 const IMAGE_BASE_CATE = './asset/image/categories/';
+const IMAGE_BASE_BANNER = './asset/image/banners/';
 
 // ==========================================
 // HÀM TẠO ĐƯỜNG DẪN ẢNH ĐẦY ĐỦ
@@ -27,6 +28,13 @@ function getImagePathCate(imageName) {
         return imageName;
     }
     return IMAGE_BASE_CATE + imageName;
+}
+function getImagePathBanner(imageName) {
+    if (!imageName) return IMAGE_BASE_BANNER + '1290x400.svg';
+    if (imageName.startsWith('./') || imageName.startsWith('http')) {
+        return imageName;
+    }
+    return IMAGE_BASE_BANNER + imageName;
 }
 
 // ==========================================
@@ -251,13 +259,62 @@ async function renderCategories() {
 }
 
 // ==========================================
-// KHỞI TẠO KHI TRANG LOAD XONG
+// RENDER BANNERS
+// ==========================================
+async function renderBanners() {
+    try {
+        const response = await fetch(`${API_BASE}/banners.php?action=active&limit=10`);
+        const data = await response.json();
+        
+        if (!data.success || !data.banners || data.banners.length === 0) {
+            console.warn('Không có banner nào để hiển thị');
+            return;
+        }
+
+        const container = document.querySelector('#banner .slider');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        data.banners.forEach(banner => {
+            const bannerHTML = `
+                <div class="item">
+                    <a href="${banner.link || '#'}">
+                        <img src="${getImagePathBanner(banner.image)}" alt="${banner.title}">
+                    </a>
+                </div>
+            `;
+            container.innerHTML += bannerHTML;
+        });
+
+        console.log('✅ Đã render', data.banners.length, 'banners');
+
+        // Khởi động lại Slick Slider sau khi render
+        setTimeout(() => {
+            if (typeof $ !== 'undefined' && $.fn.slick) {
+                $('.slider').slick('unslick').slick({
+                    loop: true,
+                    slidesToScroll: 1,
+                    autoplay: true,
+                    autoplaySpeed: 2000,
+                });
+            }
+        }, 200);
+
+    } catch (error) {
+        console.error('❌ Lỗi render banners:', error);
+    }
+}
+
+// ==========================================
+// KHỞi TẠO KHI TRANG LOAD XONG
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📚 Bắt đầu render sách từ database...');
     
     // Render tuần tự để tránh conflict
-    renderCategories()
+    renderBanners()
+        .then(() => renderCategories())
         .then(() => renderFeaturedProducts())
         .then(() => renderHotDeals())
         .catch(error => console.error('❌ Lỗi render:', error));

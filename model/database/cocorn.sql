@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Dec 21, 2025 at 04:57 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th12 29, 2025 lúc 05:43 AM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,40 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `cocorn`
+-- Cơ sở dữ liệu: `cocorn`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `books`
+-- Cấu trúc bảng cho bảng `banners`
+--
+
+CREATE TABLE `banners` (
+  `banner_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `link` varchar(500) DEFAULT NULL,
+  `display_order` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `banners`
+--
+
+INSERT INTO `banners` (`banner_id`, `title`, `image`, `link`, `display_order`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Banner 1', 'banner_1766820326_694f89e6c5e16.png', './all-product.html?id=1', 1, 'active', '2025-12-27 13:18:36', '2025-12-27 15:49:31'),
+(2, 'Banner 2', 'banner_1766820339_694f89f3a5521.webp', '#', 2, 'active', '2025-12-27 13:18:36', '2025-12-27 15:37:13'),
+(3, 'Banner 3', 'banner_1766820346_694f89fa9c654.png', '#', 3, 'active', '2025-12-27 13:18:36', '2025-12-27 14:25:48'),
+(7, 'vq2', 'banner_1766825028_694f9c44698b1.webp', '#', 3, 'active', '2025-12-27 15:43:58', '2025-12-27 15:44:23');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `books`
 --
 
 CREATE TABLE `books` (
@@ -42,7 +69,7 @@ CREATE TABLE `books` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `books`
+-- Đang đổ dữ liệu cho bảng `books`
 --
 
 INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`, `price`, `quantity`, `description`, `status`, `category_id`, `created_at`) VALUES
@@ -94,7 +121,7 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `book_images`
+-- Cấu trúc bảng cho bảng `book_images`
 --
 
 CREATE TABLE `book_images` (
@@ -109,7 +136,7 @@ CREATE TABLE `book_images` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `book_images`
+-- Đang đổ dữ liệu cho bảng `book_images`
 --
 
 INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_img2`, `sub_img3`, `created_at`, `updated_at`) VALUES
@@ -161,7 +188,7 @@ INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_i
 -- --------------------------------------------------------
 
 --
--- Table structure for table `book_views`
+-- Cấu trúc bảng cho bảng `book_views`
 --
 
 CREATE TABLE `book_views` (
@@ -174,7 +201,7 @@ CREATE TABLE `book_views` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `book_views`
+-- Đang đổ dữ liệu cho bảng `book_views`
 --
 
 INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_agent`, `view_date`) VALUES
@@ -406,7 +433,7 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 -- --------------------------------------------------------
 
 --
--- Table structure for table `carts`
+-- Cấu trúc bảng cho bảng `carts`
 --
 
 CREATE TABLE `carts` (
@@ -420,7 +447,7 @@ CREATE TABLE `carts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- Cấu trúc bảng cho bảng `categories`
 --
 
 CREATE TABLE `categories` (
@@ -433,23 +460,23 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `categories`
+-- Đang đổ dữ liệu cho bảng `categories`
 --
 
 INSERT INTO `categories` (`category_id`, `category_name`, `description`, `image`, `created_at`, `update_at`) VALUES
-(1, 'Văn học', 'Sách văn học trong và ngoài nước', 'category_1766275151_6947384fcdcd2.jpg', '2025-12-08 22:47:40', '2025-12-21 06:59:13'),
-(2, 'Khoa học', 'Sách khoa học, công nghệ', 'category_1766275140_69473844b6d1b.jpg', '2025-12-08 22:47:40', '2025-12-21 06:59:01'),
-(3, 'Kinh tế', 'Sách về kinh doanh và tài chính', 'category_1766275130_6947383a5a32a.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:51'),
-(4, 'Kỹ năng sống', 'Sách phát triển bản thân', 'category_1766275117_6947382dbca88.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:39'),
-(5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', 'category_1766275106_69473822f341e.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:28'),
-(6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', 'category_1766275096_69473818e73ca.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:18'),
-(7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', 'category_1766275085_6947380d9e47a.jpg', '2025-12-08 22:47:40', '2025-12-21 06:58:07'),
-(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', 'category_1766275072_69473800daefa.jpg', '2025-12-08 22:47:40', '2025-12-21 06:57:54');
+(1, 'Văn học', 'Sách văn học trong và ngoài nước', 'category_1766820174_694f894e7d2c4.jpg', '2025-12-08 22:47:40', '2025-12-27 14:22:57'),
+(2, 'Khoa học', 'Sách khoa học, công nghệ', 'category_1766820163_694f89431726b.jpg', '2025-12-08 22:47:40', '2025-12-27 14:22:45'),
+(3, 'Kinh tế', 'Sách về kinh doanh và tài chính', 'category_1766820147_694f89338ede4.jpg', '2025-12-08 22:47:40', '2025-12-27 14:22:31'),
+(4, 'Kỹ năng sống', 'Sách phát triển bản thân', 'category_1766820133_694f892533e8d.jpg', '2025-12-08 22:47:40', '2025-12-27 14:22:18'),
+(5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', 'category_1766820121_694f89190957f.jpg', '2025-12-08 22:47:40', '2025-12-27 14:22:05'),
+(6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', 'category_1766820113_694f891101d3a.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:54'),
+(7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', 'category_1766820104_694f8908e900b.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:46'),
+(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', 'category_1766820094_694f88fe2f5d4.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:36');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coupons`
+-- Cấu trúc bảng cho bảng `coupons`
 --
 
 CREATE TABLE `coupons` (
@@ -470,7 +497,7 @@ CREATE TABLE `coupons` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications`
+-- Cấu trúc bảng cho bảng `notifications`
 --
 
 CREATE TABLE `notifications` (
@@ -487,7 +514,7 @@ CREATE TABLE `notifications` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Cấu trúc bảng cho bảng `orders`
 --
 
 CREATE TABLE `orders` (
@@ -507,7 +534,7 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Đang đổ dữ liệu cho bảng `orders`
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `full_name`, `phone`, `email`, `address`, `city`, `district`, `payment_method`, `total_amount`, `status`, `created_at`, `coupon_id`) VALUES
@@ -552,7 +579,7 @@ INSERT INTO `orders` (`order_id`, `user_id`, `full_name`, `phone`, `email`, `add
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_details`
+-- Cấu trúc bảng cho bảng `order_details`
 --
 
 CREATE TABLE `order_details` (
@@ -564,7 +591,7 @@ CREATE TABLE `order_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `order_details`
+-- Đang đổ dữ liệu cho bảng `order_details`
 --
 
 INSERT INTO `order_details` (`order_detail_id`, `order_id`, `book_id`, `quantity`, `price`) VALUES
@@ -636,7 +663,7 @@ INSERT INTO `order_details` (`order_detail_id`, `order_id`, `book_id`, `quantity
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reviews`
+-- Cấu trúc bảng cho bảng `reviews`
 --
 
 CREATE TABLE `reviews` (
@@ -649,7 +676,7 @@ CREATE TABLE `reviews` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `reviews`
+-- Đang đổ dữ liệu cho bảng `reviews`
 --
 
 INSERT INTO `reviews` (`review_id`, `book_id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
@@ -674,7 +701,7 @@ INSERT INTO `reviews` (`review_id`, `book_id`, `user_id`, `rating`, `comment`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Cấu trúc bảng cho bảng `users`
 --
 
 CREATE TABLE `users` (
@@ -694,7 +721,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Đang đổ dữ liệu cho bảng `users`
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `display_name`, `avatar`, `phone`, `address`, `role`, `status`, `is_agree`, `created_at`, `updated_at`) VALUES
@@ -708,7 +735,7 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `display_name`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wishlists`
+-- Cấu trúc bảng cho bảng `wishlists`
 --
 
 CREATE TABLE `wishlists` (
@@ -719,25 +746,31 @@ CREATE TABLE `wishlists` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `books`
+-- Chỉ mục cho bảng `banners`
+--
+ALTER TABLE `banners`
+  ADD PRIMARY KEY (`banner_id`);
+
+--
+-- Chỉ mục cho bảng `books`
 --
 ALTER TABLE `books`
   ADD PRIMARY KEY (`book_id`),
   ADD KEY `category_id` (`category_id`);
 
 --
--- Indexes for table `book_images`
+-- Chỉ mục cho bảng `book_images`
 --
 ALTER TABLE `book_images`
   ADD PRIMARY KEY (`image_id`),
   ADD UNIQUE KEY `book_id` (`book_id`);
 
 --
--- Indexes for table `book_views`
+-- Chỉ mục cho bảng `book_views`
 --
 ALTER TABLE `book_views`
   ADD PRIMARY KEY (`view_id`),
@@ -745,7 +778,7 @@ ALTER TABLE `book_views`
   ADD KEY `idx_user_date` (`user_id`,`view_date`);
 
 --
--- Indexes for table `carts`
+-- Chỉ mục cho bảng `carts`
 --
 ALTER TABLE `carts`
   ADD PRIMARY KEY (`cart_id`),
@@ -753,27 +786,27 @@ ALTER TABLE `carts`
   ADD KEY `book_id` (`book_id`);
 
 --
--- Indexes for table `categories`
+-- Chỉ mục cho bảng `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `coupons`
+-- Chỉ mục cho bảng `coupons`
 --
 ALTER TABLE `coupons`
   ADD PRIMARY KEY (`coupon_id`),
   ADD UNIQUE KEY `coupon_code` (`coupon_code`);
 
 --
--- Indexes for table `notifications`
+-- Chỉ mục cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`notification_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `orders`
+-- Chỉ mục cho bảng `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
@@ -781,7 +814,7 @@ ALTER TABLE `orders`
   ADD KEY `coupon_id` (`coupon_id`);
 
 --
--- Indexes for table `order_details`
+-- Chỉ mục cho bảng `order_details`
 --
 ALTER TABLE `order_details`
   ADD PRIMARY KEY (`order_detail_id`),
@@ -789,7 +822,7 @@ ALTER TABLE `order_details`
   ADD KEY `book_id` (`book_id`);
 
 --
--- Indexes for table `reviews`
+-- Chỉ mục cho bảng `reviews`
 --
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`),
@@ -797,7 +830,7 @@ ALTER TABLE `reviews`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `users`
+-- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
@@ -805,7 +838,7 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `wishlists`
+-- Chỉ mục cho bảng `wishlists`
 --
 ALTER TABLE `wishlists`
   ADD PRIMARY KEY (`wishlist_id`),
@@ -813,140 +846,146 @@ ALTER TABLE `wishlists`
   ADD KEY `book_id` (`book_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `books`
+-- AUTO_INCREMENT cho bảng `banners`
+--
+ALTER TABLE `banners`
+  MODIFY `banner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT cho bảng `books`
 --
 ALTER TABLE `books`
   MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
--- AUTO_INCREMENT for table `book_images`
+-- AUTO_INCREMENT cho bảng `book_images`
 --
 ALTER TABLE `book_images`
   MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
--- AUTO_INCREMENT for table `book_views`
+-- AUTO_INCREMENT cho bảng `book_views`
 --
 ALTER TABLE `book_views`
   MODIFY `view_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=289;
 
 --
--- AUTO_INCREMENT for table `carts`
+-- AUTO_INCREMENT cho bảng `carts`
 --
 ALTER TABLE `carts`
   MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
 
 --
--- AUTO_INCREMENT for table `categories`
+-- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `coupons`
+-- AUTO_INCREMENT cho bảng `coupons`
 --
 ALTER TABLE `coupons`
   MODIFY `coupon_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `notifications`
+-- AUTO_INCREMENT cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
--- AUTO_INCREMENT for table `order_details`
+-- AUTO_INCREMENT cho bảng `order_details`
 --
 ALTER TABLE `order_details`
   MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
--- AUTO_INCREMENT for table `reviews`
+-- AUTO_INCREMENT cho bảng `reviews`
 --
 ALTER TABLE `reviews`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `wishlists`
+-- AUTO_INCREMENT cho bảng `wishlists`
 --
 ALTER TABLE `wishlists`
   MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `books`
+-- Các ràng buộc cho bảng `books`
 --
 ALTER TABLE `books`
   ADD CONSTRAINT `books_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `book_images`
+-- Các ràng buộc cho bảng `book_images`
 --
 ALTER TABLE `book_images`
   ADD CONSTRAINT `book_images_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `book_views`
+-- Các ràng buộc cho bảng `book_views`
 --
 ALTER TABLE `book_views`
   ADD CONSTRAINT `book_views_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `book_views_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `carts`
+-- Các ràng buộc cho bảng `carts`
 --
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `notifications`
+-- Các ràng buộc cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Các ràng buộc cho bảng `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`coupon_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `order_details`
+-- Các ràng buộc cho bảng `order_details`
 --
 ALTER TABLE `order_details`
   ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reviews`
+-- Các ràng buộc cho bảng `reviews`
 --
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `wishlists`
+-- Các ràng buộc cho bảng `wishlists`
 --
 ALTER TABLE `wishlists`
   ADD CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,

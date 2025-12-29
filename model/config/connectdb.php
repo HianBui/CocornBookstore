@@ -78,4 +78,3 @@ function executeQuery($sql, $params = []) {
         return false;
     }
 }
-?>
