@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const price = parseInt(book.price).toLocaleString('vi-VN');
             html += `
                 <a href="product.html?id=${book.book_id}" class="search-item">
-                    <img src="./asset/image/${book.main_img}" alt="${book.title}">
+                    <img src="./asset/image/books/${book.main_img}" alt="${book.title}">
                     <div class="search-item-info">
                         <div class="search-item-title">${highlightText(book.title, query)}</div>
                         <div class="search-item-author">${highlightText(book.author || 'Đang cập nhật', query)}</div>
