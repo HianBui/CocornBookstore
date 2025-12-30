@@ -1,7 +1,7 @@
 /**
  * ============================================================
- * FILE: checkout.js (FIXED WITH NGROK)
- * MÔ TẢ: Xử lý thanh toán giỏ hàng hoàn chỉnh + Gửi email
+ * FILE: checkout.js (TÍCH HỢP MOMO PAYMENT)
+ * MÔ TẢ: Xử lý thanh toán giỏ hàng hoàn chỉnh + MoMo + Email
  * ĐẶT TẠI: asset/js/checkout.js
  * ============================================================
  */
@@ -9,6 +9,7 @@
 const CheckoutHandler = {
     API_URL: './asset/api/cart-api.php',
     EMAIL_API_URL: './asset/api/send-order-email.php',
+    MOMO_API_URL: './asset/payment/momo-payment.php',
     selectedItems: [],
     cartIds: [],
     
@@ -275,13 +276,25 @@ const CheckoutHandler = {
     },
 
     /**
+     * Lấy tên phương thức thanh toán
+     */
+    getPaymentMethodText(method) {
+        const methods = {
+            'cod': 'Thanh toán khi nhận hàng (COD)',
+            'momo': 'Ví điện tử MoMo',
+            'bank': 'Chuyển khoản ngân hàng',
+            'vnpay': 'Cổng thanh toán VNPAY'
+        };
+        return methods[method] || method;
+    },
+
+    /**
      * Gửi email xác nhận đơn hàng
      */
     async sendOrderEmail(orderData) {
         console.log('📧 [EMAIL] Bắt đầu gửi email...');
         
         try {
-            // Chuẩn bị dữ liệu email
             const subtotal = this.selectedItems.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
             const shipping = subtotal > 300000 ? 0 : 30000;
             const discount = 0;
@@ -293,9 +306,6 @@ const CheckoutHandler = {
             const districtText = districtSelect.options[districtSelect.selectedIndex]?.text || '';
             
             const fullAddress = `${orderData.address}, ${districtText}, ${cityText}`;
-
-            // ✅ QUAN TRỌNG: Dùng URL ngrok thay vì window.location.origin
-            // const websiteUrl = 'https://deana-chordamesodermic-hilariously.ngrok-free.dev/CocornBookstore';
             const websiteUrl = window.location.origin + '/CocornBookstore';
 
             const emailData = {
@@ -316,12 +326,11 @@ const CheckoutHandler = {
                     subtotal: item.subtotal,
                     main_img: item.main_img
                 })),
-                website_url: websiteUrl  // Dùng URL ngrok
+                website_url: websiteUrl
             };
 
             console.log('📧 [EMAIL] Email data:', emailData);
 
-            // Gửi email
             const response = await fetch(this.EMAIL_API_URL, {
                 method: 'POST',
                 headers: {
@@ -378,7 +387,7 @@ const CheckoutHandler = {
     },
 
     /**
-     * Đặt hàng 
+     * Đặt hàng với hỗ trợ MoMo
      */
     async placeOrder() {
         // Validate form
@@ -392,16 +401,21 @@ const CheckoutHandler = {
             return;
         }
 
+        const paymentMethod = this.getSelectedPaymentMethod();
+
         // Confirm đặt hàng
         const result = await Swal.fire({
             title: 'Xác nhận đặt hàng',
             html: `
                 <p>Bạn có chắc muốn đặt ${this.selectedItems.length} sản phẩm?</p>
                 <p><strong>Tổng tiền: ${this.getTotalAmount()}</strong></p>
+                <p style="color: #667eea; margin-top: 10px;">
+                    <strong>${this.getPaymentMethodText(paymentMethod)}</strong>
+                </p>
             `,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#28a745',
+            confirmButtonColor: '#667eea',
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Đặt hàng',
             cancelButtonText: 'Hủy',
@@ -421,7 +435,7 @@ const CheckoutHandler = {
                 address: document.getElementById('address').value.trim(),
                 city: document.getElementById('city').value,
                 district: document.getElementById('district').value,
-                payment_method: this.getSelectedPaymentMethod(),
+                payment_method: paymentMethod,
                 cart_ids: this.cartIds,
                 notes: document.getElementById('notes')?.value.trim() || ''
             };
@@ -440,52 +454,119 @@ const CheckoutHandler = {
             console.log('🛒 [ORDER] Create order response:', data);
 
             if (data.success) {
-                // Thêm order_id vào orderData để gửi email
-                orderData.order_id = data.data.order_id;
+                const order_id = data.data.order_id;
+                orderData.order_id = order_id;
                 
-                console.log('✅ [ORDER] Đơn hàng tạo thành công, bắt đầu gửi email...');
+                console.log('✅ [ORDER] Đơn hàng tạo thành công, ID:', order_id);
                 
-                // Gửi email xác nhận
-                const emailResult = await this.sendOrderEmail(orderData);
-                
-                Swal.close();
-                
-                // Hiển thị thông báo thành công
-                let emailMessage = '';
-                if (emailResult.success) {
-                    emailMessage = `
-                        <p style="color: #28a745; margin-top: 15px;">
-                            ✉️ Email xác nhận đã được gửi đến <strong>${orderData.email}</strong>
-                        </p>
-                        <p style="color: #666; font-size: 14px; margin-top: 10px;">
-                            Vui lòng kiểm tra cả thư mục spam nếu không thấy email.
-                        </p>
-                    `;
-                } else {
-                    emailMessage = `
-                        <p style="color: #ffc107; margin-top: 15px;">
-                            ⚠️ Không thể gửi email xác nhận (${emailResult.message || 'Lỗi không xác định'})
-                        </p>
-                        <p style="color: #666; font-size: 14px;">
-                            Đơn hàng đã được tạo thành công, nhưng bạn có thể không nhận được email xác nhận.
-                        </p>
-                    `;
-                }
-                
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Đặt hàng thành công!',
-                    html: `
-                        <p>Mã đơn hàng: <strong>#${data.data.order_id}</strong></p>
-                        <p>Cảm ơn bạn đã mua hàng!</p>
-                        ${emailMessage}
-                    `,
-                    confirmButtonText: 'Về trang chủ',
-                    confirmButtonColor: '#28a745'
-                });
+                // 🔥 XỬ LÝ THEO PHƯƠNG THỨC THANH TOÁN
+                if (paymentMethod === 'momo') {
+                    console.log('💳 [MOMO] Chuyển sang thanh toán MoMo...');
+                    
+                    // Gọi API tạo thanh toán MoMo
+                    const momoResponse = await fetch(this.MOMO_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ order_id: order_id })
+                    });
+                    
+                    const momoData = await momoResponse.json();
+                    console.log('💳 [MOMO] Response:', momoData);
+                    
+                    Swal.close();
+                    
+                    if (momoData.success && momoData.payUrl) {
+                        // Hiển thị thông báo trước khi redirect
+                        await Swal.fire({
+                            icon: 'info',
+                            title: 'Chuyển đến MoMo',
+                            html: `
+                                <div style="text-align: center;">
+                                    <p style="margin: 15px 0;">Đơn hàng <strong>#${order_id}</strong> đã được tạo!</p>
+                                    <p style="color: #667eea;">Đang chuyển đến trang thanh toán MoMo...</p>
+                                    <div style="margin-top: 20px;">
+                                        <img src="https://developers.momo.vn/v3/img/logo.png" 
+                                             alt="MoMo" style="width: 60px; height: 60px;">
+                                    </div>
+                                </div>
+                            `,
+                            timer: 2500,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false
+                        });
+                        
+                        // Redirect đến trang thanh toán MoMo
+                        window.location.href = momoData.payUrl;
+                    } else {
+                        throw new Error(momoData.message || 'Không thể kết nối đến MoMo');
+                    }
+                    
+                } else if (paymentMethod === 'cod') {
+                    // COD - Gửi email như cũ
+                    console.log('✅ [COD] Đơn hàng COD, bắt đầu gửi email...');
+                    
+                    const emailResult = await this.sendOrderEmail(orderData);
+                    
+                    Swal.close();
+                    
+                    let emailMessage = '';
+                    if (emailResult.success) {
+                        emailMessage = `
+                            <p style="color: #28a745; margin-top: 15px;">
+                                ✉️ Email xác nhận đã được gửi đến <strong>${orderData.email}</strong>
+                            </p>
+                            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                                Vui lòng kiểm tra cả thư mục spam nếu không thấy email.
+                            </p>
+                        `;
+                    } else {
+                        emailMessage = `
+                            <p style="color: #ffc107; margin-top: 15px;">
+                                ⚠️ Không thể gửi email xác nhận (${emailResult.message || 'Lỗi không xác định'})
+                            </p>
+                            <p style="color: #666; font-size: 14px;">
+                                Đơn hàng đã được tạo thành công, nhưng bạn có thể không nhận được email xác nhận.
+                            </p>
+                        `;
+                    }
+                    
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Đặt hàng thành công!',
+                        html: `
+                            <p>Mã đơn hàng: <strong>#${order_id}</strong></p>
+                            <p>Cảm ơn bạn đã mua hàng!</p>
+                            ${emailMessage}
+                        `,
+                        confirmButtonText: 'Về trang chủ',
+                        confirmButtonColor: '#28a745'
+                    });
 
-                // Redirect về trang chủ
-                window.location.href = 'index.html';
+                    window.location.href = 'index.html';
+                    
+                } else {
+                    // Các phương thức khác (bank transfer, vnpay)
+                    Swal.close();
+                    
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Đặt hàng thành công!',
+                        html: `
+                            <p>Mã đơn hàng: <strong>#${order_id}</strong></p>
+                            <p>Vui lòng thanh toán theo phương thức đã chọn</p>
+                            <p style="color: #666; font-size: 14px; margin-top: 15px;">
+                                Chúng tôi sẽ liên hệ với bạn để xác nhận thanh toán
+                            </p>
+                        `,
+                        confirmButtonText: 'Về trang chủ',
+                        confirmButtonColor: '#667eea'
+                    });
+
+                    window.location.href = 'index.html';
+                }
             } else {
                 throw new Error(data.message || 'Không thể đặt hàng');
             }

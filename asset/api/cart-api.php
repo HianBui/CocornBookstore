@@ -327,6 +327,9 @@ function getCartCount($user_id) {
 /**
  * ✅ Tạo Order từ các mục trong giỏ hàng
  */
+/**
+ * ✅ Tạo Order từ các mục trong giỏ hàng + CẬP NHẬT SỐ LƯỢNG KHO
+ */
 function createOrder($user_id) {
     global $pdo;
     
@@ -345,18 +348,32 @@ function createOrder($user_id) {
     try {
         $pdo->beginTransaction();
         
-        // ✅ Tính total từ carts đã chọn (DATABASE)
+        // ✅ Lấy thông tin cart items và kiểm tra số lượng kho
         $placeholders = implode(',', array_fill(0, count($data['cart_ids']), '?'));
-        $total_sql = "SELECT SUM(b.price * c.quantity) as total 
-                      FROM carts c JOIN books b ON c.book_id = b.book_id 
-                      WHERE c.user_id = ? AND c.cart_id IN ($placeholders)";
-        $total_stmt = $pdo->prepare($total_sql);
-        $total_params = array_merge([$user_id], $data['cart_ids']);
-        $total_stmt->execute($total_params);
-        $total = $total_stmt->fetchColumn() ?? 0;
+        $cart_sql = "SELECT c.cart_id, c.book_id, c.quantity, b.price, b.quantity as stock, b.title
+                     FROM carts c 
+                     JOIN books b ON c.book_id = b.book_id 
+                     WHERE c.user_id = ? AND c.cart_id IN ($placeholders)";
+        $cart_stmt = $pdo->prepare($cart_sql);
+        $cart_params = array_merge([$user_id], $data['cart_ids']);
+        $cart_stmt->execute($cart_params);
+        $cart_items = $cart_stmt->fetchAll();
+        
+        if (empty($cart_items)) {
+            throw new Exception('Giỏ hàng rỗng hoặc không tìm thấy sản phẩm');
+        }
+        
+        // ✅ Kiểm tra tồn kho trước khi tạo order
+        $total = 0;
+        foreach ($cart_items as $item) {
+            if ($item['quantity'] > $item['stock']) {
+                throw new Exception("Sản phẩm '{$item['title']}' không đủ số lượng trong kho (còn {$item['stock']} cuốn)");
+            }
+            $total += $item['price'] * $item['quantity'];
+        }
         
         if ($total <= 0) {
-            throw new Exception('Giỏ hàng rỗng hoặc lỗi tính tổng');
+            throw new Exception('Giá trị đơn hàng không hợp lệ');
         }
         
         // ✅ Insert order
@@ -377,15 +394,39 @@ function createOrder($user_id) {
         
         $order_id = $pdo->lastInsertId();
         
-        // ✅ Insert order_details từ carts
-        $detail_sql = "INSERT INTO order_details (order_id, book_id, quantity, price)
-                       SELECT ?, c.book_id, c.quantity, b.price
-                       FROM carts c JOIN books b ON c.book_id = b.book_id
-                       WHERE c.cart_id = ?";
+        // ✅ Insert order_details và CẬP NHẬT SỐ LƯỢNG KHO
+        $detail_sql = "INSERT INTO order_details (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)";
         $detail_stmt = $pdo->prepare($detail_sql);
         
-        foreach ($data['cart_ids'] as $cart_id) {
-            $detail_stmt->execute([$order_id, $cart_id]);
+        $update_stock_sql = "UPDATE books SET quantity = quantity - ? WHERE book_id = ?";
+        $update_stock_stmt = $pdo->prepare($update_stock_sql);
+        
+        foreach ($cart_items as $item) {
+            // Insert order detail
+            $detail_stmt->execute([
+                $order_id, 
+                $item['book_id'], 
+                $item['quantity'], 
+                $item['price']
+            ]);
+            
+            // 🔥 TRỪ SỐ LƯỢNG TRONG KHO
+            $update_stock_stmt->execute([
+                $item['quantity'], 
+                $item['book_id']
+            ]);
+            
+            // ✅ Kiểm tra và cập nhật status nếu hết hàng
+            $check_stock_sql = "SELECT quantity FROM books WHERE book_id = ?";
+            $check_stmt = $pdo->prepare($check_stock_sql);
+            $check_stmt->execute([$item['book_id']]);
+            $remaining_stock = $check_stmt->fetchColumn();
+            
+            if ($remaining_stock <= 0) {
+                $update_status_sql = "UPDATE books SET status = 'out_of_stock' WHERE book_id = ?";
+                $status_stmt = $pdo->prepare($update_status_sql);
+                $status_stmt->execute([$item['book_id']]);
+            }
         }
         
         // ✅ Xóa carts đã thanh toán khỏi DATABASE

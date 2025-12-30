@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 29, 2025 lúc 05:43 AM
--- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.0.30
+-- Máy chủ: 127.0.0.1:3306
+-- Thời gian đã tạo: Th12 30, 2025 lúc 07:23 AM
+-- Phiên bản máy phục vụ: 9.1.0
+-- Phiên bản PHP: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,16 +27,18 @@ SET time_zone = "+00:00";
 -- Cấu trúc bảng cho bảng `banners`
 --
 
-CREATE TABLE `banners` (
-  `banner_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `link` varchar(500) DEFAULT NULL,
-  `display_order` int(11) DEFAULT 0,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `banners`;
+CREATE TABLE IF NOT EXISTS `banners` (
+  `banner_id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `link` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `display_order` int DEFAULT '0',
+  `status` enum('active','inactive') COLLATE utf8mb4_general_ci DEFAULT 'active',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`banner_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `banners`
@@ -54,19 +56,22 @@ INSERT INTO `banners` (`banner_id`, `title`, `image`, `link`, `display_order`, `
 -- Cấu trúc bảng cho bảng `books`
 --
 
-CREATE TABLE `books` (
-  `book_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `author` varchar(150) DEFAULT NULL,
-  `publisher` varchar(150) DEFAULT NULL,
-  `published_year` year(4) DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT 0.00,
-  `quantity` int(11) DEFAULT 0,
-  `description` text DEFAULT NULL,
-  `status` enum('available','out_of_stock','discontinued') DEFAULT 'available',
-  `category_id` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `books`;
+CREATE TABLE IF NOT EXISTS `books` (
+  `book_id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `author` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `publisher` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `published_year` year DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT '0.00',
+  `quantity` int DEFAULT '0',
+  `description` text COLLATE utf8mb4_general_ci,
+  `status` enum('available','out_of_stock','discontinued') COLLATE utf8mb4_general_ci DEFAULT 'available',
+  `category_id` int DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`book_id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `books`
@@ -86,7 +91,7 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 (11, 'Đời Ngắn Đừng Ngủ Dài', 'Robin Sharma', 'NXB Thanh Niên', '2021', 88000.00, 190, 'Sống có ý nghĩa hơn...', 'available', 4, '2025-10-25 01:53:02'),
 (12, 'Nghĩ Giàu & Làm Giàu ', 'Napoleon Hill', 'NXB Lao Động', '2019', 115000.00, 170, 'Bí quyết làm giàu...', 'available', 4, '2025-10-25 01:53:02'),
 (13, 'Không sinh không diệt đừng sợ hãi', 'Thích Nhất Hạnh', 'NXB Tôn Giáo', '2020', 95000.00, 110, 'Đừng sợ hãi...', 'available', 4, '2025-10-25 01:53:02'),
-(14, 'Harry Potter và Hòn đá Phù thủy', 'J.K. Rowling', 'NXB Trẻ', '2017', 120000.00, 200, 'Harry khám phá thế giới phù thủy và bí mật Hòn đá Phù thủy.', 'available', 1, '2025-10-28 03:14:28'),
+(14, 'Harry Potter và Hòn đá Phù thủy', 'J.K. Rowling', 'NXB Trẻ', '2017', 120000.00, 198, 'Harry khám phá thế giới phù thủy và bí mật Hòn đá Phù thủy.', 'available', 1, '2025-10-28 03:14:28'),
 (15, 'Harry Potter và Phòng chứa Bí mật', 'J.K. Rowling', 'NXB Trẻ', '2017', 125000.00, 180, 'Phòng chứa Bí mật mở ra, bí ẩn đen tối đe dọa Hogwarts.', 'available', 1, '2025-10-28 03:14:28'),
 (16, 'Harry Potter và Tên tù nhân ngục Azkaban', 'J.K. Rowling', 'NXB Trẻ', '2017', 135000.00, 170, 'Sirius Black trốn tù, sự thật về quá khứ dần hé lộ.', 'available', 1, '2025-10-28 03:14:28'),
 (17, 'Harry Potter và Chiếc cốc lửa', 'J.K. Rowling', 'NXB Trẻ', '2017', 180000.00, 150, 'Giải đấu Tam Pháp thuật và sự trở lại của Voldemort.', 'available', 1, '2025-10-28 03:14:28'),
@@ -94,7 +99,7 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 (19, 'Harry Potter và Hoàng tử Lai', 'J.K. Rowling', 'NXB Trẻ', '2017', 190000.00, 130, 'Khám phá quá khứ Voldemort, chuẩn bị trận chiến cuối.', 'available', 1, '2025-10-28 03:14:28'),
 (20, 'Harry Potter và Bảo bối Tử thần', 'J.K. Rowling', 'NXB Trẻ', '2017', 250000.00, 160, 'Trận chiến cuối cùng, tiêu diệt Trường Sinh Linh Giá.', 'available', 1, '2025-10-28 03:14:28'),
 (22, 'Dế Mèn Phiêu Lưu Ký', 'Tô Hoài', 'NXB Kim Đồng', '2019', 45000.00, 250, 'Câu chuyện cổ tích nổi tiếng về chú Dế Mèn và cuộc phiêu lưu của mình.', 'available', 5, '2025-10-28 19:28:59'),
-(23, 'Những Cuộc Phiêu Lưu Của Tom Sawyer (Tái Bản 2023)', 'Mark Twain', 'NXB Trẻ', '2023', 89000.00, 180, 'Những cuộc phiêu lưu đầy thú vị của cậu bé Tom Sawyer.', 'available', 5, '2025-10-28 19:28:59'),
+(23, 'Những Cuộc Phiêu Lưu Của Tom Sawyer (Tái Bản 2023)', 'Mark Twain', 'NXB Trẻ', '2023', 89000.00, 178, 'Những cuộc phiêu lưu đầy thú vị của cậu bé Tom Sawyer.', 'available', 5, '2025-10-28 19:28:59'),
 (25, 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh (Tái Bản 2023)', 'Nguyễn Nhật Ánh', 'NXB Trẻ', '2023', 95000.00, 220, 'Câu chuyện về tuổi thơ dữ dội và đẹp đẽ ở miền quê Việt Nam.', 'available', 5, '2025-10-28 19:28:59'),
 (26, 'Doraemon Plus - Tập 1 (Tái Bản 2023)', 'Fujiko F. Fujio', 'NXB Kim Đồng', '2020', 22000.00, 500, 'Tập truyện tranh đầu tiên của bộ Doraemon.', 'available', 5, '2025-10-28 19:28:59'),
 (27, 'Thám Tử Lừng Danh Conan - Tập 1 (Tái Bản 2023)', 'Aoyama Gosho', 'NXB Kim Đồng', '2019', 22000.00, 450, 'Tập đầu tiên của thám tử nhí Conan Edogawa.', 'available', 5, '2025-10-28 19:28:59'),
@@ -110,13 +115,14 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 (38, 'Giáo Trình Chuẩn HSK 1', 'Khương Lệ Bình, Vương Phương, Vương Phong, Lưu Lệ Bình', 'Tổng Hợp Thành Phố Hồ Chí Minh', '2023', 155000.00, 140, 'Giáo trình luyện thi HSK tiếng Trung cấp độ 1.', 'available', 8, '2025-10-28 19:28:59'),
 (39, 'Tự Học Đàm Thoại Tiếng Anh - Cuộc Sống Hằng Ngày (Tái Bản)', 'Tri Thức Việt', 'NXB Thanh Niên', '2021', 66000.00, 220, 'Đây là cuốn sách dành cho những ai yêu thích tiếng Anh.', 'available', 8, '2025-10-28 19:28:59'),
 (40, '600 Essential Words For TOEIC', 'Lin Lougheed', 'NXB Tổng Hợp', '2019', 165000.00, 160, 'Từ vựng thiết yếu cho kỳ thi TOEIC.', 'available', 8, '2025-10-28 19:28:59'),
-(46, 'Data Science and Big Data Analytics: Discovering, Analyzing, Visualizing and Presenting Data', 'David Dietrich, Barry Heller và Beibei Yang', 'Wiley', '2015', 275000.00, 90, 'Khám phá thế giới Data Science với Python và R.', 'available', 7, '2025-10-28 19:28:59'),
+(46, 'Data Science and Big Data Analytics: Discovering, Analyzing, Visualizing and Presenting Data', 'David Dietrich, Barry Heller và Beibei Yang', 'Wiley', '2015', 275000.00, 89, 'Khám phá thế giới Data Science với Python và R.', 'available', 7, '2025-10-28 19:28:59'),
 (47, 'Learning SQL', 'ALan Beaulieu', 'NXB Bách Khoa', '2020', 135000.00, 170, 'Thành thạo SQL qua 100+ bài tập thực hành.', 'available', 7, '2025-10-28 19:28:59'),
 (48, 'Nhà Đầu Tư Thông Minh - Stock Market 101', 'Michele Cagan', 'NXB Tài Chính', '2025', 299000.00, 150, 'Cuốn sách kinh điển về đầu tư giá trị từ người thầy của Warren Buffett.', 'available', 3, '2025-12-16 01:14:31'),
 (49, 'Phân Tích Chứng Khoán (Security Analysis)', 'Benjamin Graham - David L Dodd', 'NXB Lao Động', '2018', 399000.00, 120, 'Hướng dẫn chi tiết về phân tích và đầu tư chứng khoán.', 'available', 3, '2025-12-16 01:14:31'),
-(50, 'Thế Giới Giàu - Thế Giới Nghèo - Đấu Tranh Để Thoát Nghèo', 'Ali A.Allawi', 'NXB Chính Trị Quốc Gia Sự Thật', '2025', 332000.00, 200, 'Thế Giới Giàu - Thế Giới Nghèo - Đấu Tranh Để Thoát Nghèo.', 'available', 3, '2025-12-16 01:14:31'),
+(50, 'Thế Giới Giàu - Thế Giới Nghèo - Đấu Tranh Để Thoát Nghèo', 'Ali A.Allawi', 'NXB Chính Trị Quốc Gia Sự Thật', '2025', 332000.00, 194, 'Thế Giới Giàu - Thế Giới Nghèo - Đấu Tranh Để Thoát Nghèo.', 'available', 3, '2025-12-16 01:14:31'),
 (51, 'Đắc Nhân Tâm Trong Thời Đại Số', 'Dale Carnegie, Cộng sự', 'NXB Tổng Hợp TPHCM', '2019', 188000.00, 180, 'Phiên bản hiện đại của Đắc Nhân Tâm cho thời đại công nghệ.', 'available', 4, '2025-12-16 01:14:31'),
-(52, 'Sức Mạnh Của Thói Quen', 'Charles Duhigg', 'NXB Thế Giới', '2020', 125000.00, 160, 'Khám phá cách thói quen hoạt động và cách thay đổi chúng.', 'available', 4, '2025-12-16 01:14:31');
+(52, 'Sức Mạnh Của Thói Quen', 'Charles Duhigg', 'NXB Thế Giới', '2020', 125000.00, 160, 'Khám phá cách thói quen hoạt động và cách thay đổi chúng.', 'available', 4, '2025-12-16 01:14:31'),
+(53, 'aaa', '', '', '0000', 123123.00, 6, 'zscxzcxzc', 'available', 2, '2025-12-30 13:31:59');
 
 -- --------------------------------------------------------
 
@@ -124,16 +130,19 @@ INSERT INTO `books` (`book_id`, `title`, `author`, `publisher`, `published_year`
 -- Cấu trúc bảng cho bảng `book_images`
 --
 
-CREATE TABLE `book_images` (
-  `image_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
-  `main_img` varchar(255) NOT NULL,
-  `sub_img1` varchar(255) DEFAULT NULL,
-  `sub_img2` varchar(255) DEFAULT NULL,
-  `sub_img3` varchar(255) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `book_images`;
+CREATE TABLE IF NOT EXISTS `book_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `book_id` int NOT NULL,
+  `main_img` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `sub_img1` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sub_img2` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sub_img3` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`image_id`),
+  UNIQUE KEY `book_id` (`book_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `book_images`
@@ -183,7 +192,8 @@ INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_i
 (49, 49, 'book_1766269345_694721a132730.webp', 'book_1766269348_694721a4337ad.webp', 'book_1766269351_694721a728119.webp', 'book_1766269354_694721aa03cc1.webp', '2025-12-16 01:14:31', '2025-12-21 05:22:35'),
 (50, 50, 'book_1766269235_69472133ab842.webp', 'book_1766269238_69472136e66c0.webp', 'book_1766269242_6947213a3611e.webp', 'book_1766269245_6947213d0732c.webp', '2025-12-16 01:14:31', '2025-12-21 05:20:45'),
 (51, 51, 'book_1766266070_694714d620523.webp', 'book_1766266073_694714d9d5003.webp', 'book_1766266077_694714dd5c6a0.webp', 'book_1766266080_694714e0955e1.webp', '2025-12-16 01:14:31', '2025-12-21 04:28:05'),
-(52, 52, 'book_1766266321_694715d10c8ad.webp', 'book_1766266324_694715d4ad697.jpg', 'book_1766266328_694715d8d5587.jpg', 'book_1766266333_694715dd199b7.webp', '2025-12-16 01:14:31', '2025-12-21 04:32:17');
+(52, 52, 'book_1766266321_694715d10c8ad.webp', 'book_1766266324_694715d4ad697.jpg', 'book_1766266328_694715d8d5587.jpg', 'book_1766266333_694715dd199b7.webp', '2025-12-16 01:14:31', '2025-12-21 04:32:17'),
+(53, 53, '', NULL, NULL, NULL, '2025-12-30 13:31:59', '2025-12-30 13:31:59');
 
 -- --------------------------------------------------------
 
@@ -191,14 +201,18 @@ INSERT INTO `book_images` (`image_id`, `book_id`, `main_img`, `sub_img1`, `sub_i
 -- Cấu trúc bảng cho bảng `book_views`
 --
 
-CREATE TABLE `book_views` (
-  `view_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` text DEFAULT NULL,
-  `view_date` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `book_views`;
+CREATE TABLE IF NOT EXISTS `book_views` (
+  `view_id` int NOT NULL AUTO_INCREMENT,
+  `book_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_general_ci,
+  `view_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`view_id`),
+  KEY `idx_book_date` (`book_id`,`view_date`),
+  KEY `idx_user_date` (`user_id`,`view_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `book_views`
@@ -428,7 +442,13 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 (285, 38, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 03:40:20'),
 (286, 12, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 04:36:01'),
 (287, 26, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 04:43:07'),
-(288, 49, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 05:22:41');
+(288, 49, 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-21 05:22:41'),
+(289, 14, 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-30 12:58:01'),
+(290, 5, 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-30 13:02:54'),
+(291, 53, 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-30 13:52:00'),
+(292, 50, 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-30 13:52:07'),
+(293, 46, 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-30 13:55:36'),
+(294, 23, 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', '2025-12-30 14:14:05');
 
 -- --------------------------------------------------------
 
@@ -436,13 +456,17 @@ INSERT INTO `book_views` (`view_id`, `book_id`, `user_id`, `ip_address`, `user_a
 -- Cấu trúc bảng cho bảng `carts`
 --
 
-CREATE TABLE `carts` (
-  `cart_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `book_id` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT 1,
-  `added_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `carts`;
+CREATE TABLE IF NOT EXISTS `carts` (
+  `cart_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `book_id` int DEFAULT NULL,
+  `quantity` int DEFAULT '1',
+  `added_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cart_id`),
+  KEY `user_id` (`user_id`),
+  KEY `book_id` (`book_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -450,14 +474,16 @@ CREATE TABLE `carts` (
 -- Cấu trúc bảng cho bảng `categories`
 --
 
-CREATE TABLE `categories` (
-  `category_id` int(11) NOT NULL,
-  `category_name` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL,
-  `image` varchar(255) DEFAULT '75x100.svg',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `update_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `category_id` int NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '75x100.svg',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `categories`
@@ -471,7 +497,8 @@ INSERT INTO `categories` (`category_id`, `category_name`, `description`, `image`
 (5, 'Thiếu nhi', 'Sách dành cho trẻ em và thiếu nhi', 'category_1766820121_694f89190957f.jpg', '2025-12-08 22:47:40', '2025-12-27 14:22:05'),
 (6, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', 'category_1766820113_694f891101d3a.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:54'),
 (7, 'Công nghệ thông tin', 'Sách lập trình, phần mềm, AI, và mạng máy tính', 'category_1766820104_694f8908e900b.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:46'),
-(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', 'category_1766820094_694f88fe2f5d4.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:36');
+(8, 'Ngoại ngữ', 'Sách học tiếng Anh, Nhật, Hàn và các ngoại ngữ khác', 'category_1766820094_694f88fe2f5d4.jpg', '2025-12-08 22:47:40', '2025-12-27 14:21:36'),
+(10, 'zxczxc', 'ádasdad', 'category_1767076337_695371f1f398d.jpg', '2025-12-30 13:32:24', NULL);
 
 -- --------------------------------------------------------
 
@@ -479,19 +506,22 @@ INSERT INTO `categories` (`category_id`, `category_name`, `description`, `image`
 -- Cấu trúc bảng cho bảng `coupons`
 --
 
-CREATE TABLE `coupons` (
-  `coupon_id` int(11) NOT NULL,
-  `coupon_code` varchar(50) NOT NULL,
-  `discount_type` enum('percent','fixed') DEFAULT 'percent',
+DROP TABLE IF EXISTS `coupons`;
+CREATE TABLE IF NOT EXISTS `coupons` (
+  `coupon_id` int NOT NULL AUTO_INCREMENT,
+  `coupon_code` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `discount_type` enum('percent','fixed') COLLATE utf8mb4_general_ci DEFAULT 'percent',
   `discount_value` decimal(10,2) NOT NULL,
-  `min_order_amount` decimal(10,2) DEFAULT 0.00,
+  `min_order_amount` decimal(10,2) DEFAULT '0.00',
   `max_discount_amount` decimal(10,2) DEFAULT NULL,
-  `usage_limit` int(11) DEFAULT NULL,
-  `used_count` int(11) DEFAULT 0,
-  `start_date` datetime DEFAULT current_timestamp(),
+  `usage_limit` int DEFAULT NULL,
+  `used_count` int DEFAULT '0',
+  `start_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL,
-  `status` enum('active','inactive','expired') DEFAULT 'active',
-  `created_at` datetime DEFAULT current_timestamp()
+  `status` enum('active','inactive','expired') COLLATE utf8mb4_general_ci DEFAULT 'active',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`coupon_id`),
+  UNIQUE KEY `coupon_code` (`coupon_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -500,15 +530,18 @@ CREATE TABLE `coupons` (
 -- Cấu trúc bảng cho bảng `notifications`
 --
 
-CREATE TABLE `notifications` (
-  `notification_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `type` enum('order','promotion','system','review') DEFAULT 'system',
-  `is_read` tinyint(1) DEFAULT 0,
-  `related_id` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `notification_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `message` text COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('order','promotion','system','review') COLLATE utf8mb4_general_ci DEFAULT 'system',
+  `is_read` tinyint(1) DEFAULT '0',
+  `related_id` int DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notification_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -517,64 +550,79 @@ CREATE TABLE `notifications` (
 -- Cấu trúc bảng cho bảng `orders`
 --
 
-CREATE TABLE `orders` (
-  `order_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `full_name` varchar(150) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `city` varchar(100) NOT NULL,
-  `district` varchar(100) NOT NULL,
-  `payment_method` enum('cod','bank','momo','zalopay') DEFAULT 'cod',
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE IF NOT EXISTS `orders` (
+  `order_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `full_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `city` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `district` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `payment_method` enum('cod','bank','momo','zalopay') COLLATE utf8mb4_general_ci DEFAULT 'cod',
   `total_amount` decimal(10,2) NOT NULL,
-  `status` enum('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `coupon_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `status` enum('pending','processing','shipped','delivered','cancelled') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `payment_status` enum('pending','paid','cancelled') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `coupon_id` int DEFAULT NULL,
+  PRIMARY KEY (`order_id`),
+  KEY `user_id` (`user_id`),
+  KEY `coupon_id` (`coupon_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `user_id`, `full_name`, `phone`, `email`, `address`, `city`, `district`, `payment_method`, `total_amount`, `status`, `created_at`, `coupon_id`) VALUES
-(14, 8, 'Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '776', '', 425000.00, 'cancelled', '2025-12-12 05:54:10', NULL),
-(15, 8, 'Khắc Hiếu', '0383714805', 'dh52200681@student.stu.edu.vn', '180 Cao Lỗ, phường 4', '79', '776', 'cod', 209000.00, 'delivered', '2025-12-12 05:58:40', NULL),
-(16, 6, 'Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '776', 'cod', 209000.00, 'delivered', '2025-12-13 02:41:34', NULL),
-(17, 6, 'Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '774', 'cod', 178000.00, 'delivered', '2025-12-13 02:53:02', NULL),
-(18, 8, 'Mỹ Huyền', '0349020984', 'buikhachieu@outlook.com', '180 Cao Lỗ, phường 4', '79', '776', 'bank', 257000.00, 'delivered', '2025-12-13 06:09:17', NULL),
-(19, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu25072004@outlook.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 179000.00, 'pending', '2025-12-13 18:00:42', NULL),
-(20, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 533000.00, 'pending', '2025-12-13 18:29:25', NULL),
-(21, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', '2025-12-13 18:32:06', NULL),
-(22, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', '2025-12-13 18:35:30', NULL),
-(23, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 120000.00, 'pending', '2025-12-13 18:43:28', NULL),
-(24, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', '2025-12-13 18:46:40', NULL),
-(25, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 120000.00, 'pending', '2025-12-13 19:01:08', NULL),
-(26, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '773', 'cod', 240000.00, 'pending', '2025-12-14 03:02:32', NULL),
-(27, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo.claude01@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'bank', 120000.00, 'delivered', '2025-12-21 00:24:34', NULL),
-(28, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 2145000.00, 'pending', '2025-12-21 07:05:58', NULL),
-(29, 8, 'Khắc Hiếu', '0349020984', 'myhuyenkhachieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 835000.00, 'pending', '2025-12-21 07:08:54', NULL),
-(30, 8, 'Khắc Hiếu', '0349020984', 'buihieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 309000.00, 'pending', '2025-12-21 07:11:30', NULL),
-(31, 8, 'Khắc Hiếu', '0349020984', 'buihieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 1030000.00, 'pending', '2025-12-21 07:12:17', NULL),
-(32, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 07:17:29', NULL),
-(33, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 332000.00, 'pending', '2025-12-21 07:21:56', NULL),
-(34, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 95000.00, 'pending', '2025-12-21 07:48:08', NULL),
-(35, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 125000.00, 'pending', '2025-12-21 07:52:02', NULL),
-(36, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:21:38', NULL),
-(37, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', '2025-12-21 08:25:46', NULL),
-(38, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:30:42', NULL),
-(39, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:37:18', NULL),
-(40, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', '2025-12-21 08:39:19', NULL),
-(41, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', '2025-12-21 08:49:44', NULL),
-(42, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', '2025-12-21 08:51:51', NULL),
-(43, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 378000.00, 'pending', '2025-12-21 09:10:49', NULL),
-(44, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 488000.00, 'pending', '2025-12-21 09:17:50', NULL),
-(45, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 250000.00, 'pending', '2025-12-21 09:19:35', NULL),
-(46, 1, 'Bùi Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5, quận 8, Hồ Chí Minh', '72', '710', 'cod', 378000.00, 'pending', '2025-12-21 09:28:36', NULL),
-(47, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 498000.00, 'pending', '2025-12-21 09:32:12', NULL),
-(48, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 613000.00, 'pending', '2025-12-21 09:34:07', NULL),
-(49, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '770', 'cod', 488000.00, 'pending', '2025-12-21 09:41:59', NULL),
-(50, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '777', 'cod', 188000.00, 'pending', '2025-12-21 09:45:09', NULL);
+INSERT INTO `orders` (`order_id`, `user_id`, `full_name`, `phone`, `email`, `address`, `city`, `district`, `payment_method`, `total_amount`, `status`, `payment_status`, `created_at`, `updated_at`, `coupon_id`) VALUES
+(14, 8, 'Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '776', '', 425000.00, 'cancelled', 'pending', '2025-12-12 05:54:10', '2025-12-30 14:13:55', NULL),
+(15, 8, 'Khắc Hiếu', '0383714805', 'dh52200681@student.stu.edu.vn', '180 Cao Lỗ, phường 4', '79', '776', 'cod', 209000.00, 'delivered', 'pending', '2025-12-12 05:58:40', '2025-12-30 14:13:55', NULL),
+(16, 6, 'Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '776', 'cod', 209000.00, 'delivered', 'pending', '2025-12-13 02:41:34', '2025-12-30 14:13:55', NULL),
+(17, 6, 'Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '774', 'cod', 178000.00, 'delivered', 'pending', '2025-12-13 02:53:02', '2025-12-30 14:13:55', NULL),
+(18, 8, 'Mỹ Huyền', '0349020984', 'buikhachieu@outlook.com', '180 Cao Lỗ, phường 4', '79', '776', 'bank', 257000.00, 'delivered', 'pending', '2025-12-13 06:09:17', '2025-12-30 14:13:55', NULL),
+(19, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu25072004@outlook.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 179000.00, 'pending', 'pending', '2025-12-13 18:00:42', '2025-12-30 14:13:55', NULL),
+(20, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 533000.00, 'pending', 'pending', '2025-12-13 18:29:25', '2025-12-30 14:13:55', NULL),
+(21, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', 'pending', '2025-12-13 18:32:06', '2025-12-30 14:13:55', NULL),
+(22, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', 'pending', '2025-12-13 18:35:30', '2025-12-30 14:13:55', NULL),
+(23, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-13 18:43:28', '2025-12-30 14:13:55', NULL),
+(24, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 380000.00, 'pending', 'pending', '2025-12-13 18:46:40', '2025-12-30 14:13:55', NULL),
+(25, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-13 19:01:08', '2025-12-30 14:13:55', NULL),
+(26, 8, 'Khắc Hiếu', '0349020984', 'buikhachieu2574@gmail.com', '180 Cao Lỗ, phường 4', '79', '773', 'cod', 240000.00, 'pending', 'pending', '2025-12-14 03:02:32', '2025-12-30 14:13:55', NULL),
+(27, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo.claude01@gmail.com', 'Phạm Thế Hiển, Phường 5', '79', '776', 'bank', 120000.00, 'delivered', 'pending', '2025-12-21 00:24:34', '2025-12-30 14:13:55', NULL),
+(28, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 2145000.00, 'pending', 'pending', '2025-12-21 07:05:58', '2025-12-30 14:13:55', NULL),
+(29, 8, 'Khắc Hiếu', '0349020984', 'myhuyenkhachieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 835000.00, 'pending', 'pending', '2025-12-21 07:08:54', '2025-12-30 14:13:55', NULL),
+(30, 8, 'Khắc Hiếu', '0349020984', 'buihieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 309000.00, 'pending', 'pending', '2025-12-21 07:11:30', '2025-12-30 14:13:55', NULL),
+(31, 8, 'Khắc Hiếu', '0349020984', 'buihieu@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 1030000.00, 'pending', 'pending', '2025-12-21 07:12:17', '2025-12-30 14:13:55', NULL),
+(32, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-21 07:17:29', '2025-12-30 14:13:55', NULL),
+(33, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 332000.00, 'pending', 'pending', '2025-12-21 07:21:56', '2025-12-30 14:13:55', NULL),
+(34, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 95000.00, 'pending', 'pending', '2025-12-21 07:48:08', '2025-12-30 14:13:55', NULL),
+(35, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 125000.00, 'pending', 'pending', '2025-12-21 07:52:02', '2025-12-30 14:13:55', NULL),
+(36, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-21 08:21:38', '2025-12-30 14:13:55', NULL),
+(37, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', 'pending', '2025-12-21 08:25:46', '2025-12-30 14:13:55', NULL),
+(38, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-21 08:30:42', '2025-12-30 14:13:55', NULL),
+(39, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-21 08:37:18', '2025-12-30 14:13:55', NULL),
+(40, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', 'pending', '2025-12-21 08:39:19', '2025-12-30 14:13:55', NULL),
+(41, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 120000.00, 'pending', 'pending', '2025-12-21 08:49:44', '2025-12-30 14:13:55', NULL),
+(42, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 189000.00, 'pending', 'pending', '2025-12-21 08:51:51', '2025-12-30 14:13:55', NULL),
+(43, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 378000.00, 'pending', 'pending', '2025-12-21 09:10:49', '2025-12-30 14:13:55', NULL),
+(44, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 488000.00, 'pending', 'pending', '2025-12-21 09:17:50', '2025-12-30 14:13:55', NULL),
+(45, 8, 'Khắc Hiếu', '0349020984', 'hiandozovolley@outlook.com', '180 Cao Lỗ', '79', '776', 'cod', 250000.00, 'pending', 'pending', '2025-12-21 09:19:35', '2025-12-30 14:13:55', NULL),
+(46, 1, 'Bùi Khắc Hiếu', '0383714805', 'buikhachieu2574@gmail.com', 'Phạm Thế Hiển, Phường 5, quận 8, Hồ Chí Minh', '72', '710', 'cod', 378000.00, 'pending', 'pending', '2025-12-21 09:28:36', '2025-12-30 14:13:55', NULL),
+(47, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 498000.00, 'pending', 'pending', '2025-12-21 09:32:12', '2025-12-30 14:13:55', NULL),
+(48, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '776', 'cod', 613000.00, 'pending', 'pending', '2025-12-21 09:34:07', '2025-12-30 14:13:55', NULL),
+(49, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '770', 'cod', 488000.00, 'pending', 'pending', '2025-12-21 09:41:59', '2025-12-30 14:13:55', NULL),
+(50, 10, 'Hiếu Nghĩa', '0349020984', 'hiandozo1608@gmail.com', '180 Cao Lỗ', '79', '777', 'cod', 188000.00, 'pending', 'pending', '2025-12-21 09:45:09', '2025-12-30 14:13:55', NULL),
+(51, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '01', '016', 'cod', 378000.00, 'pending', 'pending', '2025-12-30 11:44:06', '2025-12-30 14:13:55', NULL),
+(52, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '01', '005', 'cod', 120000.00, 'pending', 'pending', '2025-12-30 12:58:11', '2025-12-30 14:13:55', NULL),
+(53, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '01', '019', 'cod', 189000.00, 'pending', 'pending', '2025-12-30 13:01:41', '2025-12-30 14:13:55', NULL),
+(54, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '01', '017', 'cod', 189000.00, 'pending', 'pending', '2025-12-30 13:03:02', '2025-12-30 14:13:55', NULL),
+(55, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '01', '003', 'cod', 120000.00, 'pending', 'pending', '2025-12-30 13:39:12', '2025-12-30 14:13:55', NULL),
+(56, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '01', '250', 'cod', 240000.00, 'delivered', 'pending', '2025-12-30 13:47:18', '2025-12-30 14:13:55', NULL),
+(57, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '79', '786', 'momo', 275000.00, 'pending', 'pending', '2025-12-30 14:11:02', '2025-12-30 14:13:55', NULL),
+(58, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '79', '773', 'momo', 89000.00, 'pending', 'paid', '2025-12-30 14:14:15', '2025-12-30 14:14:42', NULL),
+(59, 11, 'Long Soai Ca', '1231231455', 'ngotrantrunghieu4873@gmail.com', '233', '79', '775', 'momo', 996000.00, 'pending', 'paid', '2025-12-30 14:22:05', '2025-12-30 14:22:36', NULL);
 
 -- --------------------------------------------------------
 
@@ -582,13 +630,17 @@ INSERT INTO `orders` (`order_id`, `user_id`, `full_name`, `phone`, `email`, `add
 -- Cấu trúc bảng cho bảng `order_details`
 --
 
-CREATE TABLE `order_details` (
-  `order_detail_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
-  `quantity` int(11) DEFAULT 1,
-  `price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `order_details`;
+CREATE TABLE IF NOT EXISTS `order_details` (
+  `order_detail_id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  `quantity` int DEFAULT '1',
+  `price` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`order_detail_id`),
+  KEY `order_id` (`order_id`),
+  KEY `book_id` (`book_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `order_details`
@@ -658,7 +710,46 @@ INSERT INTO `order_details` (`order_detail_id`, `order_id`, `book_id`, `quantity
 (95, 48, 5, 1, 189000.00),
 (96, 49, 34, 1, 189000.00),
 (97, 49, 48, 1, 299000.00),
-(98, 50, 51, 1, 188000.00);
+(98, 50, 51, 1, 188000.00),
+(99, 51, 5, 2, 189000.00),
+(100, 52, 14, 1, 120000.00),
+(101, 53, 5, 1, 189000.00),
+(102, 54, 5, 1, 189000.00),
+(103, 55, 14, 1, 120000.00),
+(104, 56, 14, 2, 120000.00),
+(105, 57, 46, 1, 275000.00),
+(106, 58, 23, 1, 89000.00),
+(107, 59, 50, 3, 332000.00);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `order_payments`
+--
+
+DROP TABLE IF EXISTS `order_payments`;
+CREATE TABLE IF NOT EXISTS `order_payments` (
+  `payment_id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `transaction_id` varchar(255) DEFAULT NULL,
+  `payment_method` enum('cod','momo','vnpay','bank') NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `status` enum('pending','success','failed','cancelled') DEFAULT 'pending',
+  `response_data` text,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`payment_id`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `order_payments`
+--
+
+INSERT INTO `order_payments` (`payment_id`, `order_id`, `transaction_id`, `payment_method`, `amount`, `status`, `response_data`, `created_at`, `updated_at`) VALUES
+(1, 57, 'ORDER_57_1767078662', 'momo', 275000.00, 'pending', NULL, '2025-12-30 14:11:02', '2025-12-30 14:11:02'),
+(2, 58, '4639383043', 'momo', 89000.00, 'success', '{\"partnerCode\":\"MOMOBKUN20180529\",\"orderId\":\"ORDER_58_1767078855\",\"requestId\":\"1767078855\",\"amount\":\"89000\",\"orderInfo\":\"Thanh toan don hang sach - #58\",\"orderType\":\"momo_wallet\",\"transId\":\"4639383043\",\"resultCode\":\"0\",\"message\":\"Th\\u00e0nh c\\u00f4ng.\",\"payType\":\"aio_qr\",\"responseTime\":\"1767078879133\",\"extraData\":\"eyJvcmRlcl9pZCI6IjU4IiwidXNlcl9pZCI6MTF9\",\"signature\":\"1b6816efd03b36c61f3a90a8217be9161cad8ea3863f0d8987f2a0468a175d68\"}', '2025-12-30 14:14:15', '2025-12-30 14:14:42'),
+(3, 59, '4639392889', 'momo', 996000.00, 'success', '{\"partnerCode\":\"MOMOBKUN20180529\",\"orderId\":\"ORDER_59_1767079325\",\"requestId\":\"1767079325\",\"amount\":\"996000\",\"orderInfo\":\"Thanh toan don hang sach - #59\",\"orderType\":\"momo_wallet\",\"transId\":\"4639392889\",\"resultCode\":\"0\",\"message\":\"Th\\u00e0nh c\\u00f4ng.\",\"payType\":\"aio_qr\",\"responseTime\":\"1767079353300\",\"extraData\":\"eyJvcmRlcl9pZCI6IjU5IiwidXNlcl9pZCI6MTF9\",\"signature\":\"a00aa0a686bfd4f39ef252de88d1c5b891e31accf346d6eee0dfae4950743141\"}', '2025-12-30 14:22:06', '2025-12-30 14:22:36');
 
 -- --------------------------------------------------------
 
@@ -666,14 +757,18 @@ INSERT INTO `order_details` (`order_detail_id`, `order_id`, `book_id`, `quantity
 -- Cấu trúc bảng cho bảng `reviews`
 --
 
-CREATE TABLE `reviews` (
-  `review_id` int(11) NOT NULL,
-  `book_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `rating` tinyint(3) UNSIGNED DEFAULT NULL,
-  `comment` text DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `book_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `rating` tinyint UNSIGNED DEFAULT NULL,
+  `comment` text COLLATE utf8mb4_general_ci,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`review_id`),
+  KEY `book_id` (`book_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `reviews`
@@ -696,7 +791,8 @@ INSERT INTO `reviews` (`review_id`, `book_id`, `user_id`, `rating`, `comment`, `
 (15, 49, 8, 5, 'sách hay lắm', '2025-12-17 04:22:26'),
 (16, 49, 6, 1, 'Có hay ho gì đâu má !!!!!!', '2025-12-17 04:40:02'),
 (17, 49, 10, 5, 'có 2 tỉ vào hdpe thì ngon luônnn', '2025-12-17 04:42:33'),
-(18, 14, 10, 4, 'cũng tạm được cho 4 seo', '2025-12-21 00:26:03');
+(18, 14, 10, 4, 'cũng tạm được cho 4 seo', '2025-12-21 00:26:03'),
+(19, 14, 11, 2, '2 bạn dưới là ảo', '2025-12-30 13:53:44');
 
 -- --------------------------------------------------------
 
@@ -704,21 +800,25 @@ INSERT INTO `reviews` (`review_id`, `book_id`, `user_id`, `rating`, `comment`, `
 -- Cấu trúc bảng cho bảng `users`
 --
 
-CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `display_name` varchar(100) NOT NULL,
-  `avatar` varchar(255) DEFAULT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `role` enum('user','admin') DEFAULT 'user',
-  `status` enum('active','inactive','banned') DEFAULT 'active',
-  `is_agree` tinyint(1) DEFAULT 0,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `display_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `avatar` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_general_ci,
+  `role` enum('user','admin') COLLATE utf8mb4_general_ci DEFAULT 'user',
+  `status` enum('active','inactive','banned') COLLATE utf8mb4_general_ci DEFAULT 'active',
+  `is_agree` tinyint(1) DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
@@ -730,7 +830,8 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `display_name`,
 (7, 'admin123', 'admin@gmail.com', '3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', 'Admin', NULL, '', '', 'admin', 'active', 0, '2025-10-30 04:31:16', '2025-10-30 04:31:46'),
 (8, 'KhacHieu', 'buihieu@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Khắc Hiếu', 'avatar_8_1765617008.jpg', '', '', 'user', 'active', 1, '2025-11-23 18:15:56', '2025-12-14 03:01:03'),
 (9, 'hieu123', 'vuchau6800@gmail.com', '46b8a8b1f655e8f92e5a24599e043324046b4c9ed2eb3cb9a55a12b335fe02b8', 'Trung Hiếu', NULL, '', '', 'admin', 'active', 1, '2025-12-08 20:18:39', '2025-12-13 03:42:24'),
-(10, 'HieuNghia', 'hiandozo.claude01@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Hiếu Nghĩa', 'avatar_10_1766252431.jpeg', NULL, NULL, 'user', 'active', 1, '2025-12-17 03:45:36', '2025-12-21 00:40:31');
+(10, 'HieuNghia', 'hiandozo.claude01@gmail.com', 'f1042c519b345af51a021c197440d7c482e6e3e2bc3448db2476ef4c7058180d', 'Hiếu Nghĩa', 'avatar_10_1766252431.jpeg', NULL, NULL, 'user', 'active', 1, '2025-12-17 03:45:36', '2025-12-21 00:40:31'),
+(11, 'H-USER', 'ngotrantrunghieu4873@gmail.com', '46b8a8b1f655e8f92e5a24599e043324046b4c9ed2eb3cb9a55a12b335fe02b8', 'Long Soai Ca', 'avatar_11_1767077371.jpg', '', '', 'user', 'active', 0, '2025-12-30 11:43:02', '2025-12-30 13:49:31');
 
 -- --------------------------------------------------------
 
@@ -738,194 +839,16 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `display_name`,
 -- Cấu trúc bảng cho bảng `wishlists`
 --
 
-CREATE TABLE `wishlists` (
-  `wishlist_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
-  `added_at` datetime DEFAULT current_timestamp()
+DROP TABLE IF EXISTS `wishlists`;
+CREATE TABLE IF NOT EXISTS `wishlists` (
+  `wishlist_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  `added_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`wishlist_id`),
+  UNIQUE KEY `user_id` (`user_id`,`book_id`),
+  KEY `book_id` (`book_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Chỉ mục cho các bảng đã đổ
---
-
---
--- Chỉ mục cho bảng `banners`
---
-ALTER TABLE `banners`
-  ADD PRIMARY KEY (`banner_id`);
-
---
--- Chỉ mục cho bảng `books`
---
-ALTER TABLE `books`
-  ADD PRIMARY KEY (`book_id`),
-  ADD KEY `category_id` (`category_id`);
-
---
--- Chỉ mục cho bảng `book_images`
---
-ALTER TABLE `book_images`
-  ADD PRIMARY KEY (`image_id`),
-  ADD UNIQUE KEY `book_id` (`book_id`);
-
---
--- Chỉ mục cho bảng `book_views`
---
-ALTER TABLE `book_views`
-  ADD PRIMARY KEY (`view_id`),
-  ADD KEY `idx_book_date` (`book_id`,`view_date`),
-  ADD KEY `idx_user_date` (`user_id`,`view_date`);
-
---
--- Chỉ mục cho bảng `carts`
---
-ALTER TABLE `carts`
-  ADD PRIMARY KEY (`cart_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- Chỉ mục cho bảng `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`category_id`);
-
---
--- Chỉ mục cho bảng `coupons`
---
-ALTER TABLE `coupons`
-  ADD PRIMARY KEY (`coupon_id`),
-  ADD UNIQUE KEY `coupon_code` (`coupon_code`);
-
---
--- Chỉ mục cho bảng `notifications`
---
-ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`notification_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Chỉ mục cho bảng `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `coupon_id` (`coupon_id`);
-
---
--- Chỉ mục cho bảng `order_details`
---
-ALTER TABLE `order_details`
-  ADD PRIMARY KEY (`order_detail_id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- Chỉ mục cho bảng `reviews`
---
-ALTER TABLE `reviews`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `book_id` (`book_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Chỉ mục cho bảng `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Chỉ mục cho bảng `wishlists`
---
-ALTER TABLE `wishlists`
-  ADD PRIMARY KEY (`wishlist_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`,`book_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- AUTO_INCREMENT cho các bảng đã đổ
---
-
---
--- AUTO_INCREMENT cho bảng `banners`
---
-ALTER TABLE `banners`
-  MODIFY `banner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT cho bảng `books`
---
-ALTER TABLE `books`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
-
---
--- AUTO_INCREMENT cho bảng `book_images`
---
-ALTER TABLE `book_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
-
---
--- AUTO_INCREMENT cho bảng `book_views`
---
-ALTER TABLE `book_views`
-  MODIFY `view_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=289;
-
---
--- AUTO_INCREMENT cho bảng `carts`
---
-ALTER TABLE `carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
-
---
--- AUTO_INCREMENT cho bảng `categories`
---
-ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT cho bảng `coupons`
---
-ALTER TABLE `coupons`
-  MODIFY `coupon_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT cho bảng `notifications`
---
-ALTER TABLE `notifications`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT cho bảng `orders`
---
-ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
-
---
--- AUTO_INCREMENT cho bảng `order_details`
---
-ALTER TABLE `order_details`
-  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
-
---
--- AUTO_INCREMENT cho bảng `reviews`
---
-ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
-
---
--- AUTO_INCREMENT cho bảng `users`
---
-ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT cho bảng `wishlists`
---
-ALTER TABLE `wishlists`
-  MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -976,6 +899,12 @@ ALTER TABLE `orders`
 ALTER TABLE `order_details`
   ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `order_payments`
+--
+ALTER TABLE `order_payments`
+  ADD CONSTRAINT `fk_order_payments_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `reviews`
