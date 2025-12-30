@@ -295,7 +295,8 @@ const CheckoutHandler = {
             const fullAddress = `${orderData.address}, ${districtText}, ${cityText}`;
 
             // ✅ QUAN TRỌNG: Dùng URL ngrok thay vì window.location.origin
-            const websiteUrl = 'https://deana-chordamesodermic-hilariously.ngrok-free.dev/CocornBookstore';
+            // const websiteUrl = 'https://deana-chordamesodermic-hilariously.ngrok-free.dev/CocornBookstore';
+            const websiteUrl = window.location.origin + '/CocornBookstore';
 
             const emailData = {
                 order_id: orderData.order_id,

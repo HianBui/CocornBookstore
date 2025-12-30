@@ -1,573 +1,187 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xác nhận đơn hàng</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
-        }
-        
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Header */
-        .email-header {
-            background: linear-gradient(135deg, #2ba8e2 0%, #1a8ccc 100%);
-            padding: 40px 30px;
-            text-align: center;
-            color: white;
-        }
-        
-        .email-header .logo {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .email-header .logo::before {
-            content: "🥥";
-            font-size: 36px;
-        }
-        
-        .email-header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .email-header .checkmark {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            background-color: #28a745;
-            border-radius: 50%;
-            margin: 20px 0 10px;
-            position: relative;
-            animation: scaleIn 0.5s ease-out;
-        }
-        
-        .email-header .checkmark::after {
-            content: "✓";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
-            color: white;
-            font-weight: bold;
-        }
-        
-        @keyframes scaleIn {
-            0% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        
-        /* Content */
-        .email-content {
-            padding: 40px 30px;
-        }
-        
-        .greeting {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .order-info {
-            background-color: #f8f9fa;
-            border-left: 4px solid #2ba8e2;
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 8px;
-        }
-        
-        .order-info h2 {
-            color: #2ba8e2;
-            font-size: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .order-info h2::before {
-            content: "📦";
-            font-size: 24px;
-        }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .info-row:last-child {
-            border-bottom: none;
-        }
-        
-        .info-label {
-            color: #666;
-            font-weight: 500;
-        }
-        
-        .info-value {
-            color: #333;
-            font-weight: 600;
-        }
-        
-        .order-id {
-            color: #2ba8e2;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        /* Products Table */
-        .products-section {
-            margin: 30px 0;
-        }
-        
-        .products-section h3 {
-            color: #333;
-            font-size: 18px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2ba8e2;
-        }
-        
-        .product-item {
-            display: flex;
-            padding: 15px;
-            background-color: #f8f9fa;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .product-image {
-            width: 80px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 6px;
-            background-color: #e0e0e0;
-        }
-        
-        .product-details {
-            flex: 1;
-        }
-        
-        .product-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-        
-        .product-quantity {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .product-price {
-            color: #2ba8e2;
-            font-weight: 700;
-            font-size: 18px;
-            text-align: right;
-        }
-        
-        /* Order Summary */
-        .order-summary {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 25px 0;
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            color: #333;
-        }
-        
-        .summary-row.total {
-            border-top: 2px solid #2ba8e2;
-            margin-top: 10px;
-            padding-top: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #2ba8e2;
-        }
-        
-        /* Shipping Info */
-        .shipping-info {
-            background-color: #fff8e6;
-            border-left: 4px solid #ffc107;
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 8px;
-        }
-        
-        .shipping-info h3 {
-            color: #f57c00;
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .shipping-info h3::before {
-            content: "🚚";
-            font-size: 24px;
-        }
-        
-        .shipping-info p {
-            color: #666;
-            line-height: 1.8;
-            margin: 5px 0;
-        }
-        
-        .shipping-info strong {
-            color: #333;
-        }
-        
-        /* Payment Info */
-        .payment-info {
-            background-color: #e8f5e9;
-            border-left: 4px solid #28a745;
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 8px;
-        }
-        
-        .payment-info h3 {
-            color: #28a745;
-            font-size: 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .payment-info h3::before {
-            content: "💳";
-            font-size: 24px;
-        }
-        
-        .payment-method {
-            display: inline-block;
-            background-color: #28a745;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-top: 5px;
-        }
-        
-        /* Action Buttons */
-        .action-buttons {
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 15px 40px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            margin: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background-color: #2ba8e2;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #1a8ccc;
-            box-shadow: 0 4px 12px rgba(43, 168, 226, 0.3);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            color: #2ba8e2;
-            border: 2px solid #2ba8e2;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #f0f9ff;
-        }
-        
-        /* Help Section */
-        .help-section {
-            background-color: #f0f9ff;
-            padding: 25px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 25px 0;
-        }
-        
-        .help-section h3 {
-            color: #2ba8e2;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        .help-section p {
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-        
-        .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-        
-        /* Footer */
-        .email-footer {
-            background-color: #f8f9fa;
-            padding: 30px;
-            text-align: center;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .social-links {
-            margin: 20px 0;
-        }
-        
-        .social-links a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            background-color: #2ba8e2;
-            color: white;
-            border-radius: 50%;
-            margin: 0 8px;
-            text-decoration: none;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-        
-        .social-links a:hover {
-            background-color: #1a8ccc;
-            transform: translateY(-3px);
-        }
-        
-        .footer-text {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 10px 0;
-        }
-        
-        .copyright {
-            color: #999;
-            font-size: 12px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        /* Responsive */
-        @media only screen and (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            
-            .email-content {
-                padding: 25px 20px;
-            }
-            
-            .email-header {
-                padding: 30px 20px;
-            }
-            
-            .product-item {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .product-price {
-                text-align: center;
-            }
-            
-            .contact-info {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .btn {
-                display: block;
-                margin: 10px 0;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <!-- Header -->
-        <div class="email-header">
-            <div class="logo">Coconut Corn</div>
-            <div class="checkmark"><i class="bi bi-check"></i></div>
-            <h1>Đặt hàng thành công!</h1>
-            <p>Cảm ơn bạn đã mua hàng tại Coconut Corn</p>
+<html lang="vi" style="box-sizing: border-box;">
+  <head style="box-sizing: border-box;">
+    <meta charset="UTF-8" style="box-sizing: border-box;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" style="box-sizing: border-box;">
+    <title style="box-sizing: border-box;">Xác nhận đơn hàng - Coconut Corn</title>
+    
+    
+    
+  </head>
+  <body style="box-sizing: border-box;margin: 0;font-family: &quot;Segoe UI&quot;, Tahoma, Geneva, Verdana, sans-serif;font-size: var(--bs-body-font-size);font-weight: var(--bs-body-font-weight);line-height: var(--bs-body-line-height);color: var(--bs-body-color);text-align: var(--bs-body-text-align);background-color: #f5f7fa;-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: transparent;padding: 20px 0;">
+    <div class="email-wrapper" style="box-sizing: border-box;max-width: 650px;margin: 0 auto;background: #ffffff;box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);border-radius: 16px;overflow: hidden;">
+      <!-- Header -->
+      <div class="email-header" style="box-sizing: border-box;background: linear-gradient(
+          135deg,
+          #2ba8e2 0%,
+          #1a8ccc 100%
+        );color: white;padding: 50px 30px;text-align: center;">
+        <div class="logo-box" style="box-sizing: border-box;font-size: 42px;font-weight: 700;margin-bottom: 20px;letter-spacing: 1px;text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);">🥥 Coconut Corn 🌽</div>
+        <div class="success-icon" style="box-sizing: border-box;width: 80px;height: 80px;background: #28a745;border-radius: 50%;display: inline-flex;align-items: center;justify-content: center;margin: 20px 0;animation: scaleUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+          <img src="./image/check-lg.svg" class="bi bi-check-lg" style="box-sizing: border-box;font-size: 48px;color: white !important;">
         </div>
-        
-        <!-- Content -->
-        <div class="email-content">
-            <div class="greeting">
-                Xin chào <strong>{{CUSTOMER_NAME}}</strong>,
-                <br><br>
-                Chúng tôi đã nhận được đơn hàng của bạn và đang xử lý. Đơn hàng sẽ được giao đến bạn trong thời gian sớm nhất.
-            </div>
-            
-            <!-- Order Info -->
-            <div class="order-info">
-                <h2>Thông tin đơn hàng</h2>
-                <div class="info-row">
-                    <span class="info-label">Mã đơn hàng:</span>
-                    <span class="info-value order-id">#{{ORDER_ID}}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Ngày đặt:</span>
-                    <span class="info-value">{{ORDER_DATE}}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Trạng thái:</span>
-                    <span class="info-value" style="color: #28a745;">Đang xử lý</span>
-                </div>
-            </div>
-            
-            <!-- Products -->
-            <div class="products-section">
-                <h3>📚 Sản phẩm đã đặt</h3>
-                {{PRODUCTS_LIST}}
-            </div>
-            
-            <!-- Order Summary -->
-            <div class="order-summary">
-                <div class="summary-row">
-                    <span>Tạm tính:</span>
-                    <span>{{SUBTOTAL}}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Phí vận chuyển:</span>
-                    <span>{{SHIPPING_FEE}}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Giảm giá:</span>
-                    <span style="color: #dc3545;">-{{DISCOUNT}}</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Tổng cộng:</span>
-                    <span>{{TOTAL}}</span>
-                </div>
-            </div>
-            
-            <!-- Shipping Info -->
-            <div class="shipping-info">
-                <h3>Thông tin giao hàng</h3>
-                <p><strong>Người nhận:</strong> {{CUSTOMER_NAME}}</p>
-                <p><strong>Số điện thoại:</strong> {{PHONE}}</p>
-                <p><strong>Email:</strong> {{EMAIL}}</p>
-                <p><strong>Địa chỉ:</strong> {{ADDRESS}}</p>
-            </div>
-            
-            <!-- Payment Info -->
-            <div class="payment-info">
-                <h3>Phương thức thanh toán</h3>
-                <span class="payment-method">{{PAYMENT_METHOD}}</span>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <a href="{{WEBSITE_URL}}" class="btn btn-primary">Tiếp tục mua sắm</a>
-                <a href="{{WEBSITE_URL}}/infor.html" class="btn btn-secondary">Xem đơn hàng</a>
-            </div>
-            
-            <!-- Help Section -->
-            <div class="help-section">
-                <h3>💬 Cần hỗ trợ?</h3>
-                <p>Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, đừng ngần ngại liên hệ với chúng tôi:</p>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        📞 <strong>0383714805</strong>
-                    </div>
-                    <div class="contact-item">
-                        📧 <strong>contact@cocorn.vn</strong>
-                    </div>
-                </div>
-            </div>
+        <h1 style="box-sizing: border-box;margin-top: 0;margin-bottom: .5rem;font-weight: 600;line-height: 1.2;color: var(--bs-heading-color);font-size: 28px;margin: 15px 0 10px;">Đặt hàng thành công!</h1>
+        <p style="box-sizing: border-box;margin-top: 0;margin-bottom: 1rem;font-size: 16px;opacity: 0.95;">Cảm ơn bạn đã mua hàng tại Coconut Corn</p>
+      </div>
+
+      <!-- Main Content -->
+      <div class="email-body" style="box-sizing: border-box;padding: 40px 35px;">
+        <!-- Greeting -->
+        <div class="greeting-text" style="box-sizing: border-box;font-size: 16px;line-height: 1.7;color: #333;margin-bottom: 30px;">
+          Xin chào <strong style="box-sizing: border-box;font-weight: bolder;">{{CUSTOMER_NAME}}</strong>, <br style="box-sizing: border-box;"><br style="box-sizing: border-box;">
+          Chúng tôi đã nhận được đơn hàng của bạn và đang xử lý. Đơn hàng sẽ
+          được giao đến bạn trong thời gian sớm nhất.
         </div>
-        
-        <!-- Footer -->
-        <div class="email-footer">
-            <div class="social-links">
-                <a href="#" title="Facebook">f</a>
-                <a href="#" title="Instagram">📷</a>
-                <a href="#" title="Twitter">🐦</a>
-            </div>
-            
-            <p class="footer-text">
-                <strong>Coconut Corn - Dừa và Bắp</strong><br>
-                180 Cao Lỗ, phường 4, Quận 8, TP.HCM<br>
-                Email: contact@cocorn.vn | Hotline: 0383714805
-            </p>
-            
-            <p class="footer-text" style="font-size: 12px; color: #999;">
-                Email này được gửi tự động, vui lòng không trả lời trực tiếp.<br>
-                Nếu bạn không thực hiện đơn hàng này, vui lòng liên hệ với chúng tôi ngay.
-            </p>
-            
-            <div class="copyright">
-                © 2025 Coconut Corn. All rights reserved.
-            </div>
+
+        <!-- Order Info Card -->
+        <div class="card info-card order-info-card" style="box-sizing: border-box;--bs-card-spacer-y: 1rem;--bs-card-spacer-x: 1rem;--bs-card-title-spacer-y: 0.5rem;--bs-card-title-color: ;--bs-card-subtitle-color: ;--bs-card-border-width: var(--bs-border-width);--bs-card-border-color: var(--bs-border-color-translucent);--bs-card-border-radius: var(--bs-border-radius);--bs-card-box-shadow: ;--bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));--bs-card-cap-padding-y: 0.5rem;--bs-card-cap-padding-x: 1rem;--bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);--bs-card-cap-color: ;--bs-card-height: ;--bs-card-color: ;--bs-card-bg: var(--bs-body-bg);--bs-card-img-overlay-padding: 1rem;--bs-card-group-margin: 0.75rem;position: relative;display: flex;flex-direction: column;min-width: 0;height: var(--bs-card-height);color: var(--bs-body-color);word-wrap: break-word;background-color: var(--bs-card-bg);background-clip: border-box;border: none;border-radius: 12px;padding: 25px;margin-bottom: 25px;background: linear-gradient(to right, #f8fbff, #ffffff);border-left: 5px solid #2ba8e2;">
+          <div class="info-card-header" style="box-sizing: border-box;display: flex;align-items: center;gap: 12px;margin-bottom: 20px;font-size: 20px;font-weight: 600;color: #2ba8e2;">
+            <img src="./image/box-seam.svg" class="bi bi-box-seam" style="box-sizing: border-box;font-size: 28px;">
+            <span style="box-sizing: border-box;">Thông tin đơn hàng</span>
+          </div>
+          <div class="info-row" style="box-sizing: border-box;display: flex;justify-content: space-between;align-items: center;padding: 14px 0;border-bottom: 1px solid #e9ecef;">
+            <span class="info-label" style="box-sizing: border-box;color: #6c757d;font-weight: 500;font-size: 15px;">Mã đơn hàng:</span>
+            <span class="order-id-badge" style="box-sizing: border-box;background: #2ba8e2;color: white;padding: 8px 16px;border-radius: 8px;font-size: 18px;font-weight: 700;">#{{ORDER_ID}}</span>
+          </div>
+          <div class="info-row" style="box-sizing: border-box;display: flex;justify-content: space-between;align-items: center;padding: 14px 0;border-bottom: 1px solid #e9ecef;">
+            <span class="info-label" style="box-sizing: border-box;color: #6c757d;font-weight: 500;font-size: 15px;">Ngày đặt:</span>
+            <span class="info-value" style="box-sizing: border-box;color: #212529;font-weight: 600;font-size: 15px;">{{ORDER_DATE}}</span>
+          </div>
+          <div class="info-row" style="box-sizing: border-box;display: flex;justify-content: space-between;align-items: center;padding: 14px 0;border-bottom: none;">
+            <span class="info-label" style="box-sizing: border-box;color: #6c757d;font-weight: 500;font-size: 15px;">Trạng thái:</span>
+            <span class="status-badge" style="box-sizing: border-box;background: #28a745;color: white;padding: 6px 14px;border-radius: 20px;font-size: 14px;font-weight: 600;">Đang xử lý</span>
+          </div>
         </div>
+
+        <!-- Products Section -->
+        <div class="products-section" style="box-sizing: border-box;">
+          <h3 style="box-sizing: border-box;margin-top: 0;margin-bottom: 20px;font-weight: 600;line-height: 1.2;color: #212529;font-size: calc(1.3rem + .6vw);display: flex;align-items: center;gap: 10px;padding-bottom: 12px;border-bottom: 3px solid #2ba8e2;">
+            <img src="./image/book.svg" class="bi bi-book" style="box-sizing: border-box;color: #2ba8e2;font-size: 24px;">
+            Sản phẩm đã đặt
+          </h3>
+
+          <!-- Product Cards (Template - repeat for each product) -->
+          <div class="product-card" style="box-sizing: border-box;background: #f8f9fa;border-radius: 12px;padding: 20px;margin-bottom: 12px;display: flex;align-items: center;gap: 20px;transition: all 0.3s ease;">
+            <div class="product-img-box" style="box-sizing: border-box;width: 90px;height: 110px;background: #dee2e6;border-radius: 10px;overflow: hidden;flex-shrink: 0;">
+              <img src="https://via.placeholder.com/90x110?text=Product" alt="Product" style="box-sizing: border-box;vertical-align: middle;width: 100%;height: 100%;object-fit: cover;">
+            </div>
+            <div class="product-details" style="box-sizing: border-box;flex: 1;">
+              <div class="product-name" style="box-sizing: border-box;font-weight: 600;font-size: 17px;color: #212529;margin-bottom: 6px;">{{PRODUCT_NAME}}</div>
+              <div class="product-quantity" style="box-sizing: border-box;color: #6c757d;font-size: 15px;">Số lượng: {{QUANTITY}}</div>
+            </div>
+            <div class="product-price" style="box-sizing: border-box;color: #2ba8e2;font-weight: 700;font-size: 20px;text-align: right;white-space: nowrap;">{{PRICE}}</div>
+          </div>
+
+          <!-- Add more product cards as needed -->
+          {{PRODUCTS_LIST}}
+        </div>
+
+        <!-- Order Summary -->
+        <div class="summary-card" style="box-sizing: border-box;background: linear-gradient(to bottom right, #f8f9fa, #ffffff);border-radius: 12px;padding: 25px;margin: 25px 0;border: 2px solid #e9ecef;">
+          <div class="summary-row" style="box-sizing: border-box;display: flex;justify-content: space-between;padding: 12px 0;font-size: 16px;">
+            <span style="box-sizing: border-box;">Tạm tính:</span>
+            <span style="box-sizing: border-box;">{{SUBTOTAL}}</span>
+          </div>
+          <div class="summary-row" style="box-sizing: border-box;display: flex;justify-content: space-between;padding: 12px 0;font-size: 16px;">
+            <span style="box-sizing: border-box;">Phí vận chuyển:</span>
+            <span style="box-sizing: border-box;">{{SHIPPING_FEE}}</span>
+          </div>
+          <div class="summary-row" style="box-sizing: border-box;display: flex;justify-content: space-between;padding: 12px 0;font-size: 16px;">
+            <span style="box-sizing: border-box;">Giảm giá:</span>
+            <span style="color: #dc3545;box-sizing: border-box;">-{{DISCOUNT}}</span>
+          </div>
+          <div class="summary-row total-row" style="box-sizing: border-box;display: flex;justify-content: space-between;padding: 12px 0;font-size: 22px;border-top: 2px solid #2ba8e2;margin-top: 15px;padding-top: 18px;font-weight: 700;color: #2ba8e2;">
+            <span style="box-sizing: border-box;">Tổng cộng:</span>
+            <span style="box-sizing: border-box;">{{TOTAL}}</span>
+          </div>
+        </div>
+
+        <!-- Shipping Info -->
+        <div class="card info-card shipping-card" style="box-sizing: border-box;--bs-card-spacer-y: 1rem;--bs-card-spacer-x: 1rem;--bs-card-title-spacer-y: 0.5rem;--bs-card-title-color: ;--bs-card-subtitle-color: ;--bs-card-border-width: var(--bs-border-width);--bs-card-border-color: var(--bs-border-color-translucent);--bs-card-border-radius: var(--bs-border-radius);--bs-card-box-shadow: ;--bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));--bs-card-cap-padding-y: 0.5rem;--bs-card-cap-padding-x: 1rem;--bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);--bs-card-cap-color: ;--bs-card-height: ;--bs-card-color: ;--bs-card-bg: var(--bs-body-bg);--bs-card-img-overlay-padding: 1rem;--bs-card-group-margin: 0.75rem;position: relative;display: flex;flex-direction: column;min-width: 0;height: var(--bs-card-height);color: var(--bs-body-color);word-wrap: break-word;background-color: var(--bs-card-bg);background-clip: border-box;border: none;border-radius: 12px;padding: 25px;margin-bottom: 25px;background: linear-gradient(to right, #fff8e6, #ffffff);border-left: 5px solid var(#ffc107);">
+          <div class="info-card-header" style="box-sizing: border-box;display: flex;align-items: center;gap: 12px;margin-bottom: 20px;font-size: 20px;font-weight: 600;color: #f57c00;">
+            <img src="./image/truck.svg" class="bi bi-truck" style="box-sizing: border-box;font-size: 28px;">
+            <span style="box-sizing: border-box;">Thông tin giao hàng</span>
+          </div>
+          <div class="shipping-details" style="box-sizing: border-box;">
+            <p style="box-sizing: border-box;margin-top: 0;margin-bottom: 1rem;margin: 10px 0;color: #495057;font-size: 15px;line-height: 1.6;"><strong style="box-sizing: border-box;font-weight: 600;color: #212529;">Người nhận:</strong> {{CUSTOMER_NAME}}</p>
+            <p style="box-sizing: border-box;margin-top: 0;margin-bottom: 1rem;margin: 10px 0;color: #495057;font-size: 15px;line-height: 1.6;"><strong style="box-sizing: border-box;font-weight: 600;color: #212529;">Số điện thoại:</strong> {{PHONE}}</p>
+            <p style="box-sizing: border-box;margin-top: 0;margin-bottom: 1rem;margin: 10px 0;color: #495057;font-size: 15px;line-height: 1.6;"><strong style="box-sizing: border-box;font-weight: 600;color: #212529;">Email:</strong> {{EMAIL}}</p>
+            <p style="box-sizing: border-box;margin-top: 0;margin-bottom: 1rem;margin: 10px 0;color: #495057;font-size: 15px;line-height: 1.6;"><strong style="box-sizing: border-box;font-weight: 600;color: #212529;">Địa chỉ:</strong> {{ADDRESS}}</p>
+          </div>
+        </div>
+
+        <!-- Payment Info -->
+        <div class="card info-card payment-card" style="box-sizing: border-box;--bs-card-spacer-y: 1rem;--bs-card-spacer-x: 1rem;--bs-card-title-spacer-y: 0.5rem;--bs-card-title-color: ;--bs-card-subtitle-color: ;--bs-card-border-width: var(--bs-border-width);--bs-card-border-color: var(--bs-border-color-translucent);--bs-card-border-radius: var(--bs-border-radius);--bs-card-box-shadow: ;--bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));--bs-card-cap-padding-y: 0.5rem;--bs-card-cap-padding-x: 1rem;--bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);--bs-card-cap-color: ;--bs-card-height: ;--bs-card-color: ;--bs-card-bg: var(--bs-body-bg);--bs-card-img-overlay-padding: 1rem;--bs-card-group-margin: 0.75rem;position: relative;display: flex;flex-direction: column;min-width: 0;height: var(--bs-card-height);color: var(--bs-body-color);word-wrap: break-word;background-color: var(--bs-card-bg);background-clip: border-box;border: none;border-radius: 12px;padding: 25px;margin-bottom: 25px;background: linear-gradient(to right, #e8f5e9, #ffffff);border-left: 5px solid #28a745;">
+          <div class="info-card-header" style="box-sizing: border-box;display: flex;align-items: center;gap: 12px;margin-bottom: 20px;font-size: 20px;font-weight: 600;color: #28a745;">
+            <img src="./image/credit-card.svg" class="bi bi-credit-card" style="box-sizing: border-box;font-size: 28px;">
+            <span style="box-sizing: border-box;">Phương thức thanh toán</span>
+          </div>
+          <span class="payment-badge" style="box-sizing: border-box;display: inline-block;background: #28a745;color: white;padding: 10px 24px;border-radius: 25px;font-weight: 600;font-size: 16px;margin-top: 8px;">{{PAYMENT_METHOD}}</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section" style="box-sizing: border-box;text-align: center;margin: 35px 0;">
+          <a href="{{WEBSITE_URL}}" class="btn-custom btn-primary-custom" style="box-sizing: border-box;color: white;text-decoration: none;padding: 14px 40px;font-size: 16px;font-weight: 600;border-radius: 10px;display: inline-block;margin: 8px;transition: all 0.3s ease;background: #2ba8e2;border: none;">
+            <img src="./image/cart-check.svg" class="bi bi-cart-check me-2" style="box-sizing: border-box;margin-right: .5rem!important;">Tiếp tục mua sắm
+          </a>
+          <a href="{{WEBSITE_URL}}/infor.html" class="btn-custom btn-outline-custom" style="box-sizing: border-box;color: #2ba8e2;text-decoration: none;padding: 14px 40px;font-size: 16px;font-weight: 600;border-radius: 10px;display: inline-block;margin: 8px;transition: all 0.3s ease;background: transparent;border: 2px solid #2ba8e2;">
+            <img src="./image/eye.svg" class="bi bi-eye me-2" style="box-sizing: border-box;margin-right: .5rem!important;">Xem đơn hàng
+          </a>
+        </div>
+
+        <!-- Help Section -->
+        <div class="help-card" style="box-sizing: border-box;background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);border-radius: 12px;padding: 30px;text-align: center;margin: 25px 0;border: 2px solid #cce7f5;">
+          <h3 style="box-sizing: border-box;margin-top: 0;margin-bottom: 15px;font-weight: 600;line-height: 1.2;color: #2ba8e2;font-size: calc(1.3rem + .6vw);display: flex;align-items: center;justify-content: center;gap: 10px;">
+            <img src="./image/chat-dots.svg" class="bi bi-chat-dots" style="box-sizing: border-box;font-size: 26px;">
+            Cần hỗ trợ?
+          </h3>
+          <p style="box-sizing: border-box;margin-top: 0;margin-bottom: 20px;color: #6c757d;font-size: 15px;line-height: 1.7;">
+            Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, đừng ngần ngại liên hệ
+            với chúng tôi:
+          </p>
+          <div class="contact-grid" style="box-sizing: border-box;display: flex;justify-content: center;gap: 30px;flex-wrap: wrap;">
+            <div class="contact-item" style="box-sizing: border-box;display: flex;align-items: center;gap: 10px;color: #212529;font-weight: 600;font-size: 15px;">
+              <img src="./image/telephone-fill.svg" class="bi bi-telephone-fill" style="box-sizing: border-box;color: #2ba8e2;font-size: 20px;">
+              <strong style="box-sizing: border-box;font-weight: bolder;">0349020984</strong>
+            </div>
+            <div class="contact-item" style="box-sizing: border-box;display: flex;align-items: center;gap: 10px;color: #212529;font-weight: 600;font-size: 15px;">
+              <img src="./image/envelope-fill.svg" class="bi bi-envelope-fill" style="box-sizing: border-box;color: #2ba8e2;font-size: 20px;">
+              <strong style="box-sizing: border-box;font-weight: bolder;">cocornbookstore@gmail.com</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="email-footer" style="box-sizing: border-box;background: #f8f9fa;padding: 35px 30px;text-align: center;border-top: 1px solid #dee2e6;">
+        <div class="social-links" style="box-sizing: border-box;margin: 20px 0;">
+          <a href="#" class="social-link" title="Facebook" style="box-sizing: border-box;color: white;text-decoration: none;display: inline-flex;align-items: center;justify-content: center;width: 45px;height: 45px;background: #2ba8e2;border-radius: 50%;margin: 0 8px;font-size: 20px;transition: all 0.3s ease;">
+            <img src="./image/facebook.svg" class="bi bi-facebook" style="box-sizing: border-box;">
+          </a>
+          <a href="#" class="social-link" title="Instagram" style="box-sizing: border-box;color: white;text-decoration: none;display: inline-flex;align-items: center;justify-content: center;width: 45px;height: 45px;background: #2ba8e2;border-radius: 50%;margin: 0 8px;font-size: 20px;transition: all 0.3s ease;">
+            <img src="./image/instagram.svg" class="bi bi-instagram" style="box-sizing: border-box;">
+          </a>
+          <a href="#" class="social-link" title="Twitter" style="box-sizing: border-box;color: white;text-decoration: none;display: inline-flex;align-items: center;justify-content: center;width: 45px;height: 45px;background: #2ba8e2;border-radius: 50%;margin: 0 8px;font-size: 20px;transition: all 0.3s ease;">
+            <img src="./image/twitter-x.svg" class="bi bi-twitter" style="box-sizing: border-box;">
+          </a>
+        </div>
+
+        <div class="footer-info" style="box-sizing: border-box;color: #6c757d;font-size: 14px;line-height: 1.8;margin: 15px 0;">
+          <strong style="box-sizing: border-box;font-weight: bolder;color: #212529;font-size: 16px;">Coconut Corn - Dừa và Bắp</strong><br style="box-sizing: border-box;">
+          180 Cao Lỗ, phường 4, Quận 8, TP.HCM<br style="box-sizing: border-box;">
+          Email: cocornbookstore@gmail.com | Hotline: 0349020984
+        </div>
+
+        <div class="footer-note" style="box-sizing: border-box;font-size: 13px;color: #adb5bd;line-height: 1.6;margin-top: 15px;">
+          Email này được gửi tự động, vui lòng không trả lời trực tiếp.<br style="box-sizing: border-box;">
+          Nếu bạn không thực hiện đơn hàng này, vui lòng liên hệ với chúng tôi
+          ngay.
+        </div>
+
+        <div class="copyright" style="box-sizing: border-box;margin-top: 25px;padding-top: 20px;border-top: 1px solid #dee2e6;color: #adb5bd;font-size: 13px;">© 2025 Coconut Corn. All rights reserved.</div>
+      </div>
     </div>
-</body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" style="box-sizing: border-box;"></script>
+  </body>
 </html>

@@ -1,0 +1,45 @@
+[29-Dec-2025 16:06:16 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:06:38 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:07:10 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:11:51 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:12:33 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:13:26 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:14:54 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:32
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(244): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 32
+[29-Dec-2025 16:26:07 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:34
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(246): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 34
+[29-Dec-2025 16:26:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php:34
+Stack trace:
+#0 C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php(246): sendOrderConfirmationEmail(Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\CocornBookstore\asset\api\send-order-email.php on line 34
