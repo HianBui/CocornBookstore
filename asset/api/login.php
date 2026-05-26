@@ -2,12 +2,11 @@
 /**
  * ============================================================
  * FILE: login.php
- * MÔ TẢ: API xử lý đăng nhập tài khoản với phân quyền
+ * MÔ TẢ: API xử lý đăng nhập tài khoản với phân quyền 3 vai trò
  * ĐẶT TẠI: asset/api/login.php
  * ============================================================
  */
 
-// Bật session
 session_start();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -15,7 +14,6 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Include file kết nối database
 require_once __DIR__ . '/../../model/config/connectdb.php';
 
 // Chỉ chấp nhận POST request
@@ -29,27 +27,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Lấy dữ liệu từ request
-$input = json_decode(file_get_contents('php://input'), true);
-
-// Validate dữ liệu đầu vào
-$username = trim($input['username'] ?? '');
+$input    = json_decode(file_get_contents('php://input'), true);
+$email    = trim($input['username'] ?? '');   // Giữ key 'username' để không phải sửa JS frontend
 $password = $input['password'] ?? '';
 $remember = $input['remember'] ?? false;
 
-// Array chứa lỗi
+// Validate đầu vào
 $errors = [];
 
-// Validate username
-if (empty($username)) {
-    $errors[] = 'Tên đăng nhập không được để trống';
+if (empty($email)) {
+    $errors[] = 'Email không được để trống';
 }
 
-// Validate password
 if (empty($password)) {
     $errors[] = 'Mật khẩu không được để trống';
 }
 
-// Nếu có lỗi, trả về
 if (!empty($errors)) {
     http_response_code(400);
     echo json_encode([
@@ -60,80 +53,84 @@ if (!empty($errors)) {
 }
 
 try {
-    // Tìm user theo username hoặc email
+    // Tìm người dùng theo email
     $stmt = $pdo->prepare("
-        SELECT user_id, username, display_name, email, password, role 
-        FROM users 
-        WHERE username = ? OR email = ?
+        SELECT nguoi_dung_id, ho_ten, email, mat_khau, vai_tro, trang_thai
+        FROM nguoi_dung
+        WHERE email = ?
     ");
-    $stmt->execute([$username, $username]);
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
 
-    // Kiểm tra user có tồn tại không
+    // Kiểm tra tồn tại
     if (!$user) {
         http_response_code(401);
         echo json_encode([
             'success' => false,
-            'message' => 'Tên đăng nhập hoặc mật khẩu không chính xác'
+            'message' => 'Email hoặc mật khẩu không chính xác'
         ]);
         exit;
     }
 
-    // Mã hóa mật khẩu nhập vào và so sánh
-    $hashedPassword = hash('sha256', $password);
-    
-    if ($hashedPassword !== $user['password']) {
+    // Kiểm tra tài khoản bị khóa
+    if ($user['trang_thai'] === 'khoa') {
+        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ cửa hàng.'
+        ]);
+        exit;
+    }
+
+    // Kiểm tra mật khẩu bằng password_verify()
+    if (!password_verify($password, $user['mat_khau'])) {
         http_response_code(401);
         echo json_encode([
             'success' => false,
-            'message' => 'Tên đăng nhập hoặc mật khẩu không chính xác'
+            'message' => 'Email hoặc mật khẩu không chính xác'
         ]);
         exit;
     }
 
     // Đăng nhập thành công - Tạo session
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username'] = $user['username'];
-    $_SESSION['display_name'] = $user['display_name'];
-    $_SESSION['email'] = $user['email'];
-    $_SESSION['role'] = $user['role'];
-    $_SESSION['logged_in'] = true;
+    $_SESSION['nguoi_dung_id'] = $user['nguoi_dung_id'];
+    $_SESSION['ho_ten']        = $user['ho_ten'];
+    $_SESSION['email']         = $user['email'];
+    $_SESSION['vai_tro']       = $user['vai_tro'];
+    $_SESSION['logged_in']     = true;
 
     // Nếu chọn "Ghi nhớ đăng nhập"
     if ($remember) {
-        // Tạo token ngẫu nhiên
         $token = bin2hex(random_bytes(32));
-        
-        // Lưu token vào session
         $_SESSION['remember_token'] = $token;
-        
-        // Set cookie với thời hạn 30 ngày
         setcookie('remember_token', $token, time() + (30 * 24 * 60 * 60), '/', '', false, true);
-        setcookie('user_id', $user['user_id'], time() + (30 * 24 * 60 * 60), '/', '', false, true);
+        setcookie('nguoi_dung_id', $user['nguoi_dung_id'], time() + (30 * 24 * 60 * 60), '/', '', false, true);
     }
 
-    // ✅ XÁC ĐỊNH REDIRECT URL DỰA TRÊN ROLE
-    $redirectUrl = '';
-    if ($user['role'] === 'admin') {
-        $redirectUrl = './admin/dashboard.html'; // Trang admin
+    // Xác định redirect theo vai trò
+    if ($user['vai_tro'] === 'quan_tri') {
+        $redirectUrl = './admin/dashboard.html';
+    } elseif ($user['vai_tro'] === 'nhan_vien') {
+        $redirectUrl = './admin/dashboard.html';
     } else {
-        $redirectUrl = './index.html'; // Trang user thường
+        $redirectUrl = './index.html';
     }
 
-    // Trả về thông tin user (không bao gồm password)
     http_response_code(200);
     echo json_encode([
-        'success' => true,
-        'message' => 'Đăng nhập thành công!',
-        'user' => [
-            'user_id' => $user['user_id'],
-            'username' => $user['username'],
-            'display_name' => $user['display_name'],
-            'email' => $user['email'],
-            'role' => $user['role']
+        'success'     => true,
+        'message'     => 'Đăng nhập thành công!',
+        'user'        => [
+            'nguoi_dung_id' => $user['nguoi_dung_id'],
+            'ho_ten'        => $user['ho_ten'],
+            'email'         => $user['email'],
+            'vai_tro'       => $user['vai_tro'],
+            // Giữ thêm các key cũ để JS frontend không bị lỗi ngay
+            'user_id'       => $user['nguoi_dung_id'],
+            'display_name'  => $user['ho_ten'],
+            'role'          => $user['vai_tro'],
         ],
-        'token' => $_SESSION['remember_token'] ?? null,
-        'redirectUrl' => $redirectUrl // ✅ Gửi URL redirect về client
+        'redirectUrl' => $redirectUrl
     ]);
 
 } catch (PDOException $e) {

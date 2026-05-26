@@ -2,7 +2,7 @@
 /**
  * ============================================================
  * FILE: check_session.php
- * MÔ TẢ: Kiểm tra trạng thái đăng nhập và trả về thông tin user đầy đủ
+ * MÔ TẢ: Kiểm tra trạng thái đăng nhập và trả về thông tin người dùng
  * ĐẶT TẠI: asset/api/check_session.php
  * ============================================================
  */
@@ -16,68 +16,61 @@ require_once __DIR__ . '/../../model/config/connectdb.php';
 
 try {
     // Kiểm tra session
-    if (!isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['nguoi_dung_id'])) {
         echo json_encode([
-            'success' => true,
+            'success'   => true,
             'logged_in' => false,
-            'user' => null
+            'user'      => null
         ]);
         exit;
     }
 
-    // Lấy thông tin user MỚI NHẤT từ database
+    // Lấy thông tin mới nhất từ database
     $stmt = $pdo->prepare("
-        SELECT 
-            user_id, 
-            username, 
-            email, 
-            display_name, 
-            avatar, 
-            phone, 
-            address, 
-            role, 
-            status
-        FROM users 
-        WHERE user_id = ? AND status = 'active'
+        SELECT
+            nguoi_dung_id,
+            ho_ten,
+            email,
+            so_dien_thoai,
+            dia_chi,
+            vai_tro,
+            trang_thai
+        FROM nguoi_dung
+        WHERE nguoi_dung_id = ? AND trang_thai = 'hoat_dong'
     ");
-    
-    $stmt->execute([$_SESSION['user_id']]);
+    $stmt->execute([$_SESSION['nguoi_dung_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
-        // User không tồn tại hoặc bị banned
+        // Tài khoản không tồn tại hoặc đã bị khóa
         session_destroy();
         echo json_encode([
-            'success' => true,
+            'success'   => true,
             'logged_in' => false,
-            'user' => null
+            'user'      => null
         ]);
         exit;
     }
-    // Xử lý avatar
-    if ($user['avatar'] && $user['avatar'] !== '300x300.svg') {
-        // Nếu avatar không phải đường dẫn đầy đủ
-        if (strpos($user['avatar'], './asset/') !== 0) {
-            $user['avatar'] = './asset/image/avatars/' . $user['avatar'];
-        }
-    } else {
-        $user['avatar'] = './asset/image/300x300.svg';
-    }
 
-    // Trả về thông tin user đầy đủ
+    // Cập nhật lại session với dữ liệu mới nhất
+    $_SESSION['vai_tro'] = $user['vai_tro'];
+    $_SESSION['ho_ten']  = $user['ho_ten'];
+
     echo json_encode([
-        'success' => true,
+        'success'   => true,
         'logged_in' => true,
-        'user' => [
-            'user_id' => (int)$user['user_id'],
-            'username' => $user['username'],
-            'email' => $user['email'],
-            'display_name' => $user['display_name'], // ✅ QUAN TRỌNG
-            'avatar' => $user['avatar'],
-            'phone' => $user['phone'] ?? '',
-            'address' => $user['address'] ?? '',
-            'role' => $user['role'],
-            'status' => $user['status']
+        'user'      => [
+            'nguoi_dung_id' => (int)$user['nguoi_dung_id'],
+            'ho_ten'        => $user['ho_ten'],
+            'email'         => $user['email'],
+            'so_dien_thoai' => $user['so_dien_thoai'] ?? '',
+            'dia_chi'       => $user['dia_chi'] ?? '',
+            'vai_tro'       => $user['vai_tro'],
+            'trang_thai'    => $user['trang_thai'],
+            // Giữ key cũ để JS frontend không lỗi ngay
+            'user_id'       => (int)$user['nguoi_dung_id'],
+            'display_name'  => $user['ho_ten'],
+            'role'          => $user['vai_tro'],
         ]
     ]);
 
@@ -85,8 +78,8 @@ try {
     error_log("Check Session Error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
-        'success' => false,
+        'success'   => false,
         'logged_in' => false,
-        'message' => 'Lỗi kiểm tra phiên đăng nhập'
+        'message'   => 'Lỗi kiểm tra phiên đăng nhập'
     ]);
 }

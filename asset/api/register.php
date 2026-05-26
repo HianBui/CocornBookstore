@@ -2,8 +2,8 @@
 /**
  * ============================================================
  * FILE: register.php
- * MÔ TẢ: API xử lý đăng ký tài khoản
- * ĐẶT TẠI: api/register.php
+ * MÔ TẢ: API xử lý đăng ký tài khoản khách hàng
+ * ĐẶT TẠI: asset/api/register.php
  * ============================================================
  */
 
@@ -12,7 +12,6 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Include file kết nối database
 require_once __DIR__ . '/../../model/config/connectdb.php';
 
 // Chỉ chấp nhận POST request
@@ -26,33 +25,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Lấy dữ liệu từ request
-$input = json_decode(file_get_contents('php://input'), true);
+$input         = json_decode(file_get_contents('php://input'), true);
+$ho_ten        = trim($input['displayName'] ?? $input['ho_ten'] ?? '');  // Tương thích cả key cũ lẫn mới
+$email         = trim($input['email'] ?? '');
+$so_dien_thoai = trim($input['phone'] ?? $input['so_dien_thoai'] ?? '');
+$password      = $input['password'] ?? '';
+$confirmPass   = $input['confirmPass'] ?? '';
+$isAgree       = $input['isAgree'] ?? false;
 
-// Validate dữ liệu đầu vào
-$username = trim($input['username'] ?? '');
-$displayName = trim($input['displayName'] ?? '');
-$email = trim($input['email'] ?? '');
-$password = $input['password'] ?? '';
-$confirmPass = $input['confirmPass'] ?? '';
-$isAgree = $input['isAgree'] ?? false;
-
-// Array chứa lỗi
+// Validate đầu vào
 $errors = [];
 
-// Validate username
-if (empty($username)) {
-    $errors[] = 'Tên đăng nhập không được để trống';
-} elseif (strlen($username) < 6 || strlen($username) > 20) {
-    $errors[] = 'Tên đăng nhập phải từ 6-20 ký tự';
-} elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-    $errors[] = 'Tên đăng nhập chỉ chứa chữ, số và dấu gạch dưới';
-}
-
-// Validate display name
-if (empty($displayName)) {
-    $errors[] = 'Tên hiển thị không được để trống';
-} elseif (strlen($displayName) < 3 || strlen($displayName) > 100) {
-    $errors[] = 'Tên hiển thị phải từ 3-100 ký tự';
+// Validate họ tên
+if (empty($ho_ten)) {
+    $errors[] = 'Họ tên không được để trống';
+} elseif (strlen($ho_ten) < 3 || strlen($ho_ten) > 100) {
+    $errors[] = 'Họ tên phải từ 3-100 ký tự';
 }
 
 // Validate email
@@ -62,7 +50,12 @@ if (empty($email)) {
     $errors[] = 'Email không hợp lệ';
 }
 
-// Validate password
+// Validate số điện thoại (không bắt buộc nhưng nếu nhập phải đúng định dạng)
+if (!empty($so_dien_thoai) && !preg_match('/^(0|\+84)[0-9]{9}$/', $so_dien_thoai)) {
+    $errors[] = 'Số điện thoại không hợp lệ';
+}
+
+// Validate mật khẩu
 if (empty($password)) {
     $errors[] = 'Mật khẩu không được để trống';
 } elseif (strlen($password) < 8 || strlen($password) > 30) {
@@ -71,7 +64,7 @@ if (empty($password)) {
     $errors[] = 'Mật khẩu phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt';
 }
 
-// Validate confirm password
+// Validate xác nhận mật khẩu
 if ($password !== $confirmPass) {
     $errors[] = 'Mật khẩu xác nhận không khớp';
 }
@@ -81,7 +74,6 @@ if (!$isAgree) {
     $errors[] = 'Bạn phải đồng ý với điều khoản dịch vụ';
 }
 
-// Nếu có lỗi, trả về
 if (!empty($errors)) {
     http_response_code(400);
     echo json_encode([
@@ -92,20 +84,8 @@ if (!empty($errors)) {
 }
 
 try {
-    // Kiểm tra username đã tồn tại
-    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    if ($stmt->fetch()) {
-        http_response_code(409);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Tên đăng nhập đã tồn tại'
-        ]);
-        exit;
-    }
-
-    // Kiểm tra email đã tồn tại
-    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
+    // Kiểm tra email đã tồn tại chưa
+    $stmt = $pdo->prepare("SELECT nguoi_dung_id FROM nguoi_dung WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
         http_response_code(409);
@@ -116,21 +96,20 @@ try {
         exit;
     }
 
-    // Mã hóa mật khẩu bằng SHA-256 (giống như trong database)
-    $hashedPassword = hash('sha256', $password);
+    // Hash mật khẩu bằng password_hash() - an toàn hơn SHA-256
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Thêm user mới vào database
+    // Thêm người dùng mới
     $stmt = $pdo->prepare("
-        INSERT INTO users (username, display_name, email, password, role, is_agree, created_at) 
-        VALUES (?, ?, ?, ?, 'user', ?, NOW())
+        INSERT INTO nguoi_dung (ho_ten, email, mat_khau, so_dien_thoai, vai_tro, trang_thai)
+        VALUES (?, ?, ?, ?, 'khach_hang', 'hoat_dong')
     ");
-    
+
     $result = $stmt->execute([
-        $username,
-        $displayName,
+        $ho_ten,
         $email,
         $hashedPassword,
-        $isAgree ? 1 : 0
+        $so_dien_thoai ?: null
     ]);
 
     if ($result) {
@@ -138,7 +117,7 @@ try {
         echo json_encode([
             'success' => true,
             'message' => 'Đăng ký thành công! Chuyển hướng đến trang đăng nhập...',
-            'userId' => $pdo->lastInsertId()
+            'userId'  => $pdo->lastInsertId()
         ]);
     } else {
         throw new Exception('Không thể tạo tài khoản');
